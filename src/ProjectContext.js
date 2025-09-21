@@ -68,7 +68,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
         }
       }
 
-      reloadUser();
+      // reloadUser(); // Temporarily removed for debugging
       return true;
     };
   
@@ -91,7 +91,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
           console.log('newAllProjects after filter:', newAllProjects);
           return newAllProjects;
         });
-        reloadUser(); // Reload user to update permissions in AuthContext
+        // reloadUser(); // Temporarily removed for debugging
         console.log('currentUser after reloadUser:', currentUser);
 
         // alert(`Project ${projectName} and its data have been deleted.`);
