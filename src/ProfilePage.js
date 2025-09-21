@@ -5,9 +5,9 @@ import './ProfilePage.css';
 function ProfilePage() {
   const { currentUser, updateCurrentUser, reloadUser, changePassword } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [changeOldPassword, setChangeOldPassword] = useState('');
+  const [changeNewPassword, setChangeNewPassword] = useState('');
+  const [changeConfirmNewPassword, setChangeConfirmNewPassword] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -141,14 +141,14 @@ console.log("Saving users to localStorage:", updatedUsers);
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'oldPassword') setOldPassword(value);
-    else if (name === 'newPassword') setNewPassword(value);
-    else if (name === 'confirmNewPassword') setConfirmNewPassword(value);
+    if (name === 'oldPassword') setChangeOldPassword(value);
+    else if (name === 'newPassword') setChangeNewPassword(value);
+    else if (name === 'confirmNewPassword') setChangeConfirmNewPassword(value);
   };
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    if (newPassword !== confirmNewPassword) {
+    if (changeNewPassword !== changeConfirmNewPassword) {
       alert('New password and confirmation do not match.');
       return;
     }
@@ -158,13 +158,13 @@ console.log("Saving users to localStorage:", updatedUsers);
       return;
     }
 
-    const success = changePassword(currentUser.username, oldPassword, newPassword);
+    const success = changePassword(currentUser.username, changeOldPassword, changeNewPassword);
 
     if (success) {
       alert('Password changed successfully!');
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmNewPassword('');
+      setChangeOldPassword('');
+      setChangeNewPassword('');
+      setChangeConfirmNewPassword('');
       setIsChangingPassword(false);
     } else {
       alert('Failed to change password. Please check your old password.');
@@ -350,7 +350,7 @@ console.log("Saving users to localStorage:", updatedUsers);
                 type="password"
                 id="oldPassword"
                 name="oldPassword"
-                value={oldPassword}
+                value={changeOldPassword}
                 onChange={handlePasswordChange}
                 required
               />
@@ -361,7 +361,7 @@ console.log("Saving users to localStorage:", updatedUsers);
                 type="password"
                 id="newPassword"
                 name="newPassword"
-                value={newPassword}
+                value={changeNewPassword}
                 onChange={handlePasswordChange}
                 required
               />
@@ -372,7 +372,7 @@ console.log("Saving users to localStorage:", updatedUsers);
                 type="password"
                 id="confirmNewPassword"
                 name="confirmNewPassword"
-                value={confirmNewPassword}
+                value={changeConfirmNewPassword}
                 onChange={handlePasswordChange}
                 required
               />
