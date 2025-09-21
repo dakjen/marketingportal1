@@ -8,7 +8,7 @@ function IntroScreen() {
   return (
     <div className="intro-container">
       <h1>Welcome to the Marketing Portal</h1>
-      <p>Your central hub for managing social media and physical marketing entries across various projects.</p>
+      <p>The DakJen Creative Marketing Portal is designed as a real-time calculation and tracking tool for project lease-up marketing services. Through this portal, clients can view their marketing spend as it happens, ensuring full transparency into where budgets are allocated and how resources are performing. By centralizing spend data, the portal empowers clients to make informed decisions, optimize campaigns, and stay aligned with their marketing goals throughout the lease-up process.</p>
       <div className="intro-buttons">
         <button onClick={() => navigate('/login')}>Log In</button>
         <button onClick={() => navigate('/request-account')}>Request an Account</button>
