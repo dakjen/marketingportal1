@@ -13,6 +13,8 @@ import React, { useContext, useState } from 'react';
    import { AuthProvider, AuthContext } from './AuthContext';
    import { ProjectProvider, ProjectContext } from './ProjectContext';
    import './Tabs.css';
+
+   console.log('App.js: ProjectContext is here!', ProjectContext); // Debugging line
    
    const PrivateRoute = ({ children, allowedRoles }) => {
      const { isLoggedIn, currentUser } = useContext(AuthContext);
