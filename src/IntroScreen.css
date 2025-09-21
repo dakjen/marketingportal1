@@ -21,6 +21,10 @@
   max-width: 600px;
   margin-bottom: 30px;
   line-height: 1.6;
+  color: lightgray;
+  background-color: darkgray; /* New: background for the message */
+  padding: 10px 15px; /* Add some padding for better appearance */
+  border-radius: 5px; /* Slightly rounded corners */
 }
 
 .intro-buttons button {
@@ -41,6 +45,7 @@
 
 .intro-buttons button:last-child {
   background-color: #d8c49c;
+  color: black; /* New: text color for Request an Account button */
 }
 
 .intro-buttons button:last-child:hover {
