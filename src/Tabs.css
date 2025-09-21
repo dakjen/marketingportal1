@@ -1,0 +1,118 @@
+nav {
+  position: relative;
+  padding-top: 30px; /* Make space for the status display */
+}
+
+.tabs-container {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-bottom: 1px solid #555; /* Accent color */
+  position: relative; /* For absolute positioning of dropdown */
+}
+
+.app-login-status-display {
+  position: absolute;
+  top: 10px;
+  right: 60px; /* Increased right value for more space */
+  padding: 5px 15px;
+  font-weight: bold;
+  color: #000000;
+  font-size: 0.8em; /* Smaller font size */
+  z-index: 999; /* Ensure it's above other elements if needed */
+}
+
+.tab-item {
+  margin-right: 5px;
+}
+
+.tab-item a {
+  display: block;
+  padding: 10px 15px;
+  background-color: #23203e; /* Accent color */
+  border: 1px solid #23203e; /* Accent color */
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  text-decoration: none;
+  color: #fff; /* White text for readability */
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.tab-item a:hover {
+  background-color: #333050; /* Slightly lighter shade for hover */
+  color: #fff;
+}
+
+.tab-item a.active {
+  background-color: #333050; /* Active tab background */
+  border-color: #23203e; /* Accent color */
+  border-bottom: 1px solid #333050; /* To cover the border-bottom of the container */
+  color: #fff;
+}
+
+.tab-item a.project-management-tab {
+  background-color: #6c757d; /* A distinct color, e.g., a shade of gray */
+  border-color: #6c757d;
+}
+
+.tab-item a.project-management-tab:hover {
+  background-color: #5a6268; /* Darker shade for hover */
+  border-color: #5a6268;
+}
+
+.tab-item a.project-management-tab.active {
+  background-color: #5a6268; /* Active state for project management tab */
+  border-color: #5a6268;
+  border-bottom: 1px solid #5a6268;
+}
+
+.profile-dropdown-container {
+  margin-left: auto; /* Pushes it to the right */
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.profile-icon {
+  cursor: pointer;
+  font-size: 1.5em;
+  color: #c07481;
+  padding: 10px 0;
+}
+
+.profile-icon i {
+  color: #c07481; /* Explicitly set color for Font Awesome icon */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Position below the icon */
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item {
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #23203e;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}

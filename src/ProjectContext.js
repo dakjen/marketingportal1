@@ -1,0 +1,129 @@
+import React, { createContext, useState, useEffect, useContext } from 'react';
+    import { AuthContext } from './AuthContext';
+    
+    export const ProjectContext = createContext(null);
+    
+    export const ProjectProvider = ({ children, reloadUser }) => {
+      const { currentUser } = useContext(AuthContext);
+    
+      const [allProjects, setAllProjects] = useState(() => {
+      const savedProjects = localStorage.getItem('appProjects');
+      if (savedProjects) {
+        const parsedProjects = JSON.parse(savedProjects);
+        return parsedProjects.map(p => ({ ...p, isArchived: p.isArchived || false }));
+      }
+      return [];
+    });
+    const [activeProject, setActiveProject] = useState(() => {
+      const savedActiveProject = localStorage.getItem('activeProject');
+      return savedActiveProject ? JSON.parse(savedActiveProject) : null;
+    });
+  
+    useEffect(() => {
+      localStorage.setItem('appProjects', JSON.stringify(allProjects));
+    }, [allProjects]);
+  
+    const addProject = (projectName) => {
+      if (allProjects.some(p => p.name === projectName)) {
+        alert('Project with this name already exists.');
+        return false;
+      }
+      const newProject = { name: projectName, isArchived: false };
+      setAllProjects(prevAllProjects => [...prevAllProjects, newProject]);
+      setActiveProject(newProject);
+
+      // Grant permission to all admin users
+      const storedUsers = JSON.parse(localStorage.getItem('appUsers')) || [];
+      const updatedUsers = storedUsers.map(user => {
+        if (user.role === 'admin') {
+          // Add the new project to the admin's allowedProjects
+          // if it's not already there and they don't have wildcard access.
+          if (!user.allowedProjects.includes(projectName) && !user.allowedProjects.includes('*')) {
+            return {
+              ...user,
+              allowedProjects: [...user.allowedProjects, projectName]
+            };
+          }
+        }
+        return user;
+      });
+      localStorage.setItem('appUsers', JSON.stringify(updatedUsers));
+
+      // Update currentUser in localStorage if the current user is an admin
+      const currentUserFromStorage = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUserFromStorage && currentUserFromStorage.role === 'admin') {
+        const updatedCurrentUser = updatedUsers.find(user => user.username === currentUserFromStorage.username);
+        if (updatedCurrentUser) {
+          localStorage.setItem('currentUser', JSON.stringify(updatedCurrentUser));
+        }
+      }
+
+      reloadUser();
+      return true;
+    };
+  
+    const selectProject = (projectName) => {
+      const project = allProjects.find(p => p.name === projectName);
+      if (project) {
+        setActiveProject(project);
+      } else {
+        setActiveProject(null);
+      }
+    };
+  
+    const deleteProject = (projectName) => {
+      console.log('deleteProject function called for project:', projectName);
+      if (window.confirm(`Are you sure you want to delete project ${projectName} and all its data?`)) {
+        console.log('Deleting project:', projectName);
+        console.log('prevAllProjects:', allProjects);
+        setAllProjects(prevAllProjects => {
+          const newAllProjects = prevAllProjects.filter(p => p.name !== projectName);
+          console.log('newAllProjects after filter:', newAllProjects);
+          return newAllProjects;
+        });
+        reloadUser(); // Reload user to update permissions in AuthContext
+        console.log('currentUser after reloadUser:', currentUser);
+
+        // alert(`Project ${projectName} and its data have been deleted.`);
+      }
+    };
+
+  const archiveProject = (projectName) => {
+    setAllProjects(prevAllProjects =>
+      prevAllProjects.map(p =>
+        p.name === projectName ? { ...p, isArchived: true } : p
+      )
+    );
+  };
+
+  const unarchiveProject = (projectName) => {
+    setAllProjects(prevAllProjects =>
+      prevAllProjects.map(p =>
+        p.name === projectName ? { ...p, isArchived: false } : p
+      )
+    );
+  };
+  
+    return (
+      <ProjectContext.Provider value={{
+        projects: allProjects.filter(p => {
+          if (currentUser && currentUser.allowedProjects) {
+            if (currentUser.allowedProjects.includes('*')) {
+              return true;
+            }
+            return currentUser.allowedProjects.includes(p.name);
+          }
+          return false;
+        }),
+        allProjects,
+        activeProject,
+        addProject,
+        selectProject,
+        deleteProject,
+        archiveProject,
+        unarchiveProject
+      }}>
+        {children}
+      </ProjectContext.Provider>
+    );
+  };

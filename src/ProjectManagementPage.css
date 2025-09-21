@@ -1,0 +1,130 @@
+.project-management-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.project-management-layout {
+  display: flex;
+  gap: 30px;
+}
+
+.permissions-sidebar {
+  flex: 1;
+}
+
+.main-content {
+  flex: 2;
+}
+
+.user-permissions-section,
+.project-creation-section,
+.project-selection-section,
+.project-list-section {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.add-project-form {
+  display: flex;
+  gap: 10px;
+}
+
+.add-project-form input {
+  flex-grow: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-project-form button, {
+  width: auto;
+}
+
+.project-selection-section button,
+.permissions-checklist button { /* Added permissions button */
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%; /* Make buttons full-width */
+  margin-top: 10px;
+}
+
+.add-project-form button:hover,
+.project-selection-section button:hover,
+.permissions-checklist button:hover {
+  background-color: #0056b3;
+}
+
+.project-selection-section select,
+.user-selection select {
+  width: 100%; /* Make select dropdowns full-width */
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.project-list {
+  list-style: none;
+  padding: 0;
+}
+
+.project-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+
+
+.permissions-checklist .permission-item {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.permissions-checklist label {
+  margin-left: 5px;
+}
+
+.archive-button, .unarchive-button {
+  background-color: #23203e;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.project-list .delete-button-less-prominent {
+  background-color: transparent;
+  color: #444444;
+  border: 1px solid #444444;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.project-list .archive-button:hover {
+  background-color: #d8c49c;
+}
+
+.project-list .unarchive-button:hover {
+  background-color: #d8c49c;
+}
+
+.project-list .delete-button-less-prominent:hover {
+  background-color: #c82333;
+  color: white;
+}

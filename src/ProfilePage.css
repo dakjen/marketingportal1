@@ -1,0 +1,162 @@
+/* ProfilePage.css */
+.profile-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.profile-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-info p {
+  margin-bottom: 10px;
+}
+
+.user-role-display {
+  text-align: center;
+  color: grey;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.login-status-display {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-weight: bold;
+  color: #555;
+}
+
+.user-management-section {
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.user-management-section h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-user-form div {
+  margin-bottom: 15px;
+}
+
+.add-user-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.add-user-form input[type="text"],
+.add-user-form input[type="password"] {
+  width: calc(100% - 22px); /* Account for padding and border */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-user-form button {
+  background-color: #c07481; /* Accent color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-user-form button:hover {
+  background-color: #a05a6a;
+}
+
+.user-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.user-list li {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-list li span {
+  font-weight: bold;
+}
+
+.user-actions button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.edit-user-form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.edit-user-form-inline input,
+.edit-user-form-inline select {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex-grow: 1;
+  min-width: 80px;
+}
+
+.save-user-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.save-user-button:hover {
+  background-color: #218838;
+}
+
+.cancel-user-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.cancel-user-button:hover {
+  background-color: #5a6268;
+}
+
+.delete-user-button {
+  background-color: #444444;
+  color: white;
+  border: none;
+}
+
+.delete-user-button:hover {
+  background-color: #c82333;
+}
+
+.edit-user-button {
+  background-color: #aeaeae;
+  color: white;
+  border: none;
+}
+
+.edit-user-button:hover {
+  background-color: #0056b3;
+}

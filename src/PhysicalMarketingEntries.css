@@ -1,0 +1,233 @@
+.physical-marketing-container {
+  max-width: 800px; /* Adjust as needed */
+  margin: 20px auto; /* Center the container and add some vertical margin */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.physical-marketing-container h2,
+.physical-marketing-container h3 {
+  text-align: center;
+}
+
+.physical-marketing-container form div {
+  margin-bottom: 15px;
+}
+
+.physical-marketing-container form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.physical-marketing-container form input[type="date"],
+.physical-marketing-container form input[type="number"],
+.physical-marketing-container form input[type="text"],
+.physical-marketing-container form select,
+.physical-marketing-container form textarea {
+  width: calc(100% - 22px); /* Account for padding and border */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.length-of-time-group {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between input and select */
+  margin-bottom: 15px;
+}
+
+.length-of-time-group label {
+  flex-shrink: 0;
+  margin-bottom: 0; /* Reset margin for label within flex container */
+}
+
+.length-of-time-group input[type="number"] {
+  flex-grow: 1;
+  flex-basis: 40px; /* Significantly smaller */
+  width: auto; /* Allow flex-grow to control width */
+}
+
+.length-of-time-group select {
+  flex-shrink: 0;
+  width: auto; /* Allow content to dictate width */
+  max-width: 180px; /* Significantly bigger */
+}
+
+.physical-marketing-container form button {
+  background-color: #c07481; /* Accent color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.physical-marketing-container form button:hover {
+  background-color: #a05a6a;
+}
+
+.entries-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.entries-table th,
+.entries-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.entries-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.entries-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.entries-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.delete-entry-button {
+  background-color: #444444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.delete-entry-button:hover {
+  background-color: #333333;
+}
+
+.edit-entry-button {
+  background-color: #aeaeae;
+  color: black; /* Changed to black for readability on light grey */
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+.edit-entry-button:hover {
+  background-color: #9a9a9a;
+}
+
+.edit-entry-form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 5px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.edit-entry-form-inline label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.edit-entry-form-inline input,
+.edit-entry-form-inline select,
+.edit-entry-form-inline textarea {
+  flex-grow: 1;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 80px;
+}
+
+.save-entry-button,
+.cancel-entry-button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 5px;
+  border: none;
+}
+
+.save-entry-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-entry-button:hover {
+  background-color: #218838;
+}
+
+.cancel-entry-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-entry-button:hover {
+  background-color: #5a6268;
+}
+
+.edit-entry-form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 5px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.edit-entry-form-inline label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.edit-entry-form-inline input,
+.edit-entry-form-inline select,
+.edit-entry-form-inline textarea {
+  flex-grow: 1;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 80px;
+}
+
+.save-entry-button,
+.cancel-entry-button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 5px;
+  border: none;
+}
+
+.save-entry-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-entry-button:hover {
+  background-color: #218838;
+}
+
+.cancel-entry-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-entry-button:hover {
+  background-color: #5a6268;
+}
