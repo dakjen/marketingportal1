@@ -3,7 +3,19 @@ import { AuthContext } from './AuthContext';
 import './ProfilePage.css';
 
 function ProfilePage() {
-  const { isLoggedIn, currentUser, logout, updateCurrentUser } = useContext(AuthContext);
+  const { currentUser, updateCurrentUser, reloadUser, changePassword } = useContext(AuthContext);
+  const [isEditing, setIsEditing] = useState(false);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    username: '',
+    name: '',
+    email: '',
+    role: '',
+    allowedProjects: [],
+  });
   const [users, setUsers] = useState([]);
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -124,10 +136,43 @@ console.log("Saving users to localStorage:", updatedUsers);
     setMyEditedEmail(currentUser.email);
     setMyEditedUsername(currentUser.username);
     setMyEditedPassword(currentUser.password);
+    });
   };
 
-  if (!isLoggedIn) {
-    return <p>Please log in to view your profile.</p>;
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'oldPassword') setOldPassword(value);
+    else if (name === 'newPassword') setNewPassword(value);
+    else if (name === 'confirmNewPassword') setConfirmNewPassword(value);
+  };
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmNewPassword) {
+      alert('New password and confirmation do not match.');
+      return;
+    }
+
+    if (!currentUser || !currentUser.username) {
+      alert('User not logged in.');
+      return;
+    }
+
+    const success = changePassword(currentUser.username, oldPassword, newPassword);
+
+    if (success) {
+      alert('Password changed successfully!');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setIsChangingPassword(false);
+    } else {
+      alert('Failed to change password. Please check your old password.');
+    }
+  };
+
+  if (!currentUser) {
+    return <div className="profile-page-container">Loading profile...</div>;
   }
 
   return (
@@ -293,6 +338,50 @@ console.log("Saving users to localStorage:", updatedUsers);
           </div>
         </div>
       )}
+      <div className="password-change-section">
+        <h3>Change Password</h3>
+        {!isChangingPassword ? (
+          <button onClick={() => setIsChangingPassword(true)}>Change Password</button>
+        ) : (
+          <form onSubmit={handlePasswordSubmit}>
+            <div>
+              <label htmlFor="oldPassword">Old Password:</label>
+              <input
+                type="password"
+                id="oldPassword"
+                name="oldPassword"
+                value={oldPassword}
+                onChange={handlePasswordChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="newPassword">New Password:</label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                value={newPassword}
+                onChange={handlePasswordChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="confirmNewPassword">Confirm New Password:</label>
+              <input
+                type="password"
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                value={confirmNewPassword}
+                onChange={handlePasswordChange}
+                required
+              />
+            </div>
+            <button type="submit">Save New Password</button>
+            <button type="button" onClick={() => setIsChangingPassword(false)}>Cancel</button>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

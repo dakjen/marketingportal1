@@ -113,6 +113,34 @@ const updateUserPermissions = (username, newAllowedProjects) => {
     localStorage.removeItem('currentUser');
   };
 
+  const changePassword = (username, oldPassword, newPassword) => {
+    const storedUsers = JSON.parse(localStorage.getItem('appUsers')) || [];
+    const userIndex = storedUsers.findIndex(user => user.username === username);
+
+    if (userIndex === -1) {
+      console.error('User not found for password change.');
+      return false;
+    }
+
+    const user = storedUsers[userIndex];
+
+    // In a real application, oldPassword would be compared with a hashed password
+    if (user.password !== oldPassword) {
+      console.warn('Old password does not match.');
+      return false;
+    }
+
+    // Update the password
+    storedUsers[userIndex] = { ...user, password: newPassword };
+    localStorage.setItem('appUsers', JSON.stringify(storedUsers));
+
+    // If the current user's password was changed, update currentUser state
+    if (currentUser && currentUser.username === username) {
+      setCurrentUser(prevUser => ({ ...prevUser, password: newPassword }));
+    }
+    return true;
+  };
+
   const reloadUser = () => {
     const savedUser = localStorage.getItem('currentUser');
     setCurrentUser(savedUser ? JSON.parse(savedUser) : null);
@@ -120,7 +148,7 @@ const updateUserPermissions = (username, newAllowedProjects) => {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, currentUser, login, logout, updateCurrentUser,
-     updateUserPermissions, reloadUser }}>
+     updateUserPermissions, changePassword, reloadUser }}>
       {children}
     </AuthContext.Provider>
   );
