@@ -13,7 +13,7 @@ function IntroScreen() {
         <button onClick={() => navigate('/login')}>Log In</button>
         <button onClick={() => navigate('/request-account')}>Request an Account</button>
       </div>
-      <img src="/djcreative-logo.png" alt="DakJen Creative Logo" className="intro-logo" />
+      <img src={process.env.PUBLIC_URL + '/djcreative-logo.png'} alt="DakJen Creative Logo" className="intro-logo" />
     </div>
   );
 }
