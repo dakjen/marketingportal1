@@ -41,6 +41,23 @@ export const AuthProvider = ({ children }) => {
     };
   }, [currentUser]);
 
+  useEffect(() => {
+    const storedUsers = localStorage.getItem('appUsers');
+    if (!storedUsers) {
+      const defaultUsers = [
+        {
+          username: 'dakotahj',
+          password: 'password',
+          role: 'admin', // or 'user', depending on your needs
+          name: 'Dakotah J',
+          email: 'dakotahj@example.com',
+          allowedProjects: ['Project A', 'Project B']
+        },
+      ];
+      localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
+    }
+  }, []);
+
   const login = (username, password) => {
     const storedUsers = JSON.parse(localStorage.getItem('appUsers')) || [];
     const foundUser = storedUsers.find(user => user.username === username && user.password === password);
