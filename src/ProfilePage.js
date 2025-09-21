@@ -136,7 +136,6 @@ console.log("Saving users to localStorage:", updatedUsers);
     setMyEditedEmail(currentUser.email);
     setMyEditedUsername(currentUser.username);
     setMyEditedPassword(currentUser.password);
-    });
   };
 
   const handlePasswordChange = (e) => {
