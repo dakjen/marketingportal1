@@ -5,7 +5,7 @@ import './PhysicalMarketingEntries.css'; // Import the CSS file
 
 function PhysicalMarketingEntries() {
   const { currentUser } = useContext(AuthContext);
-  const { activeProject } = useContext(ProjectContext);
+  const { activeProject, projects, selectProject } = useContext(ProjectContext);
 
   const [date, setDate] = useState('');
   const [cost, setCost] = useState('');
@@ -22,6 +22,16 @@ function PhysicalMarketingEntries() {
     return savedEntries ? JSON.parse(savedEntries) : [];
   });
 
+  // Effect to reload entries when activeProject changes
+  useEffect(() => {
+    if (activeProject) {
+      const savedEntries = localStorage.getItem(`${activeProject.name}_physicalMarketingEntries`);
+      setEntries(savedEntries ? JSON.parse(savedEntries) : []);
+    } else {
+      setEntries([]);
+    }
+  }, [activeProject]);
+
   const [editingIndex, setEditingIndex] = useState(null); // Stores the index of the entry being edited
   const [editedDate, setEditedDate] = useState('');
   const [editedCost, setEditedCost] = useState('');
@@ -37,18 +47,12 @@ function PhysicalMarketingEntries() {
     localStorage.setItem(`${activeProject.name}_physicalMarketingEntries`, JSON.stringify(entries));
   }, [entries, activeProject]);
 
-  // Effect to reload entries when activeProject changes
-  useEffect(() => {
-    if (!activeProject) {
-      setEntries([]);
-      return;
-    }
-    const savedEntries = localStorage.getItem(`${activeProject.name}_physicalMarketingEntries`);
-    setEntries(savedEntries ? JSON.parse(savedEntries) : []);
-  }, [activeProject]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!activeProject) {
+      alert('Please select a project first.');
+      return;
+    }
     const lengthOfTime = `${lengthOfTimeValue} ${lengthOfTimeUnit}`.trim(); // Combine value and unit
     if (!lengthOfTimeValue) {
       alert('Please enter a value for Length of Time.');
@@ -109,20 +113,27 @@ function PhysicalMarketingEntries() {
     setEditingIndex(null); // Exit edit mode without saving
   };
 
-  // Effect to reload entries when activeProject changes
-  useEffect(() => {
-    if (!activeProject) {
-      setEntries([]);
-      return;
-    }
-    const savedEntries = localStorage.getItem(`${activeProject.name}_physicalMarketingEntries`);
-    setEntries(savedEntries ? JSON.parse(savedEntries) : []);
-  }, [activeProject]);
-
   return (
     <div className="physical-marketing-container">
-      {activeProject && <h2>Project: {activeProject.name}</h2>}
       <h2>Physical Marketing Entries</h2>
+
+      <div className="project-selection">
+        <label htmlFor="project-select">Select Project:</label>
+        <select
+          id="project-select"
+          value={activeProject ? activeProject.name : ''}
+          onChange={(e) => selectProject(e.target.value)}
+        >
+          <option value="">-- Select a Project --</option>
+          {projects.map((project) => (
+            <option key={project.name} value={project.name}>
+              {project.name}
+            </option>
+          ))}
+        </select>
+        {activeProject && <p>Current Project: <strong>{activeProject.name}</strong></p>}
+        {!activeProject && <p className="no-project-selected">Please select a project to view/add entries.</p>}
+      </div>
 
       <h3>Create New Entry</h3>
       <form onSubmit={handleSubmit}>

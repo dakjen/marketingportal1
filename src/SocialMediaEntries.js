@@ -5,7 +5,7 @@ import './SocialMediaEntries.css'; // Import the CSS file
 
 function SocialMediaEntries() {
   const { currentUser } = useContext(AuthContext);
-  const { activeProject } = useContext(ProjectContext);
+  const { activeProject, projects, selectProject } = useContext(ProjectContext);
 
   const [date, setDate] = useState('');
   const [cost, setCost] = useState('');
@@ -20,6 +20,16 @@ function SocialMediaEntries() {
     const savedEntries = localStorage.getItem(`${activeProject.name}_socialMediaEntries`);
     return savedEntries ? JSON.parse(savedEntries) : [];
   });
+
+  // Effect to load entries when activeProject changes
+  useEffect(() => {
+    if (activeProject) {
+      const savedEntries = localStorage.getItem(`${activeProject.name}_socialMediaEntries`);
+      setEntries(savedEntries ? JSON.parse(savedEntries) : []);
+    } else {
+      setEntries([]);
+    }
+  }, [activeProject]);
 
   const [editingIndex, setEditingIndex] = useState(null); // Stores the index of the entry being edited
   const [editedDate, setEditedDate] = useState('');
@@ -114,6 +124,24 @@ function SocialMediaEntries() {
   return (
     <div className="social-media-container">
       <h2>Social Media Entries</h2>
+
+      <div className="project-selection">
+        <label htmlFor="project-select">Select Project:</label>
+        <select
+          id="project-select"
+          value={activeProject ? activeProject.name : ''}
+          onChange={(e) => selectProject(e.target.value)}
+        >
+          <option value="">-- Select a Project --</option>
+          {projects.map((project) => (
+            <option key={project.name} value={project.name}>
+              {project.name}
+            </option>
+          ))}
+        </select>
+        {activeProject && <p>Current Project: <strong>{activeProject.name}</strong></p>}
+        {!activeProject && <p className="no-project-selected">Please select a project to view/add entries.</p>}
+      </div>
 
       <h3>Create New Entry</h3>
       <form onSubmit={handleSubmit}>
