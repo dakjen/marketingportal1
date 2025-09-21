@@ -1,0 +1,48 @@
+.intro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 20px;
+  background-color: #f4f7f6;
+  color: #333;
+}
+
+.intro-container h1 {
+  font-size: 2.8em;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.intro-container p {
+  font-size: 1.2em;
+  max-width: 600px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.intro-buttons button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  margin: 0 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
+}
+
+.intro-buttons button:hover {
+  background-color: #2980b9;
+}
+
+.intro-buttons button:last-child {
+  background-color: #2ecc71;
+}
+
+.intro-buttons button:last-child:hover {
+  background-color: #27ae60;
+}

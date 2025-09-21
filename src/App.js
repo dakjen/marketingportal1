@@ -8,13 +8,15 @@ import React, { useContext, useState } from 'react';
      import LoginPage from './LoginPage';
      import ProfilePage from './ProfilePage';
      import ContactAdminPage from './ContactAdminPage';
+     import IntroScreen from './IntroScreen'; // New import
+     import RequestAccountPage from './RequestAccountPage'; // New import
    import { AuthProvider, AuthContext } from './AuthContext';
    import { ProjectProvider, ProjectContext } from './ProjectContext';
    import './Tabs.css';
    
    const PrivateRoute = ({ children, allowedRoles }) => {
      const { isLoggedIn, currentUser } = useContext(AuthContext);
-     if (!isLoggedIn) { return <Navigate to="/login" />; }
+     if (!isLoggedIn) { return <Navigate to="/intro" />; } // Changed from /login to /intro
      if (allowedRoles && !allowedRoles.includes(currentUser?.role)) { return <Navigate to="/"
        />; }
      return children;
@@ -89,18 +91,24 @@ import React, { useContext, useState } from 'react';
          </nav>
          <hr />
          <Routes>
+           <Route path="/intro" element={<IntroScreen />} />
+           <Route path="/request-account" element={<RequestAccountPage />} />
            <Route path="/login" element={<LoginPage />} />
            <Route path="/forgot-password" element={<ContactAdminPage />} />
            <Route
              path="/"
              element={
-               <PrivateRoute allowedRoles={['admin', 'internal', 'external']}>
-                 <Dashboard
-                   projects={projects}
-                   activeProject={activeProject}
-                   selectProject={selectProject}
-                 />
-               </PrivateRoute>
+               isLoggedIn ? (
+                 <PrivateRoute allowedRoles={['admin', 'internal', 'external']}>
+                   <Dashboard
+                     projects={projects}
+                     activeProject={activeProject}
+                     selectProject={selectProject}
+                   />
+                 </PrivateRoute>
+               ) : (
+                 <Navigate to="/intro" />
+               )
              }
            />
            <Route
