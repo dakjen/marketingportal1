@@ -34,7 +34,7 @@ app.get('/api/projects', async (req, res) => {
   try {
     // In a real app, you'd fetch projects from a 'projects' table
     // For now, let's return a dummy project or an empty array
-    const result = await pool.query('SELECT 'Hello from Postgres!' as message');
+    const result = await pool.query(`SELECT 'Hello from Postgres!' as message`);
     res.status(200).json({ projects: [{ id: 1, name: 'Backend Project 1' }, { id: 2, name: 'Backend Project 2' }], dbMessage: result.rows[0].message });
   } catch (error) {
     console.error('Error fetching projects:', error.stack);
