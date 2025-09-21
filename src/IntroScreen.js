@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import DjCreativeLogo from '../public/djcreative-logo.png'; // Import the logo
+import DjCreativeLogo from './assets/djcreative-logo.png'; // Updated import path
 import './IntroScreen.css';
 
 function IntroScreen() {
