@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import DjCreativeLogo from '../public/djcreative-logo.png'; // Import the logo
 import './IntroScreen.css';
 
 function IntroScreen() {
@@ -13,7 +14,7 @@ function IntroScreen() {
         <button onClick={() => navigate('/login')}>Log In</button>
         <button onClick={() => navigate('/request-account')}>Request an Account</button>
       </div>
-      <img src="/djcreative-logo.png" alt="DakJen Creative Logo" className="intro-logo" />
+      <img src={DjCreativeLogo} alt="DakJen Creative Logo" className="intro-logo" />
     </div>
   );
 }
