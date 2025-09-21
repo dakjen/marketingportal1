@@ -7,12 +7,12 @@
   text-align: center;
   padding: 20px;
   background-color: #23203e;
-  color: #333;
+  color: lightgray;
 }
 
 .intro-container h1 {
   font-size: 2.8em;
-  color: #2c3e50;
+  color: white;
   margin-bottom: 20px;
 }
 
