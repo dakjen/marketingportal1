@@ -46,3 +46,12 @@
 .intro-buttons button:last-child:hover {
   background-color: #c2b08a; /* Darker shade for hover */
 }
+
+.intro-logo {
+  margin-top: 40px; /* Space above the logo */
+  max-width: 150px; /* Adjust size as needed */
+  height: auto;
+  display: block; /* Ensures margin auto works for centering */
+  margin-left: auto;
+  margin-right: auto;
+}
