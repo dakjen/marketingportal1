@@ -24,7 +24,7 @@
 }
 
 .intro-buttons button {
-  background-color: #3498db;
+  background-color: #c07481;
   color: white;
   border: none;
   padding: 12px 25px;
@@ -36,13 +36,13 @@
 }
 
 .intro-buttons button:hover {
-  background-color: #2980b9;
+  background-color: #a8636e; /* Darker shade for hover */
 }
 
 .intro-buttons button:last-child {
-  background-color: #2ecc71;
+  background-color: #d8c49c;
 }
 
 .intro-buttons button:last-child:hover {
-  background-color: #27ae60;
+  background-color: #c2b08a; /* Darker shade for hover */
 }
