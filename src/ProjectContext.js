@@ -7,11 +7,14 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
       const { currentUser } = useContext(AuthContext);
     
       const [allProjects, setAllProjects] = useState(() => {
+      console.log('ProjectContext: Initializing allProjects state...');
       const savedProjects = localStorage.getItem('appProjects');
       if (savedProjects) {
         const parsedProjects = JSON.parse(savedProjects);
+        console.log('ProjectContext: Found saved projects:', parsedProjects);
         return parsedProjects.map(p => ({ ...p, isArchived: p.isArchived || false }));
       }
+      console.log('ProjectContext: No saved projects found.');
       return [];
     });
     const [activeProject, setActiveProject] = useState(() => {
@@ -20,6 +23,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
     });
   
     useEffect(() => {
+      console.log('ProjectContext: allProjects state changed, saving to localStorage:', allProjects);
       localStorage.setItem('appProjects', JSON.stringify(allProjects));
     }, [allProjects]);
   
@@ -28,8 +32,13 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
         alert('Project with this name already exists.');
         return false;
       }
+      console.log('ProjectContext: Adding new project:', projectName);
       const newProject = { name: projectName, isArchived: false };
-      setAllProjects(prevAllProjects => [...prevAllProjects, newProject]);
+      setAllProjects(prevAllProjects => {
+        const updated = [...prevAllProjects, newProject];
+        console.log('ProjectContext: allProjects after add:', updated);
+        return updated;
+      });
       setActiveProject(newProject);
 
       // Grant permission to all admin users
