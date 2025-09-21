@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
     import { AuthContext } from './AuthContext';
     
+    // UNIQUE_TEST_STRING_PROJECT_CONTEXT_INCLUSION
     export const ProjectContext = createContext(null);
     
     export const ProjectProvider = ({ children, reloadUser }) => {
