@@ -147,7 +147,7 @@ function ProfilePage() {
           name: editedName,
           email: editedEmail,
           role: editedRole,
-          // allowedProjects: ... (if you want to edit these here)
+          allowedProjects: users.find(u => u.username === usernameToSave)?.allowed_projects || [], // Send existing allowed_projects
         }),
       });
 
@@ -191,7 +191,7 @@ function ProfilePage() {
         email: myEditedEmail,
         // password: myEditedPassword, // Password changes handled by changePassword
         role: currentUser.role, // Role not editable here
-        allowedProjects: currentUser.allowedProjects, // Permissions not editable here
+        allowedProjects: currentUser.allowed_projects, // Permissions not editable here, send current ones
       });
       if (success) {
         alert('Profile updated successfully!');
