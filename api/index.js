@@ -182,5 +182,38 @@ app.put('/api/users/:username/permissions', async (req, res) => {
   }
 });
 
+// Change user password
+app.put('/api/users/:username/password', async (req, res) => {
+  const { username } = req.params;
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ message: 'Old and new passwords are required.' });
+  }
+
+  try {
+    const result = await pool.query('SELECT password_hash FROM users WHERE username = $1', [username]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password_hash);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Old password does not match.' });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE users SET password_hash = $1 WHERE username = $2', [hashedNewPassword, username]);
+
+    res.status(200).json({ message: 'Password updated successfully.' });
+  } catch (error) {
+    console.error('Error changing password:', error.stack);
+    res.status(500).json({ message: 'Error changing password', error: error.message });
+  }
+});
+
 // Vercel serverless function entry point
 module.exports = app;
