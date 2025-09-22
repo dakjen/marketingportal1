@@ -215,5 +215,20 @@ app.put('/api/users/:username/password', async (req, res) => {
   }
 });
 
+// Delete a user
+app.delete('/api/users/:username', async (req, res) => {
+  const { username } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM users WHERE username = $1 RETURNING username', [username]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.status(200).json({ message: `User ${username} deleted successfully.` });
+  } catch (error) {
+    console.error('Error deleting user:', error.stack);
+    res.status(500).json({ message: 'Error deleting user', error: error.message });
+  }
+});
+
 // Vercel serverless function entry point
 module.exports = app;
