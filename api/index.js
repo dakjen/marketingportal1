@@ -123,24 +123,34 @@ app.post('/api/register', async (req, res) => {
 // Login user
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
+  console.log('Login endpoint hit'); // 1. Log when the endpoint is hit
   if (!username || !password) {
+    console.log('Login failed: Missing username or password'); // 2. Log missing credentials
     return res.status(400).json({ message: 'Username and password are required.' });
   }
 
   try {
+    console.log(`Attempting to find user: ${username}`); // 3. Log username lookup
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
 
     if (!user) {
+      console.log(`Login failed: User not found for username: ${username}`); // 4. Log if user not found
       return res.status(401).json({ message: 'Invalid username or password.' });
     }
+
+    console.log(`User found: ${user.username}. Comparing passwords.`); // 5. Log password comparison start
+    console.log(`Stored password hash: ${user.password_hash}`); // 6. Log the hash from the DB
 
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
+    console.log(`Password match result for ${username}: ${passwordMatch}`); // 7. Log the result of the comparison
 
     if (!passwordMatch) {
+      console.log(`Login failed: Password mismatch for username: ${username}`); // 8. Log on password mismatch
       return res.status(401).json({ message: 'Invalid username or password.' });
     }
 
+    console.log(`Login successful for user: ${username}`); // 9. Log on success
     // In a real app, you'd generate and send a JWT here
     res.status(200).json({ message: 'Login successful!', user: { id: user.id, username: user.username, role: user.role, name: user.name, email: user.email, allowedProjects: user.allowed_projects } });
   } catch (error) {
