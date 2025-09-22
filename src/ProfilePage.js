@@ -34,14 +34,23 @@ function ProfilePage() {
   const [myEditedUsername, setMyEditedUsername] = useState(currentUser ? currentUser.username : '');
   const [myEditedPassword, setMyEditedPassword] = useState(currentUser ? currentUser.password : '');
 
+  // Fetch users from API on mount
   useEffect(() => {
-    // Load users from localStorage on mount
-    const storedUsers = localStorage.getItem('appUsers');
-    if (storedUsers) {
-      const parsedUsers = JSON.parse(storedUsers);
-      setUsers(parsedUsers);
-    }
-  }, []);
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/users');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setUsers(data.users);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+        alert('Failed to load users. Please try again.');
+      }
+    };
+    fetchUsers();
+  }, []); // Empty dependency array means this runs once on mount
 
   useEffect(() => {
     // Update myEditedName and myEditedEmail when currentUser changes
@@ -53,39 +62,69 @@ function ProfilePage() {
     }
   }, [currentUser]);
 
-  const handleAddUser = (e) => {
+  const handleAddUser = async (e) => {
     e.preventDefault();
     if (newUsername.trim() === '' || newPassword.trim() === '' || newName.trim() === '' || newEmail.trim() === '') {
       alert('Please enter username, password, name, and email.');
       return;
     }
-    // Check if username already exists
-    if (users.some(user => user.username === newUsername)) {
-      alert('Username already exists. Please choose a different one.');
-      return;
-    }
 
-    const newUser = { username: newUsername, password: newPassword, name: newName, email: newEmail,
-     role: newRole, allowedProjects: [] }; // Include name and email
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-console.log("Saving users to localStorage:", updatedUsers);
-    localStorage.setItem('appUsers', JSON.stringify(updatedUsers)); // Directly update localStorage
-    setNewUsername('');
-    setNewPassword('');
-    setNewName(''); // Reset newName
-    setNewEmail(''); // Reset newEmail
-    setNewRole('external'); // Reset to default
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: newUsername,
+          password: newPassword,
+          name: newName,
+          email: newEmail,
+          role: newRole,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add user');
+      }
+
+      const addedUser = await response.json();
+      setUsers(prevUsers => [...prevUsers, addedUser]);
+      alert('User added successfully!');
+      setNewUsername('');
+      setNewPassword('');
+      setNewName('');
+      setNewEmail('');
+      setNewRole('external');
+    } catch (error) {
+      console.error('Error adding user:', error);
+      alert(error.message || 'Failed to add user. Please try again.');
+    }
   };
 
-  const handleDeleteUser = (usernameToDelete) => {
+  const handleDeleteUser = async (usernameToDelete) => {
     if (window.confirm(`Are you sure you want to delete user ${usernameToDelete}?`)) {
-      const updatedUsers = users.filter(user => user.username !== usernameToDelete);
-      setUsers(updatedUsers);
-      localStorage.setItem('appUsers', JSON.stringify(updatedUsers)); // Directly update localStorage
-      // Also ensure the current user is logged out if their own account is deleted
-      if (currentUser && currentUser.username === usernameToDelete) {
-        logout(); // Assuming logout is available from AuthContext
+      try {
+        const response = await fetch(`/api/users/${usernameToDelete}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to delete user');
+        }
+
+        setUsers(prevUsers => prevUsers.filter(user => user.username !== usernameToDelete));
+        alert(`User ${usernameToDelete} deleted successfully.`);
+
+        // Also ensure the current user is logged out if their own account is deleted
+        if (currentUser && currentUser.username === usernameToDelete) {
+          logout();
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert(error.message || 'Failed to delete user. Please try again.');
       }
     }
   };
@@ -97,19 +136,39 @@ console.log("Saving users to localStorage:", updatedUsers);
     setEditedRole(user.role);
   };
 
-  const handleSaveEdit = (usernameToSave) => {
-  setUsers(prevUsers => {
-    const updatedUsers = prevUsers.map(user => {
-      if (user.username === usernameToSave) {
-        return { ...user, name: editedName, email: editedEmail, role: editedRole };
-       }
-       return user;
-       });
-      localStorage.setItem('appUsers', JSON.stringify(updatedUsers));
-      return updatedUsers;
-   });
-  setEditingUser(null);
- };
+  const handleSaveEdit = async (usernameToSave) => {
+    try {
+      const response = await fetch(`/api/users/${usernameToSave}/permissions`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: editedName,
+          email: editedEmail,
+          role: editedRole,
+          // allowedProjects: ... (if you want to edit these here)
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update user');
+      }
+
+      const updatedUser = await response.json();
+      setUsers(prevUsers => {
+        return prevUsers.map(user =>
+          user.username === usernameToSave ? { ...user, ...updatedUser.user } : user
+        );
+      });
+      alert('User updated successfully!');
+      setEditingUser(null); // Exit edit mode
+    } catch (error) {
+      console.error('Error saving user edit:', error);
+      alert(error.message || 'Failed to save user edit. Please try again.');
+    }
+  };
 
   const handleCancelEdit = () => {
     setEditingUser(null); // Exit edit mode without saving
@@ -123,11 +182,27 @@ console.log("Saving users to localStorage:", updatedUsers);
     setMyEditedPassword(currentUser.password);
   };
 
-  const handleSaveMyProfile = () => {
-   updateCurrentUser({ oldUsername: currentUser.username, username: myEditedUsername, password:
-     myEditedPassword, name: myEditedName, email: myEditedEmail, role: currentUser.role, allowedProjects:
-     currentUser.allowedProjects });
-    setEditingMyProfile(false);
+  const handleSaveMyProfile = async () => {
+    try {
+      const success = await updateCurrentUser({
+        oldUsername: currentUser.username,
+        username: myEditedUsername,
+        name: myEditedName,
+        email: myEditedEmail,
+        // password: myEditedPassword, // Password changes handled by changePassword
+        role: currentUser.role, // Role not editable here
+        allowedProjects: currentUser.allowedProjects, // Permissions not editable here
+      });
+      if (success) {
+        alert('Profile updated successfully!');
+        setEditingMyProfile(false);
+      } else {
+        alert('Failed to update profile. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving my profile:', error);
+      alert(error.message || 'Failed to save profile. Please try again.');
+    }
   };
 
   const handleCancelMyProfileEdit = () => {
