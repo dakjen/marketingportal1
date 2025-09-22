@@ -95,7 +95,7 @@ app.delete('/api/projects/:name', async (req, res) => {
 });
 
 // User Management Endpoints
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Register a new user
 app.post('/api/register', async (req, res) => {
