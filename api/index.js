@@ -52,6 +52,24 @@ app.post('/api/projects', async (req, res) => {
       [name]
     );
     res.status(201).json(result.rows[0]);
+
+    // Automatically grant permission to all admin users for the new project
+    try {
+      const adminUsers = await pool.query('SELECT username, allowed_projects FROM users WHERE role = 'admin'');
+      for (const admin of adminUsers.rows) {
+        if (!admin.allowed_projects.includes(name)) {
+          const updatedAllowedProjects = [...admin.allowed_projects, name];
+          await pool.query(
+            'UPDATE users SET allowed_projects = $1 WHERE username = $2',
+            [updatedAllowedProjects, admin.username]
+          );
+        }
+      }
+      console.log(`Project ${name} added to allowed_projects for all admins.`);
+    } catch (adminUpdateError) {
+      console.error('Error updating admin permissions for new project:', adminUpdateError.stack);
+    }
+
   } catch (error) {
     console.error('Error adding project:', error.stack);
     if (error.code === '23505') { // Unique violation
@@ -73,6 +91,94 @@ app.delete('/api/projects/:name', async (req, res) => {
   } catch (error) {
     console.error('Error deleting project:', error.stack);
     res.status(500).json({ message: 'Error deleting project', error: error.message });
+  }
+});
+
+// User Management Endpoints
+const bcrypt = require('bcrypt');
+
+// Register a new user
+app.post('/api/register', async (req, res) => {
+  const { username, password, role, name, email } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required.' });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    const result = await pool.query(
+      'INSERT INTO users(username, password_hash, role, name, email) VALUES($1, $2, $3, $4, $5) RETURNING id, username, role, name, email',
+      [username, hashedPassword, role || 'external', name, email]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error registering user:', error.stack);
+    if (error.code === '23505') { // Unique violation
+      return res.status(409).json({ message: 'User with this username already exists.' });
+    }
+    res.status(500).json({ message: 'Error registering user', error: error.message });
+  }
+});
+
+// Login user
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required.' });
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid username or password.' });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid username or password.' });
+    }
+
+    // In a real app, you'd generate and send a JWT here
+    res.status(200).json({ message: 'Login successful!', user: { id: user.id, username: user.username, role: user.role, name: user.name, email: user.email, allowedProjects: user.allowed_projects } });
+  } catch (error) {
+    console.error('Error logging in user:', error.stack);
+    res.status(500).json({ message: 'Error logging in', error: error.message });
+  }
+});
+
+// Get all users (for admin management)
+app.get('/api/users', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, username, role, name, email, allowed_projects FROM users ORDER BY username');
+    res.status(200).json({ users: result.rows });
+  } catch (error) {
+    console.error('Error fetching users:', error.stack);
+    res.status(500).json({ message: 'Error fetching users', error: error.message });
+  }
+});
+
+// Update user permissions (role and allowed_projects)
+app.put('/api/users/:username/permissions', async (req, res) => {
+  const { username } = req.params;
+  const { role, allowedProjects } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE users SET role = COALESCE($1, role), allowed_projects = COALESCE($2, allowed_projects) WHERE username = $3 RETURNING id, username, role, allowed_projects',
+      [role, allowedProjects, username]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.status(200).json({ message: 'User permissions updated successfully.', user: result.rows[0] });
+  } catch (error) {
+    console.error('Error updating user permissions:', error.stack);
+    res.status(500).json({ message: 'Error updating user permissions', error: error.message });
   }
 });
 
