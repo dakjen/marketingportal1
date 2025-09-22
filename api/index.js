@@ -172,11 +172,11 @@ app.put('/api/users/:username/permissions', async (req, res) => {
 
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      updateQuery += `, password_hash = ${paramIndex++}`;
+      updateQuery += `, password_hash = $${paramIndex++}`;
       queryParams.push(hashedPassword);
     }
 
-    updateQuery += ` WHERE username = ${paramIndex} RETURNING id, username, role, name, email, allowed_projects`;
+    updateQuery += ` WHERE username = $${paramIndex} RETURNING id, username, role, name, email, allowed_projects`;
     queryParams.push(originalUsername);
 
     const result = await pool.query(updateQuery, queryParams);
