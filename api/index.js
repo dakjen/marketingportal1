@@ -162,22 +162,35 @@ app.get('/api/users', async (req, res) => {
 
 // Update user permissions (role and allowed_projects)
 app.put('/api/users/:username/permissions', async (req, res) => {
-  const { username } = req.params;
-  const { role, allowedProjects } = req.body;
+  const { username: originalUsername } = req.params;
+  const { username: newUsername, name, email, role, password, allowedProjects } = req.body;
 
   try {
-    const result = await pool.query(
-      'UPDATE users SET role = COALESCE($1, role), allowed_projects = COALESCE($2, allowed_projects) WHERE username = $3 RETURNING id, username, role, allowed_projects',
-      [role, allowedProjects, username]
-    );
+    let updateQuery = 'UPDATE users SET username = COALESCE($1, username), name = COALESCE($2, name), email = COALESCE($3, email), role = COALESCE($4, role), allowed_projects = COALESCE($5, allowed_projects)';
+    const queryParams = [newUsername, name, email, role, allowedProjects];
+    let paramIndex = 6;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateQuery += `, password_hash = ${paramIndex++}`;
+      queryParams.push(hashedPassword);
+    }
+
+    updateQuery += ` WHERE username = ${paramIndex} RETURNING id, username, role, name, email, allowed_projects`;
+    queryParams.push(originalUsername);
+
+    const result = await pool.query(updateQuery, queryParams);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    res.status(200).json({ message: 'User permissions updated successfully.', user: result.rows[0] });
+    res.status(200).json({ message: 'User updated successfully.', user: result.rows[0] });
   } catch (error) {
     console.error('Error updating user permissions:', error.stack);
+    if (error.code === '23505') { // Unique violation for username
+      return res.status(409).json({ message: 'Username already exists.' });
+    }
     res.status(500).json({ message: 'Error updating user permissions', error: error.message });
   }
 });

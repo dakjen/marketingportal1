@@ -27,6 +27,8 @@ function ProfilePage() {
   const [editedName, setEditedName] = useState('');
   const [editedEmail, setEditedEmail] = useState('');
   const [editedRole, setEditedRole] = useState('');
+  const [editedUsername, setEditedUsername] = useState(''); // New state for editing username
+  const [editedPassword, setEditedPassword] = useState(''); // New state for editing password
 
   const [editingMyProfile, setEditingMyProfile] = useState(false); // State for editing current user's profile
   const [myEditedName, setMyEditedName] = useState(currentUser ? currentUser.name : '');
@@ -134,20 +136,24 @@ function ProfilePage() {
     setEditedName(user.name);
     setEditedEmail(user.email);
     setEditedRole(user.role);
+    setEditedUsername(user.username); // Set the current username for editing
+    setEditedPassword(''); // Never pre-fill password for security
   };
 
-  const handleSaveEdit = async (usernameToSave) => {
+  const handleSaveEdit = async (originalUsername) => {
     try {
-      const response = await fetch(`/api/users/${usernameToSave}/permissions`, {
+      const response = await fetch(`/api/users/${originalUsername}/permissions`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          username: editedUsername,
           name: editedName,
           email: editedEmail,
           role: editedRole,
-          allowedProjects: users.find(u => u.username === usernameToSave)?.allowed_projects || [], // Send existing allowed_projects
+          password: editedPassword, // Include password in the update
+          allowedProjects: users.find(u => u.username === originalUsername)?.allowed_projects || [], // Send existing allowed_projects
         }),
       });
 
@@ -159,7 +165,7 @@ function ProfilePage() {
       const updatedUser = await response.json();
       setUsers(prevUsers => {
         return prevUsers.map(user =>
-          user.username === usernameToSave ? { ...user, ...updatedUser.user } : user
+          user.username === originalUsername ? { ...user, ...updatedUser.user } : user
         );
       });
       alert('User updated successfully!');
@@ -375,6 +381,18 @@ function ProfilePage() {
                   <li key={index}>
                     {editingUser === user.username ? (
                       <div className="edit-user-form-inline">
+                        <input
+                          type="text"
+                          value={editedUsername}
+                          onChange={(e) => setEditedUsername(e.target.value)}
+                          placeholder="Username"
+                        />
+                        <input
+                          type="password"
+                          value={editedPassword}
+                          onChange={(e) => setEditedPassword(e.target.value)}
+                          placeholder="New Password (leave blank to keep current)"
+                        />
                         <input
                           type="text"
                           value={editedName}
