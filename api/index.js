@@ -8,6 +8,9 @@ app.use(express.json());
 // Vercel automatically injects POSTGRES_URL from your connected Neon database
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 // Test database connection
