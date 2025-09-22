@@ -215,6 +215,31 @@ app.put('/api/users/:username/password', async (req, res) => {
   }
 });
 
+// Update general user details (username, name, email, role)
+app.put('/api/users/:username', async (req, res) => {
+  const { username } = req.params;
+  const { newUsername, name, email, role } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE users SET username = COALESCE($1, username), name = COALESCE($2, name), email = COALESCE($3, email), role = COALESCE($4, role) WHERE username = $5 RETURNING id, username, name, email, role, allowed_projects',
+      [newUsername, name, email, role, username]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.status(200).json({ message: 'User updated successfully.', user: result.rows[0] });
+  } catch (error) {
+    console.error('Error updating user:', error.stack);
+    if (error.code === '23505') { // Unique violation for username
+      return res.status(409).json({ message: 'Username already exists.' });
+    }
+    res.status(500).json({ message: 'Error updating user', error: error.message });
+  }
+});
+
 // Delete a user
 app.delete('/api/users/:username', async (req, res) => {
   const { username } = req.params;
