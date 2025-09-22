@@ -55,7 +55,7 @@ app.post('/api/projects', async (req, res) => {
 
     // Automatically grant permission to all admin users for the new project
     try {
-      const adminUsers = await pool.query('SELECT username, allowed_projects FROM users WHERE role = 'admin'');
+      const adminUsers = await pool.query(`SELECT username, allowed_projects FROM users WHERE role = 'admin'`);
       for (const admin of adminUsers.rows) {
         if (!admin.allowed_projects.includes(name)) {
           const updatedAllowedProjects = [...admin.allowed_projects, name];
