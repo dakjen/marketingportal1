@@ -11,7 +11,6 @@ function SocialMediaEntries() {
   const [cost, setCost] = useState('');
   const [platform, setPlatform] = useState('');
   const [customPlatform, setCustomPlatform] = useState('');
-  const [name, setName] = useState('');
   const [notes, setNotes] = useState(''); // New state for notes
 
   const [entries, setEntries] = useState(() => {
@@ -36,7 +35,6 @@ function SocialMediaEntries() {
   const [editedCost, setEditedCost] = useState('');
   const [editedPlatform, setEditedPlatform] = useState('');
   const [editedCustomPlatform, setEditedCustomPlatform] = useState('');
-  const [editedName, setEditedName] = useState('');
   const [editedNotes, setEditedNotes] = useState('');
 
   // Save entries to localStorage whenever the entries state changes
@@ -64,14 +62,13 @@ function SocialMediaEntries() {
       alert('Please select a platform or enter a custom platform name.');
       return;
     }
-    const newEntry = { date, cost, platform: finalPlatform, name, notes }; // Include notes
+    const newEntry = { date, cost, platform: finalPlatform, name: currentUser.username, notes }; // Include notes
     setEntries([...entries, newEntry]);
     // Clear form fields
     setDate('');
     setCost('');
     setPlatform('');
     setCustomPlatform('');
-    setName('');
     setNotes(''); // Clear notes
   };
 
@@ -88,7 +85,6 @@ function SocialMediaEntries() {
     setEditedDate(entry.date);
     setEditedCost(entry.cost);
     setEditedPlatform(entry.platform);
-    setEditedName(entry.name);
     setEditedNotes(entry.notes);
     if (entry.platform === 'Other') {
       setEditedCustomPlatform(entry.platform);
@@ -108,7 +104,6 @@ function SocialMediaEntries() {
             date: editedDate,
             cost: editedCost,
             platform: finalPlatform,
-            name: editedName,
             notes: editedNotes,
           }
         : entry
@@ -201,17 +196,6 @@ function SocialMediaEntries() {
               </div>
             )}
             <div>
-              <label htmlFor="name">Name:</label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                disabled={currentUser.role === 'admin2'}
-              />
-            </div>
-            <div>
               <label htmlFor="notes">Notes:</label>
               <textarea
                 id="notes"
@@ -236,7 +220,7 @@ function SocialMediaEntries() {
               <th>Date</th>
               <th>Cost</th>
               <th>Platform</th>
-              <th>Name</th>
+              <th>User</th>
               <th>Notes</th>{/* New column header */}
               {currentUser && currentUser.role === 'admin' && <th>Actions</th>}
             </tr>
@@ -272,8 +256,6 @@ function SocialMediaEntries() {
                           />
                         </div>
                       )}
-                      <label>Name:</label>
-                      <input type="text" value={editedName} onChange={(e) => setEditedName(e.target.value)} />
                       <label>Notes:</label>
                       <textarea value={editedNotes} onChange={(e) => setEditedNotes(e.target.value)} rows="1"></textarea>
                       <button onClick={() => handleSaveEdit(index)} className="save-entry-button">Save</button>

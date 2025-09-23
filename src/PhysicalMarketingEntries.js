@@ -12,7 +12,6 @@ function PhysicalMarketingEntries() {
   const [type, setType] = useState('');
   const [lengthOfTimeValue, setLengthOfTimeValue] = useState(''); // New state for number input
   const [lengthOfTimeUnit, setLengthOfTimeUnit] = useState('Days'); // New state for dropdown
-  const [name, setName] = useState('');
   const [notes, setNotes] = useState('');
 
   const [entries, setEntries] = useState(() => {
@@ -38,7 +37,6 @@ function PhysicalMarketingEntries() {
   const [editedType, setEditedType] = useState('');
   const [editedLengthOfTimeValue, setEditedLengthOfTimeValue] = useState('');
   const [editedLengthOfTimeUnit, setEditedLengthOfTimeUnit] = useState('Days');
-  const [editedName, setEditedName] = useState('');
   const [editedNotes, setEditedNotes] = useState('');
 
   // Save entries to localStorage whenever the entries state changes
@@ -58,7 +56,7 @@ function PhysicalMarketingEntries() {
       alert('Please enter a value for Length of Time.');
       return;
     }
-    const newEntry = { date, cost, type, lengthOfTime, name, notes };
+    const newEntry = { date, cost, type, lengthOfTime, name: currentUser.username, notes };
     setEntries([...entries, newEntry]);
     // Clear form fields
     setDate('');
@@ -66,7 +64,6 @@ function PhysicalMarketingEntries() {
     setType('');
     setLengthOfTimeValue('');
     setLengthOfTimeUnit('Days'); // Reset to default
-    setName('');
     setNotes('');
   };
 
@@ -86,7 +83,6 @@ function PhysicalMarketingEntries() {
     const [value, unit] = entry.lengthOfTime.split(' ');
     setEditedLengthOfTimeValue(value || '');
     setEditedLengthOfTimeUnit(unit || 'Days');
-    setEditedName(entry.name);
     setEditedNotes(entry.notes);
   };
 
@@ -100,7 +96,6 @@ function PhysicalMarketingEntries() {
             cost: editedCost,
             type: editedType,
             lengthOfTime: `${editedLengthOfTimeValue} ${editedLengthOfTimeUnit}`.trim(),
-            name: editedName,
             notes: editedNotes,
           }
         : entry
@@ -202,17 +197,6 @@ function PhysicalMarketingEntries() {
               </select>
             </div>
             <div>
-              <label htmlFor="name">Name:</label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                disabled={currentUser.role === 'admin2'}
-              />
-            </div>
-            <div>
               <label htmlFor="notes">Notes:</label>
               <textarea
                 id="notes"
@@ -238,7 +222,7 @@ function PhysicalMarketingEntries() {
               <th>Cost</th>
               <th>Type</th>
               <th>Length of Time</th>
-              <th>Name</th>
+              <th>User</th>
               <th>Notes</th>
               {currentUser && currentUser.role === 'admin' && <th>Actions</th>}
             </tr>
@@ -269,8 +253,6 @@ function PhysicalMarketingEntries() {
                         <option value="Weeks">Weeks</option>
                         <option value="Months">Months</option>
                       </select>
-                      <label>Name:</label>
-                      <input type="text" value={editedName} onChange={(e) => setEditedName(e.target.value)} />
                       <label>Notes:</label>
                       <textarea value={editedNotes} onChange={(e) => setEditedNotes(e.target.value)} rows="1"></textarea>
                       <button onClick={() => handleSaveEdit(index)} className="save-entry-button">Save</button>
