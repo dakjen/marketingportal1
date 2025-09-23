@@ -3,151 +3,168 @@ import React, { createContext, useState, useEffect } from 'react';
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const savedLoginState = localStorage.getItem('isLoggedIn');
-    return savedLoginState === 'true';
-  });
-  const [currentUser, setCurrentUser] = useState(() => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check login status on mount
+  useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-
-  useEffect(() => {
-    localStorage.setItem('isLoggedIn', isLoggedIn);
-  }, [isLoggedIn]);
-
-  useEffect(() => {
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-  }, [currentUser]);
-
-  useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === 'appUsers') {
-        // Reload the current user from the updated appUsers
-        const storedUsers = JSON.parse(event.newValue) || [];
-        if (currentUser) {
-          const updatedCurrentUser = storedUsers.find(user => user.username === currentUser.username);
-          if (updatedCurrentUser) {
-            setCurrentUser(updatedCurrentUser);
-          }
-        }
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [currentUser]);
-
-  useEffect(() => {
-    const storedUsers = localStorage.getItem('appUsers');
-    if (!storedUsers) {
-      const defaultUsers = [
-        {
-          username: 'dakotahj',
-          password: 'password',
-          role: 'admin', // or 'user', depending on your needs
-          name: 'Dakotah J',
-          email: 'dakotahj@example.com',
-          allowedProjects: ['Project A', 'Project B']
-        },
-      ];
-      localStorage.setItem('appUsers', JSON.stringify(defaultUsers));
+    if (savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
+      setIsLoggedIn(true);
     }
+    setIsLoading(false);
   }, []);
 
-  const login = (username, password) => {
-    const storedUsers = JSON.parse(localStorage.getItem('appUsers')) || [];
-    const foundUser = storedUsers.find(user => user.username === username && user.password === password);
+  const login = async (username, password) => {
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (foundUser) {
-      setIsLoggedIn(true);
-      setCurrentUser({ username: foundUser.username, role: foundUser.role, name: foundUser.name, email
-     : foundUser.email, allowedProjects: foundUser.allowedProjects }); // Store username, role, name, and email
-      return true;
-    }
-      return false;
-  };
-
-  const updateCurrentUser = (updatedData) => {
-    setCurrentUser(prevUser => ({
-      ...prevUser,
-      ...updatedData
-    }));
-
-    // Also update the user in appUsers in localStorage
-    const storedUsers = JSON.parse(localStorage.getItem('appUsers')) || [];
-    const updatedAppUsers = storedUsers.map(user =>
-      user.username === updatedData.oldUsername // Use oldUsername to find the user
-        ? { ...user, username: updatedData.username, password: updatedData.password, name: updatedData.
-     name, email: updatedData.email, role: updatedData.role, allowedProjects: updatedData.allowedProjects
-     }
-        : user
-    );
-    localStorage.setItem('appUsers', JSON.stringify(updatedAppUsers));
-  };
-
-const updateUserPermissions = (username, newAllowedProjects) => {
-        const storedUsers = JSON.parse(localStorage.getItem('appUsers')) || [];
-     const updatedUsers = storedUsers.map(user =>
-        user.username === username
-          ? { ...user, allowedProjects: newAllowedProjects }
-         : user
-     );
-      localStorage.setItem('appUsers', JSON.stringify(updatedUsers));
-
-      if (currentUser && currentUser.username === username) {
-        setCurrentUser(prevUser => ({
-          ...prevUser,
-          allowedProjects: newAllowedProjects
-        }));
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
       }
-     };
+
+      const data = await response.json();
+      const userToSet = {
+        ...data.user,
+        allowedProjects: data.user.allowedProjects || []
+      };
+      setIsLoggedIn(true);
+      setCurrentUser(userToSet);
+      localStorage.setItem('currentUser', JSON.stringify(userToSet)); // Store user in localStorage
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
+  };
+
+  const updateCurrentUser = async (updatedData) => {
+    try {
+      const response = await fetch(`/api/users/${updatedData.oldUsername}/permissions`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser?.role || ''
+        },
+        body: JSON.stringify({ 
+          username: updatedData.username, 
+          name: updatedData.name, 
+          email: updatedData.email, 
+          role: updatedData.role, 
+          allowedProjects: updatedData.allowedProjects 
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update user');
+      }
+
+      const data = await response.json();
+      setCurrentUser(data.user);
+      return true;
+    } catch (error) {
+      console.error('Error updating current user:', error);
+      return false;
+    }
+  };
+
+const updateUserPermissions = async (username, newAllowedProjects) => {
+    try {
+      const response = await fetch(`/api/users/${username}/permissions`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser?.role || ''
+        },
+        body: JSON.stringify({ allowedProjects: newAllowedProjects }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update user permissions');
+      }
+
+      const data = await response.json();
+      // If the current user's permissions were changed, update currentUser state
+      if (currentUser && currentUser.username === username) {
+        setCurrentUser(data.user);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error updating user permissions:', error);
+      return false;
+    }
+  };
 
   const logout = () => {
     setIsLoggedIn(false);
     setCurrentUser(null);
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUser'); // Remove user from localStorage
   };
 
-  const changePassword = (username, oldPassword, newPassword) => {
-    const storedUsers = JSON.parse(localStorage.getItem('appUsers')) || [];
-    const userIndex = storedUsers.findIndex(user => user.username === username);
+  const changePassword = async (username, oldPassword, newPassword) => {
+    try {
+      const response = await fetch(`/api/users/${username}/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser?.role || ''
+        },
+        body: JSON.stringify({ oldPassword, newPassword }),
+      });
 
-    if (userIndex === -1) {
-      console.error('User not found for password change.');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to change password');
+      }
+
+      // Password changed successfully, update currentUser state if it's their own password
+      if (currentUser && currentUser.username === username) {
+        // In a real app, you might re-authenticate or update a token here
+        // For now, just update the state to reflect success
+        setCurrentUser(prevUser => ({ ...prevUser, password: newPassword })); // Note: storing plain password in state is still not ideal
+      }
+      return true;
+    } catch (error) {
+      console.error('Error changing password:', error);
       return false;
     }
-
-    const user = storedUsers[userIndex];
-
-    // In a real application, oldPassword would be compared with a hashed password
-    if (user.password !== oldPassword) {
-      console.warn('Old password does not match.');
-      return false;
-    }
-
-    // Update the password
-    storedUsers[userIndex] = { ...user, password: newPassword };
-    localStorage.setItem('appUsers', JSON.stringify(storedUsers));
-
-    // If the current user's password was changed, update currentUser state
-    if (currentUser && currentUser.username === username) {
-      setCurrentUser(prevUser => ({ ...prevUser, password: newPassword }));
-    }
-    return true;
   };
 
-  const reloadUser = () => {
-    const savedUser = localStorage.getItem('currentUser');
-    setCurrentUser(savedUser ? JSON.parse(savedUser) : null);
+  const reloadUser = async () => {
+    if (!currentUser || !currentUser.username) return; // Cannot reload if no current user
+    try {
+      const response = await fetch('/api/users');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const updatedUser = data.users.find(u => u.username === currentUser.username);
+      if (updatedUser) {
+        const userToSet = {
+          ...updatedUser,
+          allowedProjects: updatedUser.allowedProjects || []
+        };
+        setCurrentUser(userToSet);
+        localStorage.setItem('currentUser', JSON.stringify(userToSet));
+      }
+    } catch (error) {
+      console.error('Error reloading user:', error);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, currentUser, login, logout, updateCurrentUser,
+    <AuthContext.Provider value={{ isLoggedIn, currentUser, isLoading, login, logout, updateCurrentUser,
      updateUserPermissions, changePassword, reloadUser }}>
       {children}
     </AuthContext.Provider>

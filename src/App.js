@@ -17,7 +17,8 @@ import React, { useContext, useState } from 'react';
    console.log('App.js: ProjectContext is here!', ProjectContext); // Debugging line
    
    const PrivateRoute = ({ children, allowedRoles }) => {
-     const { isLoggedIn, currentUser } = useContext(AuthContext);
+     const { isLoggedIn, currentUser, isLoading } = useContext(AuthContext);
+     if (isLoading) { return <div>Loading...</div>; }
      if (!isLoggedIn) { return <Navigate to="/intro" />; } // Changed from /login to /intro
      if (allowedRoles && !allowedRoles.includes(currentUser?.role)) { return <Navigate to="/"
        />; }
@@ -93,15 +94,15 @@ import React, { useContext, useState } from 'react';
          </nav>
          <hr />
          <Routes>
-           <Route path="/intro" element={<IntroScreen />} />
-           <Route path="/request-account" element={<RequestAccountPage />} />
-           <Route path="/login" element={<LoginPage />} />
+           <Route path="/intro" element={isLoggedIn ? <Navigate to="/" /> : <IntroScreen />} />
+           <Route path="/request-account" element={isLoggedIn ? <Navigate to="/" /> : <RequestAccountPage />} />
+           <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <LoginPage />} />
            <Route path="/forgot-password" element={<ContactAdminPage />} />
            <Route
              path="/"
              element={
                isLoggedIn ? (
-                 <PrivateRoute allowedRoles={['admin', 'internal', 'external']}>
+                 <PrivateRoute allowedRoles={['admin', 'internal', 'external', 'view-only']}>
                    <Dashboard
                      projects={projects}
                      activeProject={activeProject}
@@ -121,11 +122,10 @@ import React, { useContext, useState } from 'react';
              </PrivateRoute>
            }
          />
-         <Route
-           path="/social-media"
-           element={
-             <PrivateRoute allowedRoles={['admin', 'internal']}>
-               {activeProject ? <SocialMediaEntries /> : <p>Please select a project to view
+                    <Route
+                      path="/social-media"
+                      element={
+                        <PrivateRoute allowedRoles={['admin', 'internal', 'view-only']}>               {activeProject ? <SocialMediaEntries /> : <p>Please select a project to view
        social media entries.</p>}
              </PrivateRoute>
            }

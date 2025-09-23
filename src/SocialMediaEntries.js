@@ -143,78 +143,82 @@ function SocialMediaEntries() {
         {!activeProject && <p className="no-project-selected">Please select a project to view/add entries.</p>}
       </div>
 
-      <h3>Create New Entry</h3>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="date">Date:</label>
-          <input
-            type="date"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="cost">Cost:</label>
-          <input
-            type="number"
-            id="cost"
-            value={cost}
-            onChange={(e) => setCost(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="platform">Platform:</label>
-          <select
-            id="platform"
-            value={platform}
-            onChange={handlePlatformChange}
-            required
-          >
-            <option value="">Select Platform</option>
-            <option value="Facebook">Facebook</option>
-            <option value="Instagram">Instagram</option>
-            <option value="Google Ads">Google Ads</option>
-            <option value="LinkedIn">LinkedIn</option>
-            <option value="Bluesky">Bluesky</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        {platform === 'Other' && (
-          <div className="custom-platform-input">
-            <label htmlFor="customPlatform">Custom Platform Name:</label>
-            <input
-              type="text"
-              id="customPlatform"
-              value={customPlatform}
-              onChange={(e) => setCustomPlatform(e.target.value)}
-              required
-            />
-          </div>
-        )}
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="notes">Notes:</label>
-          <textarea
-            id="notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows="3"
-          ></textarea>
-        </div>
-        <button type="submit">Add Entry</button>
-      </form>
+      {currentUser && currentUser.role === 'admin' && (
+        <>
+          <h3>Create New Entry</h3>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="date">Date:</label>
+              <input
+                type="date"
+                id="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="cost">Cost:</label>
+              <input
+                type="number"
+                id="cost"
+                value={cost}
+                onChange={(e) => setCost(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="platform">Platform:</label>
+              <select
+                id="platform"
+                value={platform}
+                onChange={handlePlatformChange}
+                required
+              >
+                <option value="">Select Platform</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Google Ads">Google Ads</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Bluesky">Bluesky</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            {platform === 'Other' && (
+              <div className="custom-platform-input">
+                <label htmlFor="customPlatform">Custom Platform Name:</label>
+                <input
+                  type="text"
+                  id="customPlatform"
+                  value={customPlatform}
+                  onChange={(e) => setCustomPlatform(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <div>
+              <label htmlFor="name">Name:</label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="notes">Notes:</label>
+              <textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows="3"
+              ></textarea>
+            </div>
+            <button type="submit">Add Entry</button>
+          </form>
+        </>
+      )}
 
       <h3>Recorded Entries</h3>
       {entries.length === 0 ? (

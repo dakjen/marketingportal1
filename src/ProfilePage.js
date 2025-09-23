@@ -366,6 +366,8 @@ function ProfilePage() {
                 <option value="external">External</option>
                 <option value="internal">Internal</option>
                 <option value="admin">Admin</option>
+		<option value="view-only">View Only</option>
+
               </select>
             </div>
             <button type="submit">Add User</button>
@@ -410,6 +412,7 @@ function ProfilePage() {
                           <option value="external">External</option>
                           <option value="internal">Internal</option>
                           <option value="admin">Admin</option>
+			<option value="view-only">View Only</option>
                         </select>
                         <button onClick={() => handleSaveEdit(user.username)} className="save-user-button">Save</button>
                         <button onClick={() => handleCancelEdit} className="cancel-user-button">Cancel</button>

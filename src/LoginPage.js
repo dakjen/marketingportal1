@@ -9,9 +9,9 @@ function LoginPage() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const isAuthenticated = login(username, password);
+    const isAuthenticated = await login(username, password);
     if (isAuthenticated) {
       navigate('/'); // Redirect to dashboard after login
     } else {

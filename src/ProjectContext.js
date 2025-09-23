@@ -50,17 +50,18 @@ export const ProjectProvider = ({ children, reloadUser }) => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'X-User-Role': currentUser?.role || ''
             },
             body: JSON.stringify(newProject),
           });
+          console.log('Add Project Response - ok:', response.ok, 'status:', response.status);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const addedProject = await response.json();
           setAllProjects(prevAllProjects => [...prevAllProjects, addedProject]);
           setActiveProject(addedProject);
-          // User permission updates will be handled by backend later
-          // reloadUser(); // Temporarily removed for debugging
+          reloadUser();
           return true;
         } catch (error) {
           console.error("Failed to add project:", error);
@@ -80,8 +81,12 @@ export const ProjectProvider = ({ children, reloadUser }) => {
       const deleteProject = async (projectName) => {
         if (window.confirm(`Are you sure you want to delete project ${projectName} and all its data?`)) {
           try {
-            const response = await fetch(`/api/projects/${projectName}`, {
+            const encodedProjectName = encodeURIComponent(projectName);
+            const response = await fetch(`/api/projects/${encodedProjectName}`, {
               method: 'DELETE',
+              headers: {
+                'X-User-Role': currentUser?.role || ''
+              }
             });
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
@@ -116,15 +121,23 @@ export const ProjectProvider = ({ children, reloadUser }) => {
   
     return (
       <ProjectContext.Provider value={{
-        projects: allProjects.filter(p => {
-          if (currentUser && currentUser.allowedProjects) {
-            if (currentUser.allowedProjects.includes('*')) {
-              return true;
+        projects: (() => {
+          const filteredProjects = allProjects.filter(p => {
+            if (currentUser) {
+              if (currentUser.role === 'admin') {
+                return true;
+              }
+              if (currentUser.allowedProjects) {
+                if (currentUser.allowedProjects.includes('*')) {
+                  return true;
+                }
+                return currentUser.allowedProjects.includes(p.name);
+              }
             }
-            return currentUser.allowedProjects.includes(p.name);
-          }
-          return false;
-        }),
+            return false;
+          });
+          return filteredProjects;
+        })(),
         allProjects,
         activeProject,
         addProject,

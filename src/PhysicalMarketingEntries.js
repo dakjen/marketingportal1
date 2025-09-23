@@ -135,86 +135,90 @@ function PhysicalMarketingEntries() {
         {!activeProject && <p className="no-project-selected">Please select a project to view/add entries.</p>}
       </div>
 
-      <h3>Create New Entry</h3>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="date">Date:</label>
-          <input
-            type="date"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="cost">Cost:</label>
-          <input
-            type="number"
-            id="cost"
-            value={cost}
-            onChange={(e) => setCost(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="type">Type:</label>
-          <select
-            id="type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            required
-          >
-            <option value="">Select Type</option>
-            <option value="Billboards">Billboards</option>
-            <option value="Podcasts">Podcasts</option>
-            <option value="Radio Ads">Radio Ads</option>
-            <option value="Newspaper">Newspaper</option>
-            <option value="Jobsite banners">Jobsite banners</option>
-            <option value="Printed collateral">Printed collateral</option>
-          </select>
-        </div>
-        <div className="length-of-time-group">
-          <label htmlFor="lengthOfTimeValue">Length of Time:</label>
-          <input
-            type="number"
-            id="lengthOfTimeValue"
-            value={lengthOfTimeValue}
-            onChange={(e) => setLengthOfTimeValue(e.target.value)}
-            required
-            min="0"
-          />
-          <select
-            id="lengthOfTimeUnit"
-            value={lengthOfTimeUnit}
-            onChange={(e) => setLengthOfTimeUnit(e.target.value)}
-          >
-            <option value="Days">Days</option>
-            <option value="Weeks">Weeks</option>
-            <option value="Months">Months</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="notes">Notes:</label>
-          <textarea
-            id="notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows="3"
-          ></textarea>
-        </div>
-        <button type="submit">Add Entry</button>
-      </form>
+      {currentUser && currentUser.role === 'admin' && (
+        <>
+          <h3>Create New Entry</h3>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="date">Date:</label>
+              <input
+                type="date"
+                id="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="cost">Cost:</label>
+              <input
+                type="number"
+                id="cost"
+                value={cost}
+                onChange={(e) => setCost(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="type">Type:</label>
+              <select
+                id="type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
+              >
+                <option value="">Select Type</option>
+                <option value="Billboards">Billboards</option>
+                <option value="Podcasts">Podcasts</option>
+                <option value="Radio Ads">Radio Ads</option>
+                <option value="Newspaper">Newspaper</option>
+                <option value="Jobsite banners">Jobsite banners</option>
+                <option value="Printed collateral">Printed collateral</option>
+              </select>
+            </div>
+            <div className="length-of-time-group">
+              <label htmlFor="lengthOfTimeValue">Length of Time:</label>
+              <input
+                type="number"
+                id="lengthOfTimeValue"
+                value={lengthOfTimeValue}
+                onChange={(e) => setLengthOfTimeValue(e.target.value)}
+                required
+                min="0"
+              />
+              <select
+                id="lengthOfTimeUnit"
+                value={lengthOfTimeUnit}
+                onChange={(e) => setLengthOfTimeUnit(e.target.value)}
+              >
+                <option value="Days">Days</option>
+                <option value="Weeks">Weeks</option>
+                <option value="Months">Months</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="name">Name:</label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="notes">Notes:</label>
+              <textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows="3"
+              ></textarea>
+            </div>
+            <button type="submit">Add Entry</button>
+          </form>
+        </>
+      )}
 
       <h3>Recorded Entries</h3>
       {entries.length === 0 ? (

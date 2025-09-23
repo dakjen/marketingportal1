@@ -158,7 +158,7 @@ const containerClassName = activeProject ? "dashboard-container" : "dashboard-co
 
  return (
   <div className={containerClassName}>
-
+      {console.log('Dashboard: activeProject:', activeProject, 'projects:', projects)}
       <div className="dashboard-header">
         <h1 className="dashboard-title">Marketing Spend Dashboard</h1>
         <select onChange={(e) => selectProject(e.target.value)} value={activeProject ? activeProject.name : ''}>

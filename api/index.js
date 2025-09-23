@@ -4,6 +4,15 @@ const { Pool } = require('pg');
 const app = express();
 app.use(express.json());
 
+// Authorization Middleware
+const authorizeRole = (allowedRoles) => (req, res, next) => {
+  const userRole = req.headers['x-user-role'];
+  if (!userRole || !allowedRoles.includes(userRole)) {
+    return res.status(403).json({ message: 'Forbidden: Insufficient permissions.' });
+  }
+  next();
+};
+
 // Configure PostgreSQL connection
 // Vercel automatically injects POSTGRES_URL from your connected Neon database
 const pool = new Pool({
@@ -44,10 +53,32 @@ app.get('/api/projects', async (req, res) => {
 });
 
 // Add a new project
-app.post('/api/projects', async (req, res) => {
+app.post('/api/projects', authorizeRole(['admin']), async (req, res) => {
+  // Block view-only users even if they somehow get through
+  if (req.headers['x-user-role'] === 'view-only') {
+    return res.status(403).json({ message: 'View-only users cannot create projects.' });
+  }
+
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({ message: 'Project name is required.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO projects(name) VALUES($1) RETURNING id, name, is_archived',
+      [name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error adding project:', error.stack);
+    if (error.code === '23505') { // Unique violation
+      return res.status(409).json({ message: 'Project with this name already exists.' });
+    }
+    res.status(500).json({ message: 'Error adding project', error: error.message });
+  }
+});
+
   }
   try {
     const result = await pool.query(
@@ -83,7 +114,12 @@ app.post('/api/projects', async (req, res) => {
 });
 
 // Delete a project
-app.delete('/api/projects/:name', async (req, res) => {
+app.delete('/api/projects/:name', authorizeRole(['admin']), async (req, res) => {
+  // Block view-only users
+  if (req.headers['x-user-role'] === 'view-only') {
+    return res.status(403).json({ message: 'View-only users cannot delete projects.' });
+  }
+
   const { name } = req.params;
   try {
     const result = await pool.query('DELETE FROM projects WHERE name = $1 RETURNING name', [name]);
@@ -92,7 +128,7 @@ app.delete('/api/projects/:name', async (req, res) => {
     }
     res.status(200).json({ message: `Project ${name} deleted successfully.` });
   } catch (error) {
-    console.error('Error deleting project:', error.stack);
+    console.error('Error deleting project:', error); 
     res.status(500).json({ message: 'Error deleting project', error: error.message });
   }
 });
@@ -126,35 +162,38 @@ app.post('/api/register', async (req, res) => {
 // Login user
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
-  console.log('Login endpoint hit'); // 1. Log when the endpoint is hit
+  console.log('Login endpoint hit');
+  console.log('Attempting login for username:', username, 'password provided:', !!password);
+
   if (!username || !password) {
-    console.log('Login failed: Missing username or password'); // 2. Log missing credentials
+    console.log('Login failed: Missing username or password');
     return res.status(400).json({ message: 'Username and password are required.' });
   }
 
   try {
-    console.log(`Attempting to find user: ${username}`); // 3. Log username lookup
+    console.log(`Attempting to find user: ${username}`);
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
+    console.log('DB query result for user:', user ? 'User found' : 'User not found');
 
     if (!user) {
-      console.log(`Login failed: User not found for username: ${username}`); // 4. Log if user not found
+      console.log(`Login failed: User not found for username: ${username}`);
       return res.status(401).json({ message: 'Invalid username or password.' });
     }
 
-    console.log(`User found: ${user.username}. Comparing passwords.`); // 5. Log password comparison start
-    console.log(`Stored password hash: ${user.password_hash}`); // 6. Log the hash from the DB
+    console.log(`User found: ${user.username}. Comparing passwords.`);
+    console.log(`Stored password hash (first 5 chars): ${user.password_hash ? user.password_hash.substring(0, 5) : 'N/A'}`);
+    console.log(`Raw user.allowed_projects from DB:`, user.allowed_projects);
 
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
-    console.log(`Password match result for ${username}: ${passwordMatch}`); // 7. Log the result of the comparison
+    console.log(`Password match result for ${username}: ${passwordMatch}`);
 
     if (!passwordMatch) {
-      console.log(`Login failed: Password mismatch for username: ${username}`); // 8. Log on password mismatch
+      console.log(`Login failed: Password mismatch for username: ${username}`);
       return res.status(401).json({ message: 'Invalid username or password.' });
     }
 
-    console.log(`Login successful for user: ${username}`); // 9. Log on success
-    // In a real app, you'd generate and send a JWT here
+    console.log(`Login successful for user: ${username}`);
     res.status(200).json({ message: 'Login successful!', user: { id: user.id, username: user.username, role: user.role, name: user.name, email: user.email, allowedProjects: user.allowed_projects } });
   } catch (error) {
     console.error('Error logging in user:', error.stack);
@@ -166,7 +205,11 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/users', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, username, role, name, email, allowed_projects FROM users ORDER BY username');
-    res.status(200).json({ users: result.rows });
+    const usersWithParsedPermissions = result.rows.map(user => ({
+      ...user,
+      allowedProjects: user.allowed_projects
+    }));
+    res.status(200).json({ users: usersWithParsedPermissions });
   } catch (error) {
     console.error('Error fetching users:', error.stack);
     res.status(500).json({ message: 'Error fetching users', error: error.message });
@@ -174,23 +217,31 @@ app.get('/api/users', async (req, res) => {
 });
 
 // Update user permissions (role and allowed_projects)
-app.put('/api/users/:username/permissions', async (req, res) => {
+// Update user permissions (role and allowed_projects)
+app.put('/api/users/:username/permissions', authorizeRole(['admin']), async (req, res) => {
+  // Block view-only users
+  if (req.headers['x-user-role'] === 'view-only') {
+    return res.status(403).json({ message: 'View-only users cannot change permissions.' });
+  }
+
   const { username: originalUsername } = req.params;
-  const { username: newUsername, name, email, role, password, allowedProjects } = req.body;
+  const { allowedProjects } = req.body;
+
+  console.log('PUT /api/users/:username/permissions hit');
+  console.log('Received allowedProjects (JS array):', allowedProjects);
 
   try {
-    let updateQuery = 'UPDATE users SET username = COALESCE($1, username), name = COALESCE($2, name), email = COALESCE($3, email), role = COALESCE($4, role), allowed_projects = COALESCE($5, allowed_projects)';
-    const queryParams = [newUsername, name, email, role, allowedProjects];
-    let paramIndex = 6;
+    // Convert JS array to PostgreSQL array literal string
+    const pgArrayLiteral = `{${allowedProjects.join(',')}}`;
+    console.log('Constructed pgArrayLiteral:', pgArrayLiteral);
 
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      updateQuery += `, password_hash = $${paramIndex++}`;
-      queryParams.push(hashedPassword);
-    }
-
-    updateQuery += ` WHERE username = $${paramIndex} RETURNING id, username, role, name, email, allowed_projects`;
-    queryParams.push(originalUsername);
+    const updateQuery = `
+      UPDATE users
+      SET allowed_projects = $1
+      WHERE username = $2
+      RETURNING id, username, role, name, email, allowed_projects
+    `;
+    const queryParams = [pgArrayLiteral, originalUsername];
 
     const result = await pool.query(updateQuery, queryParams);
 
@@ -198,18 +249,22 @@ app.put('/api/users/:username/permissions', async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    res.status(200).json({ message: 'User updated successfully.', user: result.rows[0] });
+    res.status(200).json({
+      message: 'User permissions updated successfully.',
+      user: result.rows[0],
+    });
+  } catch (error) {
+    console.error('Error updating user permissions:', e
+
+    }
+
+    res.status(200).json({ message: 'User permissions updated successfully.', user: result.rows[0] });
   } catch (error) {
     console.error('Error updating user permissions:', error.stack);
-    if (error.code === '23505') { // Unique violation for username
-      return res.status(409).json({ message: 'Username already exists.' });
-    }
     res.status(500).json({ message: 'Error updating user permissions', error: error.message });
   }
 });
-
-// Change user password
-app.put('/api/users/:username/password', async (req, res) => {
+app.put('/api/users/:username/password', authorizeRole(['admin']), async (req, res) => {
   const { username } = req.params;
   const { oldPassword, newPassword } = req.body;
 
@@ -241,10 +296,14 @@ app.put('/api/users/:username/password', async (req, res) => {
   }
 });
 
-// Update general user details (username, name, email, role)
-app.put('/api/users/:username', async (req, res) => {
+app.put('/api/users/:username', authorizeRole(['admin']), async (req, res) => {
   const { username } = req.params;
   const { newUsername, name, email, role } = req.body;
+
+  // Only admin can assign 'view-only'
+  if (role === 'view-only' && req.headers['x-user-role'] !== 'admin') {
+    return res.status(403).json({ message: 'Only admins can assign view-only role.' });
+  }
 
   try {
     const result = await pool.query(
@@ -259,15 +318,16 @@ app.put('/api/users/:username', async (req, res) => {
     res.status(200).json({ message: 'User updated successfully.', user: result.rows[0] });
   } catch (error) {
     console.error('Error updating user:', error.stack);
-    if (error.code === '23505') { // Unique violation for username
+    if (error.code === '23505') {
       return res.status(409).json({ message: 'Username already exists.' });
     }
     res.status(500).json({ message: 'Error updating user', error: error.message });
   }
 });
 
+
 // Delete a user
-app.delete('/api/users/:username', async (req, res) => {
+app.delete('/api/users/:username', authorizeRole(['admin']), async (req, res) => {
   const { username } = req.params;
   try {
     const result = await pool.query('DELETE FROM users WHERE username = $1 RETURNING username', [username]);

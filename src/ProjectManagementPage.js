@@ -15,10 +15,19 @@ import React, { useContext, useState, useEffect } from 'react';
      const [permissionChanges, setPermissionChanges] = useState({});
    
      useEffect(() => {
-       const storedUsers = localStorage.getItem('appUsers');
-       if (storedUsers) {
-         setUsers(JSON.parse(storedUsers));
-       }
+       const fetchUsers = async () => {
+         try {
+           const response = await fetch('/api/users');
+           if (!response.ok) {
+             throw new Error(`HTTP error! status: ${response.status}`);
+           }
+           const data = await response.json();
+           setUsers(data.users);
+         } catch (error) {
+           console.error("Failed to fetch users:", error);
+         }
+       };
+       fetchUsers();
      }, []);
    
       useEffect(() => {
@@ -26,7 +35,7 @@ import React, { useContext, useState, useEffect } from 'react';
          const initialPermissions = {};
         // Use allProjects from context, not from localStorage
       allProjects.forEach(project => {
-             initialPermissions[project.name] = selectedUser.allowedProjects.includes(project.
+             initialPermissions[project.name] = (selectedUser.allowedProjects || []).includes(project.
       name);
         });
         setPermissionChanges(initialPermissions);
@@ -112,16 +121,7 @@ import React, { useContext, useState, useEffect } from 'react';
              </form>
            </div>
  
-           <div className="project-selection-section">
-             <h3>Select Project</h3>
-             <select onChange={(e) => selectProject(e.target.value)} value={activeProject ?
-       activeProject.name : ''}>
-               <option value="">Select Project</option>
-               {activeProjects.map(project => (
-                 <option key={project.name} value={project.name}>{project.name}</option>
-               ))}
-             </select>
-           </div>
+
 
           <div className="project-list-section">
             <h3>Active Projects</h3>
