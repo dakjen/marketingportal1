@@ -91,6 +91,7 @@ import React, { useContext, useState } from 'react';
          <Routes>
            <Route path="/intro" element={isLoggedIn ? <Navigate to="/" /> : <IntroScreen />} />
            <Route path="/request-account" element={isLoggedIn ? <Navigate to="/" /> : <RequestAccountPage />} />
+
            <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <LoginPage />} />
            <Route path="/forgot-password" element={<ContactAdminPage />} />
            <Route
