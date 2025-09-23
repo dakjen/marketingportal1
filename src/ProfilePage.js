@@ -328,7 +328,7 @@ function ProfilePage() {
         </div>
       )}
       {currentUser && currentUser.role && (
-        <p className="user-role-display">Role: {currentUser.role}</p>
+        <p className="user-role-display">Role: {currentUser.role === 'admin2' ? 'Viewer' : currentUser.role}</p>
       )}
 
       {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
@@ -387,7 +387,7 @@ function ProfilePage() {
                 <option value="external">External</option>
                 <option value="internal">Internal</option>
                 <option value="admin">Admin</option>
-                <option value="admin2">Admin2</option>
+                <option value="admin2">Viewer</option>
               </select>
             </div>
             <button type="submit">Add User</button>
@@ -433,7 +433,7 @@ function ProfilePage() {
                           <option value="external">External</option>
                           <option value="internal">Internal</option>
                           <option value="admin">Admin</option>
-                          <option value="admin2">Admin2</option>
+                          <option value="admin2">Viewer</option>
                         </select>
                         <button onClick={() => handleSaveEdit(user.username)} className="save-user-button">Save</button>
                         <button onClick={() => handleCancelEdit} className="cancel-user-button">Cancel</button>
