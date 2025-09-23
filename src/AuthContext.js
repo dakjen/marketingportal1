@@ -49,18 +49,17 @@ export const AuthProvider = ({ children }) => {
 
   const updateCurrentUser = async (updatedData) => {
     try {
-      const response = await fetch(`/api/users/${updatedData.oldUsername}/permissions`, {
+      const response = await fetch(`/api/users/${updatedData.oldUsername}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'X-User-Role': currentUser?.role || ''
         },
-        body: JSON.stringify({ 
-          username: updatedData.username, 
-          name: updatedData.name, 
-          email: updatedData.email, 
-          role: updatedData.role, 
-          allowedProjects: updatedData.allowedProjects 
+        body: JSON.stringify({
+          newUsername: updatedData.username,
+          name: updatedData.name,
+          email: updatedData.email,
+          role: updatedData.role,
         }),
       });
 
@@ -71,6 +70,7 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
       setCurrentUser(data.user);
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
       return true;
     } catch (error) {
       console.error('Error updating current user:', error);
