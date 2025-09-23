@@ -6,6 +6,7 @@ import React, { useContext, useState, useEffect } from 'react';
      function ProjectManagementPage() {
        const { projects, allProjects, activeProject, addProject, selectProject, deleteProject, archiveProject, unarchiveProject }
      = useContext(ProjectContext);
+       const { currentUser } = useContext(AuthContext);
        console.log('ProjectManagementPage re-rendering. Projects:', projects);
        const { updateUserPermissions } = useContext(AuthContext);
        const [newProjectName, setNewProjectName] = useState('');
@@ -81,13 +82,14 @@ import React, { useContext, useState, useEffect } from 'react';
        <div className="project-management-container">
          <h2>Project Management</h2>
          <div className="project-management-layout">
+          {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
            <div className="permissions-sidebar">
              <div className="user-permissions-section">
                <h3>User Project Permissions</h3>
                <div className="user-selection">
                  <label htmlFor="user-select">Select User:</label>
                  <select id="user-select" onChange={(e) => setSelectedUser(users.find(u => u.
-       username === e.target.value) || null)}>
+       username === e.target.value) || null)} disabled={currentUser.role === 'admin2'}>
                    <option value="">-- Select a user --</option>
                    {users.map(user => (
                      <option key={user.username} value={user.username}>{user.username
@@ -106,28 +108,33 @@ import React, { useContext, useState, useEffect } from 'react';
                          id={`perm-${project.name}`}
                          checked={permissionChanges[project.name] || false}
                          onChange={() => handlePermissionChange(project.name)}
+                         disabled={currentUser.role === 'admin2'}
                        />
                        <label htmlFor={`perm-${project.name}`}>{project.name}</label>
                      </div>
                    ))}
-                   <button onClick={handleSavePermissions}>Save Permissions</button>
+                   <button onClick={handleSavePermissions} disabled={currentUser.role === 'admin2'}>Save Permissions</button>
                  </div>
                )}
              </div>
            </div>
+          )}
            <div className="main-content">
+            {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
              <div className="project-creation-section">
                <h3>Create New Project</h3>
                <form onSubmit={handleAddProject} className="add-project-form">
                  <input
                    type="text"
-                 placeholder="New Project Name"
-                 value={newProjectName}
-                 onChange={(e) => setNewProjectName(e.target.value)}
-               />
-               <button type="submit">Create Project</button>
-             </form>
-           </div>
+                   placeholder="New Project Name"
+                   value={newProjectName}
+                   onChange={(e) => setNewProjectName(e.target.value)}
+                   disabled={currentUser.role === 'admin2'}
+                 />
+                 <button type="submit" disabled={currentUser.role === 'admin2'}>Create Project</button>
+               </form>
+             </div>
+            )}
  
 
 
@@ -137,10 +144,12 @@ import React, { useContext, useState, useEffect } from 'react';
               {activeProjects.map(project => (
                 <li key={project.name}>
                   <span>{project.name}</span>
+                  {currentUser && currentUser.role === 'admin' && (
                   <div>
                     <button className="archive-button" onClick={() => archiveProject(project.name)}>Archive</button>
                     <button className="delete-button-less-prominent" onClick={() => deleteProject(project.name)}>Delete</button>
                   </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -152,10 +161,12 @@ import React, { useContext, useState, useEffect } from 'react';
               {archivedProjects.map(project => (
                 <li key={project.name}>
                   <span>{project.name}</span>
+                  {currentUser && currentUser.role === 'admin' && (
                   <div>
                     <button className="unarchive-button" onClick={() => unarchiveProject(project.name)}>Unarchive</button>
                     <button className="delete-button-less-prominent" onClick={() => deleteProject(project.name)}>Delete</button>
                   </div>
+                  )}
                 </li>
               ))}
             </ul>

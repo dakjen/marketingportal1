@@ -9,7 +9,13 @@ app.use(express.json());
 // Authorization Middleware
 const authorizeRole = (allowedRoles) => (req, res, next) => {
   const userRole = req.headers['x-user-role'];
-  if (!userRole || !allowedRoles.includes(userRole)) {
+  
+  let effectiveAllowedRoles = [...allowedRoles];
+  if (allowedRoles.includes('admin')) {
+    effectiveAllowedRoles.push('admin2');
+  }
+
+  if (!userRole || !effectiveAllowedRoles.includes(userRole)) {
     return res.status(403).json({ message: 'Forbidden: Insufficient permissions.' });
   }
   next();
@@ -222,9 +228,10 @@ app.put('/api/users/:username/permissions', authorizeRole(['admin']), async (req
 app.put('/api/users/:username/password', authorizeRole(['admin']), async (req, res) => {
   const { username } = req.params;
   const { oldPassword, newPassword } = req.body;
+  const requesterRole = req.headers['x-user-role'];
 
-  if (!oldPassword || !newPassword) {
-    return res.status(400).json({ message: 'Old and new passwords are required.' });
+  if (!newPassword) {
+    return res.status(400).json({ message: 'New password is required.' });
   }
 
   try {
@@ -235,10 +242,15 @@ app.put('/api/users/:username/password', authorizeRole(['admin']), async (req, r
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const passwordMatch = await bcrypt.compare(oldPassword, user.password_hash);
-
-    if (!passwordMatch) {
-      return res.status(401).json({ message: 'Old password does not match.' });
+    // If the requester is not an admin, they must provide the old password
+    if (requesterRole !== 'admin') {
+      if (!oldPassword) {
+        return res.status(400).json({ message: 'Old password is required.' });
+      }
+      const passwordMatch = await bcrypt.compare(oldPassword, user.password_hash);
+      if (!passwordMatch) {
+        return res.status(401).json({ message: 'Old password does not match.' });
+      }
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);

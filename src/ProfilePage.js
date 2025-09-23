@@ -142,32 +142,50 @@ function ProfilePage() {
 
   const handleSaveEdit = async (originalUsername) => {
     try {
-      const response = await fetch(`/api/users/${originalUsername}/permissions`, {
+      // Update user details
+      const userDetailsResponse = await fetch(`/api/users/${originalUsername}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'X-User-Role': currentUser?.role || '',
         },
         body: JSON.stringify({
-          username: editedUsername,
+          newUsername: editedUsername,
           name: editedName,
           email: editedEmail,
           role: editedRole,
-          password: editedPassword, // Include password in the update
-          allowedProjects: users.find(u => u.username === originalUsername)?.allowed_projects || [], // Send existing allowed_projects
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update user');
+      if (!userDetailsResponse.ok) {
+        const errorData = await userDetailsResponse.json();
+        throw new Error(errorData.message || 'Failed to update user details');
       }
 
-      const updatedUser = await response.json();
-      setUsers(prevUsers => {
-        return prevUsers.map(user =>
-          user.username === originalUsername ? { ...user, ...updatedUser.user } : user
-        );
-      });
+      // Update password if a new one is provided
+      if (editedPassword) {
+        const passwordResponse = await fetch(`/api/users/${originalUsername}/password`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Role': currentUser?.role || '',
+          },
+          body: JSON.stringify({
+            newPassword: editedPassword,
+          }),
+        });
+
+        if (!passwordResponse.ok) {
+          const errorData = await passwordResponse.json();
+          throw new Error(errorData.message || 'Failed to update password');
+        }
+      }
+
+      // Refetch users to get the updated data
+      const usersResponse = await fetch('/api/users');
+      const usersData = await usersResponse.json();
+      setUsers(usersData.users);
+
       alert('User updated successfully!');
       setEditingUser(null); // Exit edit mode
     } catch (error) {
@@ -304,17 +322,20 @@ function ProfilePage() {
           <p><strong>Username:</strong> {currentUser ? currentUser.username : 'Guest'}</p>
           <p><strong>Name:</strong> {currentUser ? currentUser.name : 'N/A'}</p>
           <p><strong>Email:</strong> {currentUser ? currentUser.email : 'N/A'}</p>
+          {currentUser && currentUser.role === 'admin' && (
           <button onClick={handleMyProfileEditClick} className="edit-profile-button">Edit My Profile</button>
+          )}
         </div>
       )}
       {currentUser && currentUser.role && (
         <p className="user-role-display">Role: {currentUser.role}</p>
       )}
 
-      {currentUser && currentUser.role === 'admin' && (
+      {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
         <div className="user-management-section">
           <h3>Manage Users</h3>
 
+          {currentUser && currentUser.role === 'admin' && (
           <form onSubmit={handleAddUser} className="add-user-form">
             <div>
               <label htmlFor="newUsername">New Username:</label>
@@ -366,10 +387,12 @@ function ProfilePage() {
                 <option value="external">External</option>
                 <option value="internal">Internal</option>
                 <option value="admin">Admin</option>
+                <option value="admin2">Admin2</option>
               </select>
             </div>
             <button type="submit">Add User</button>
           </form>
+          )}
 
           <div className="user-list">
             <h4>Existing Users:</h4>
@@ -410,6 +433,7 @@ function ProfilePage() {
                           <option value="external">External</option>
                           <option value="internal">Internal</option>
                           <option value="admin">Admin</option>
+                          <option value="admin2">Admin2</option>
                         </select>
                         <button onClick={() => handleSaveEdit(user.username)} className="save-user-button">Save</button>
                         <button onClick={() => handleCancelEdit} className="cancel-user-button">Cancel</button>
@@ -417,10 +441,12 @@ function ProfilePage() {
                     ) : (
                       <> 
                         <span>{user.username} - {user.name} ({user.email})</span>
+                        {currentUser && currentUser.role === 'admin' && (
                         <div className="user-actions">
                           <button onClick={() => handleDeleteUser(user.username)} className="delete-user-button">Delete</button>
                           <button onClick={() => handleEditClick(user)} className="edit-user-button">Edit</button>
                         </div>
+                        )}
                       </>
                     )}
                   </li>
@@ -430,6 +456,7 @@ function ProfilePage() {
           </div>
         </div>
       )}
+      {currentUser && currentUser.role === 'admin' && (
       <div className="password-change-section">
         <h3>Change Password</h3>
         {!isChangingPassword ? (
@@ -474,6 +501,7 @@ function ProfilePage() {
           </form>
         )}
       </div>
+      )}
     </div>
   );
 }

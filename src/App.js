@@ -41,39 +41,34 @@ import React, { useContext, useState } from 'react';
                      Dashboard
                    </NavLink>
                  </li>
-                 {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
+                 {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
                    <li className="tab-item">
-                     <NavLink to="/social-media" className={({ isActive }) => (isActive ?
-       'active' : '')}>
+                     <NavLink to="/social-media" className={({ isActive }) => (isActive ? 'active' : '')}>
                        Social media entries
                      </NavLink>
                    </li>
                  )}
-                 {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
+                 {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
                    <li className="tab-item">
-                     <NavLink to="/physical-marketing" className={({ isActive }) => (isActive
-       ? 'active' : '')}>
+                     <NavLink to="/physical-marketing" className={({ isActive }) => (isActive ? 'active' : '')}>
                        Physical marketing entries
                      </NavLink>
                    </li>
                  )}
-                 {currentUser?.role === 'admin' && (
+                 {(currentUser?.role === 'admin' || currentUser?.role === 'admin2') && (
                    <li className="tab-item">
-                     <NavLink to="/project-management" className={({ isActive }) => (isActive
-       ? 'active project-management-tab' : 'project-management-tab')}>
+                     <NavLink to="/project-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
                        Project Management
                      </NavLink>
                    </li>
                  )}
                  <li className="tab-item profile-dropdown-container">
-                   <div className="profile-icon" onClick={() => setShowDropdown
-       (!showDropdown)}>
+                   <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
                      <i className="fas fa-user-circle"></i>
                    </div>
                    {showDropdown && (
                      <div className="dropdown-menu">
-                       <NavLink to="/profile" className="dropdown-item" onClick={() =>
-       setShowDropdown(false)}>
+                       <NavLink to="/profile" className="dropdown-item" onClick={() => setShowDropdown(false)}>
                          View Profile
                        </NavLink>
                        <button onClick={logout} className="dropdown-item">
@@ -102,7 +97,7 @@ import React, { useContext, useState } from 'react';
              path="/"
              element={
                isLoggedIn ? (
-                 <PrivateRoute allowedRoles={['admin', 'internal', 'external', 'view-only']}>
+                 <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external', 'view-only']}>
                    <Dashboard
                      projects={projects}
                      activeProject={activeProject}
@@ -117,7 +112,7 @@ import React, { useContext, useState } from 'react';
            <Route
              path="/project-management"
            element={
-             <PrivateRoute allowedRoles={['admin']}>
+             <PrivateRoute allowedRoles={['admin', 'admin2']}>
                <ProjectManagementPage />
              </PrivateRoute>
            }
@@ -125,24 +120,23 @@ import React, { useContext, useState } from 'react';
                     <Route
                       path="/social-media"
                       element={
-                        <PrivateRoute allowedRoles={['admin', 'internal', 'view-only']}>               {activeProject ? <SocialMediaEntries /> : <p>Please select a project to view
-       social media entries.</p>}
-             </PrivateRoute>
-           }
+                        <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'view-only']}>
+                          {activeProject ? <SocialMediaEntries /> : <p>Please select a project to view social media entries.</p>}
+                        </PrivateRoute>
+                      }
          />
          <Route
            path="/physical-marketing"
            element={
-             <PrivateRoute allowedRoles={['admin', 'internal']}>
-               {activeProject ? <PhysicalMarketingEntries /> : <p>Please select a project
-       to view physical marketing entries.</p>}
+             <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
+               {activeProject ? <PhysicalMarketingEntries /> : <p>Please select a project to view physical marketing entries.</p>}
              </PrivateRoute>
            }
          />
          <Route
            path="/profile"
            element={
-             <PrivateRoute allowedRoles={['admin', 'internal', 'external']}>
+             <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external']}>
                <ProfilePage />
              </PrivateRoute>
            }

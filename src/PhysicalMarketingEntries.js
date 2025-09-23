@@ -135,7 +135,7 @@ function PhysicalMarketingEntries() {
         {!activeProject && <p className="no-project-selected">Please select a project to view/add entries.</p>}
       </div>
 
-      {currentUser && currentUser.role === 'admin' && (
+      {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
         <>
           <h3>Create New Entry</h3>
           <form onSubmit={handleSubmit}>
@@ -147,6 +147,7 @@ function PhysicalMarketingEntries() {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -157,6 +158,7 @@ function PhysicalMarketingEntries() {
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -166,6 +168,7 @@ function PhysicalMarketingEntries() {
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               >
                 <option value="">Select Type</option>
                 <option value="Billboards">Billboards</option>
@@ -185,11 +188,13 @@ function PhysicalMarketingEntries() {
                 onChange={(e) => setLengthOfTimeValue(e.target.value)}
                 required
                 min="0"
+                disabled={currentUser.role === 'admin2'}
               />
               <select
                 id="lengthOfTimeUnit"
                 value={lengthOfTimeUnit}
                 onChange={(e) => setLengthOfTimeUnit(e.target.value)}
+                disabled={currentUser.role === 'admin2'}
               >
                 <option value="Days">Days</option>
                 <option value="Weeks">Weeks</option>
@@ -204,6 +209,7 @@ function PhysicalMarketingEntries() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -213,9 +219,10 @@ function PhysicalMarketingEntries() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows="3"
+                disabled={currentUser.role === 'admin2'}
               ></textarea>
             </div>
-            <button type="submit">Add Entry</button>
+            <button type="submit" disabled={currentUser.role === 'admin2'}>Add Entry</button>
           </form>
         </>
       )}

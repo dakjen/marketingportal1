@@ -124,7 +124,7 @@ export const ProjectProvider = ({ children, reloadUser }) => {
         projects: (() => {
           const filteredProjects = allProjects.filter(p => {
             if (currentUser) {
-              if (currentUser.role === 'admin') {
+              if (currentUser.role === 'admin' || currentUser.role === 'admin2') {
                 return true;
               }
               if (currentUser.allowedProjects) {

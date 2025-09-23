@@ -143,7 +143,7 @@ function SocialMediaEntries() {
         {!activeProject && <p className="no-project-selected">Please select a project to view/add entries.</p>}
       </div>
 
-      {currentUser && currentUser.role === 'admin' && (
+      {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
         <>
           <h3>Create New Entry</h3>
           <form onSubmit={handleSubmit}>
@@ -155,6 +155,7 @@ function SocialMediaEntries() {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -165,6 +166,7 @@ function SocialMediaEntries() {
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -174,6 +176,7 @@ function SocialMediaEntries() {
                 value={platform}
                 onChange={handlePlatformChange}
                 required
+                disabled={currentUser.role === 'admin2'}
               >
                 <option value="">Select Platform</option>
                 <option value="Facebook">Facebook</option>
@@ -193,6 +196,7 @@ function SocialMediaEntries() {
                   value={customPlatform}
                   onChange={(e) => setCustomPlatform(e.target.value)}
                   required
+                  disabled={currentUser.role === 'admin2'}
                 />
               </div>
             )}
@@ -204,6 +208,7 @@ function SocialMediaEntries() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -213,9 +218,10 @@ function SocialMediaEntries() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows="3"
+                disabled={currentUser.role === 'admin2'}
               ></textarea>
             </div>
-            <button type="submit">Add Entry</button>
+            <button type="submit" disabled={currentUser.role === 'admin2'}>Add Entry</button>
           </form>
         </>
       )}
