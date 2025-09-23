@@ -142,6 +142,11 @@ function Dashboard({ projects, activeProject, selectProject }) {
           }
         });
 
+        const firstMonthYear = `${firstMonth}-${firstYear}`;
+        if (monthlySpends[firstMonthYear]) {
+          delete monthlySpends[firstMonthYear];
+        }
+
         const numberOfMonths = Object.keys(monthlySpends).length;
         const totalSpendForAllMonths = Object.values(monthlySpends).reduce((sum, spend) => sum + spend, 0);
         setAverageMonthlySocialMediaSpend(numberOfMonths > 0 ? totalSpendForAllMonths / numberOfMonths : 0);
