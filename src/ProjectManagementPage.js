@@ -48,11 +48,19 @@ import React, { useContext, useState, useEffect } from 'react';
        setPermissionChanges(prev => ({ ...prev, [projectName]: !prev[projectName] }));
      };
    
-     const handleSavePermissions = () => {
+     const handleSavePermissions = async () => {
        const newAllowedProjects = Object.keys(permissionChanges).filter(projectName =>
        permissionChanges[projectName]);
-       updateUserPermissions(selectedUser.username, newAllowedProjects);
-       alert(`Permissions for ${selectedUser.username} have been updated.`);
+       const success = await updateUserPermissions(selectedUser.username, newAllowedProjects);
+       if (success) {
+         alert(`Permissions for ${selectedUser.username} have been updated.`);
+         // Refetch users to get the updated permissions
+         const response = await fetch('/api/users');
+         const data = await response.json();
+         setUsers(data.users);
+       } else {
+         alert('Failed to update permissions.');
+       }
      };
    
     const handleAddProject = (e) => {

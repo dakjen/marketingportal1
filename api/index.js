@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const { Pool } = require('pg');
 
@@ -54,31 +56,9 @@ app.get('/api/projects', async (req, res) => {
 
 // Add a new project
 app.post('/api/projects', authorizeRole(['admin']), async (req, res) => {
-  // Block view-only users even if they somehow get through
-  if (req.headers['x-user-role'] === 'view-only') {
-    return res.status(403).json({ message: 'View-only users cannot create projects.' });
-  }
-
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({ message: 'Project name is required.' });
-  }
-
-  try {
-    const result = await pool.query(
-      'INSERT INTO projects(name) VALUES($1) RETURNING id, name, is_archived',
-      [name]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error('Error adding project:', error.stack);
-    if (error.code === '23505') { // Unique violation
-      return res.status(409).json({ message: 'Project with this name already exists.' });
-    }
-    res.status(500).json({ message: 'Error adding project', error: error.message });
-  }
-});
-
   }
   try {
     const result = await pool.query(
@@ -115,11 +95,6 @@ app.post('/api/projects', authorizeRole(['admin']), async (req, res) => {
 
 // Delete a project
 app.delete('/api/projects/:name', authorizeRole(['admin']), async (req, res) => {
-  // Block view-only users
-  if (req.headers['x-user-role'] === 'view-only') {
-    return res.status(403).json({ message: 'View-only users cannot delete projects.' });
-  }
-
   const { name } = req.params;
   try {
     const result = await pool.query('DELETE FROM projects WHERE name = $1 RETURNING name', [name]);
@@ -128,7 +103,7 @@ app.delete('/api/projects/:name', authorizeRole(['admin']), async (req, res) => 
     }
     res.status(200).json({ message: `Project ${name} deleted successfully.` });
   } catch (error) {
-    console.error('Error deleting project:', error); 
+    console.error('Error deleting project:', error); // Log the full error object
     res.status(500).json({ message: 'Error deleting project', error: error.message });
   }
 });
@@ -217,13 +192,7 @@ app.get('/api/users', async (req, res) => {
 });
 
 // Update user permissions (role and allowed_projects)
-// Update user permissions (role and allowed_projects)
 app.put('/api/users/:username/permissions', authorizeRole(['admin']), async (req, res) => {
-  // Block view-only users
-  if (req.headers['x-user-role'] === 'view-only') {
-    return res.status(403).json({ message: 'View-only users cannot change permissions.' });
-  }
-
   const { username: originalUsername } = req.params;
   const { allowedProjects } = req.body;
 
@@ -235,27 +204,13 @@ app.put('/api/users/:username/permissions', authorizeRole(['admin']), async (req
     const pgArrayLiteral = `{${allowedProjects.join(',')}}`;
     console.log('Constructed pgArrayLiteral:', pgArrayLiteral);
 
-    const updateQuery = `
-      UPDATE users
-      SET allowed_projects = $1
-      WHERE username = $2
-      RETURNING id, username, role, name, email, allowed_projects
-    `;
+    const updateQuery = 'UPDATE users SET allowed_projects = $1 WHERE username = $2 RETURNING id, username, role, name, email, allowed_projects';
     const queryParams = [pgArrayLiteral, originalUsername];
 
     const result = await pool.query(updateQuery, queryParams);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: 'User not found.' });
-    }
-
-    res.status(200).json({
-      message: 'User permissions updated successfully.',
-      user: result.rows[0],
-    });
-  } catch (error) {
-    console.error('Error updating user permissions:', e
-
     }
 
     res.status(200).json({ message: 'User permissions updated successfully.', user: result.rows[0] });
@@ -296,14 +251,10 @@ app.put('/api/users/:username/password', authorizeRole(['admin']), async (req, r
   }
 });
 
+// Update general user details (username, name, email, role)
 app.put('/api/users/:username', authorizeRole(['admin']), async (req, res) => {
   const { username } = req.params;
   const { newUsername, name, email, role } = req.body;
-
-  // Only admin can assign 'view-only'
-  if (role === 'view-only' && req.headers['x-user-role'] !== 'admin') {
-    return res.status(403).json({ message: 'Only admins can assign view-only role.' });
-  }
 
   try {
     const result = await pool.query(
@@ -318,13 +269,12 @@ app.put('/api/users/:username', authorizeRole(['admin']), async (req, res) => {
     res.status(200).json({ message: 'User updated successfully.', user: result.rows[0] });
   } catch (error) {
     console.error('Error updating user:', error.stack);
-    if (error.code === '23505') {
+    if (error.code === '23505') { // Unique violation for username
       return res.status(409).json({ message: 'Username already exists.' });
     }
     res.status(500).json({ message: 'Error updating user', error: error.message });
   }
 });
-
 
 // Delete a user
 app.delete('/api/users/:username', authorizeRole(['admin']), async (req, res) => {
