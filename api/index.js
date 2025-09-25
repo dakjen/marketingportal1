@@ -72,6 +72,20 @@ pool.connect((err, client, release) => {
         is_archived BOOLEAN DEFAULT false
       );
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        sender_username TEXT NOT NULL,
+        recipient_username TEXT,
+        message_text TEXT NOT NULL,
+        timestamp TIMESTAMPTZ DEFAULT NOW(),
+        message_type VARCHAR(20) NOT NULL,
+        related_entry_id INTEGER,
+        related_entry_type VARCHAR(50),
+        is_read BOOLEAN DEFAULT false
+      );
+    `);
     console.log('Entry tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating entry tables:', err.stack);
@@ -332,8 +346,11 @@ app.get('/api/messages', authorizeRole(['admin', 'internal']), async (req, res) 
 });
 
 app.post('/api/messages', authorizeRole(['admin', 'internal']), async (req, res) => {
+  console.log('POST /api/messages hit');
+  console.log('Request body:', req.body);
   const { project_name, recipient_username, message_text, message_type, related_entry_id, related_entry_type } = req.body;
   const sender_username = req.headers['x-user-username'];
+  console.log('Sender username from header:', sender_username);
 
   if (!project_name || !message_text || !message_type) {
     return res.status(400).json({ message: 'Missing required fields.' });
