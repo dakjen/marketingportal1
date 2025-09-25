@@ -2,60 +2,118 @@
   padding: 20px;
 }
 
+.messages-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.start-message-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .project-selection {
   margin-bottom: 20px;
 }
 
-.archive-requests,
-.regular-messages {
+.archive-requests {
   margin-bottom: 20px;
   border: 1px solid #ccc;
   padding: 15px;
   border-radius: 5px;
 }
 
-.archive-requests ul,
-.regular-messages ul {
+.messages-body {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.conversations-sidebar {
+  width: 200px;
+  border-right: 1px solid #ccc;
+  padding: 15px;
+}
+
+.conversations-sidebar h3 {
+  margin-top: 0;
+}
+
+.conversations-sidebar ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
-.archive-requests li,
-.regular-messages li {
+.conversations-sidebar li {
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  cursor: pointer;
 }
 
-.archive-requests li span {
-  margin-right: 10px;
+.conversations-sidebar li.active {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.conversation-view {
+  flex-grow: 1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.message.sent {
+  text-align: right;
+}
+
+.message.received {
+  text-align: left;
 }
 
 .message-input {
   display: flex;
-  margin-top: 15px;
 }
 
-.message-input select,
 .message-input textarea {
+  flex-grow: 1;
   margin-right: 10px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.message-input textarea {
-  flex-grow: 1;
+.new-message-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.message-input button {
-  padding: 8px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.message-input button:hover {
-  background-color: #0056b3;
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
 }

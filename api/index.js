@@ -55,7 +55,8 @@ pool.connect((err, client, release) => {
         cost NUMERIC NOT NULL,
         platform TEXT NOT NULL,
         username TEXT NOT NULL,
-        notes TEXT
+        notes TEXT,
+        is_archived BOOLEAN DEFAULT false
       );
     `);
     await pool.query(`
