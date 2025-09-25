@@ -398,6 +398,9 @@ function SocialMediaEntries() {
                           <button onClick={() => handleDeleteEntry(entry.id)} className="delete-entry-button">Delete</button>
                         )}
                         <button onClick={() => handleEditClick(entry)} className="edit-entry-button">Edit</button>
+                        {currentUser.role === 'internal' && (
+                          <button onClick={() => handleRequestArchive(entry.id, 'social')} className="archive-request-button">Request Archive</button>
+                        )}
                       </td>
                     )}
                   </>
