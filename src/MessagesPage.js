@@ -21,7 +21,9 @@ function MessagesPage() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        console.log('All users from API:', data.users);
         const filteredUsers = data.users.filter(user => (user.role === 'admin' || user.role === 'internal') && user.username !== currentUser.username);
+        console.log('Filtered users:', filteredUsers);
         setUsers(filteredUsers);
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -175,7 +177,19 @@ function MessagesPage() {
 
       {currentUser.role === 'admin' && (
         <div className="archive-requests">
-          {/* ... archive requests ... */}
+          <h3>Archive Requests</h3>
+          {archiveRequests.length === 0 ? (
+            <p>No archive requests.</p>
+          ) : (
+            <ul>
+              {archiveRequests.map(msg => (
+                <li key={msg.id}>
+                  <span>{msg.message_text} from {msg.sender_username}</span>
+                  <button onClick={() => handleArchive(msg)}>Archive</button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
