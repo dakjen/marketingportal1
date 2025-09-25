@@ -67,7 +67,8 @@ pool.connect((err, client, release) => {
         type TEXT NOT NULL,
         length_of_time TEXT NOT NULL,
         username TEXT NOT NULL,
-        notes TEXT
+        notes TEXT,
+        is_archived BOOLEAN DEFAULT false
       );
     `);
     console.log('Entry tables checked/created successfully.');
@@ -208,7 +209,7 @@ app.put('/api/socialmediaentries/:id', authorizeRole(['admin', 'internal']), asy
   }
 });
 
-app.delete('/api/socialmediaentries/:id', authorizeRole(['admin', 'internal']), async (req, res) => {
+app.delete('/api/socialmediaentries/:id', authorizeRole(['admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('DELETE FROM social_media_entries WHERE id = $1 RETURNING id', [id]);
@@ -284,7 +285,7 @@ app.put('/api/physicalmarketingentries/:id', authorizeRole(['admin', 'internal']
   }
 });
 
-app.delete('/api/physicalmarketingentries/:id', authorizeRole(['admin', 'internal']), async (req, res) => {
+app.delete('/api/physicalmarketingentries/:id', authorizeRole(['admin']), async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('DELETE FROM physical_marketing_entries WHERE id = $1 RETURNING id', [id]);
@@ -297,6 +298,105 @@ app.delete('/api/physicalmarketingentries/:id', authorizeRole(['admin', 'interna
     res.status(500).json({ message: 'Error deleting physical marketing entry', error: error.message });
   }
 });
+
+// Messages Endpoints
+app.get('/api/messages', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { project_name } = req.query;
+  const userRole = req.headers['x-user-role'];
+  const username = req.headers['x-user-username'];
+
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+
+  try {
+    let query;
+    let queryParams = [project_name];
+
+    if (userRole === 'admin') {
+      // Admin sees all messages for the project
+      query = 'SELECT * FROM messages WHERE project_name = $1 ORDER BY timestamp DESC';
+    } else {
+      // Internal users see messages they sent or received
+      query = 'SELECT * FROM messages WHERE project_name = $1 AND (sender_username = $2 OR recipient_username = $2) ORDER BY timestamp DESC';
+      queryParams.push(username);
+    }
+
+    const result = await pool.query(query, queryParams);
+    res.status(200).json({ messages: result.rows });
+  } catch (error) {
+    console.error('Error fetching messages:', error.stack);
+    res.status(500).json({ message: 'Error fetching messages', error: error.message });
+  }
+});
+
+app.post('/api/messages', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { project_name, recipient_username, message_text, message_type, related_entry_id, related_entry_type } = req.body;
+  const sender_username = req.headers['x-user-username'];
+
+  if (!project_name || !message_text || !message_type) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO messages(project_name, sender_username, recipient_username, message_text, message_type, related_entry_id, related_entry_type) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [project_name, sender_username, recipient_username, message_text, message_type, related_entry_id, related_entry_type]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error creating message:', error.stack);
+    res.status(500).json({ message: 'Error creating message', error: error.message });
+  }
+});
+
+app.put('/api/messages/:id', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { id } = req.params;
+  const { is_read } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE messages SET is_read = $1 WHERE id = $2 RETURNING *',
+      [is_read, id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Message not found.' });
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating message:', error.stack);
+    res.status(500).json({ message: 'Error updating message', error: error.message });
+  }
+});
+
+// Archive Endpoint
+app.put('/api/entries/:entryType/:id/archive', authorizeRole(['admin']), async (req, res) => {
+  const { entryType, id } = req.params;
+
+  let tableName;
+  if (entryType === 'social') {
+    tableName = 'social_media_entries';
+  } else if (entryType === 'physical') {
+    tableName = 'physical_marketing_entries';
+  } else {
+    return res.status(400).json({ message: 'Invalid entry type.' });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE ${tableName} SET is_archived = true WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Entry not found.' });
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error archiving entry:', error.stack);
+    res.status(500).json({ message: 'Error archiving entry', error: error.message });
+  }
+});
+
 
 // User Management Endpoints
 const bcrypt = require('bcryptjs');

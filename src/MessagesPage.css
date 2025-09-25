@@ -1,0 +1,61 @@
+.messages-container {
+  padding: 20px;
+}
+
+.project-selection {
+  margin-bottom: 20px;
+}
+
+.archive-requests,
+.regular-messages {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.archive-requests ul,
+.regular-messages ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.archive-requests li,
+.regular-messages li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.archive-requests li span {
+  margin-right: 10px;
+}
+
+.message-input {
+  display: flex;
+  margin-top: 15px;
+}
+
+.message-input select,
+.message-input textarea {
+  margin-right: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.message-input textarea {
+  flex-grow: 1;
+}
+
+.message-input button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.message-input button:hover {
+  background-color: #0056b3;
+}

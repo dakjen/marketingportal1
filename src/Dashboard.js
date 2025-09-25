@@ -47,7 +47,8 @@ function Dashboard({ projects, activeProject, selectProject }) {
           throw new Error(`HTTP error! status: ${physicalResponse.status}`);
         }
         const physicalData = await physicalResponse.json();
-        const parsedPhysicalEntries = physicalData.entries;
+        const unarchivedPhysicalEntries = physicalData.entries.filter(entry => !entry.is_archived);
+        const parsedPhysicalEntries = unarchivedPhysicalEntries;
 
         const calculatedTotalPhysicalSpend = parsedPhysicalEntries.reduce((sum, entry) => {
           const cost = parseFloat(entry.cost);
@@ -251,3 +252,4 @@ const containerClassName = activeProject ? "dashboard-container" : "dashboard-co
 }
 
 export default Dashboard;
+oard;

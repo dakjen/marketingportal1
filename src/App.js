@@ -52,11 +52,17 @@ import React, { useContext, useState } from 'react';
                    <li className="tab-item">
                      <NavLink to="/physical-marketing" className={({ isActive }) => (isActive ? 'active' : '')}>
                        Physical marketing entries
-                     </NavLink>
-                   </li>
-                 )}
-                 {(currentUser?.role === 'admin' || currentUser?.role === 'admin2') && (
-                   <li className="tab-item">
+                                           </NavLink>
+                                        </li>
+                                      )}
+                                      {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
+                                        <li className="tab-item">
+                                          <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
+                                            Messages
+                                          </NavLink>
+                                        </li>
+                                      )}
+                                      {(currentUser?.role === 'admin' || currentUser?.role === 'admin2') && (                   <li className="tab-item">
                      <NavLink to="/project-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
                        Project Management
                      </NavLink>

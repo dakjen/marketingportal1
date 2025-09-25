@@ -189,6 +189,41 @@ function PhysicalMarketingEntries() {
     setEditingIndex(null); // Exit edit mode without saving
   };
 
+  const handleRequestArchive = async (entryId, entryType) => {
+    if (!activeProject) return;
+
+    const messageData = {
+      project_name: activeProject.name,
+      message_text: `Archive request for ${entryType} entry #${entryId}`,
+      message_type: 'archive_request',
+      related_entry_id: entryId,
+      related_entry_type: entryType,
+      recipient_username: 'admin', // Or logic to find an admin
+    };
+
+    try {
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role,
+          'X-User-Username': currentUser.username,
+        },
+        body: JSON.stringify(messageData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send archive request');
+      }
+
+      alert('Archive request sent successfully!');
+    } catch (error) {
+      console.error('Error sending archive request:', error);
+      alert(error.message || 'Failed to send archive request. Please try again.');
+    }
+  };
+
   return (
     <div className="physical-marketing-container">
       <h2>Physical Marketing Entries</h2>
@@ -350,7 +385,9 @@ function PhysicalMarketingEntries() {
                     <td>{entry.notes}</td>
                     {currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal') && (
                       <td>
-                        <button onClick={() => handleDeleteEntry(entry.id)} className="delete-entry-button">Delete</button>
+                        {currentUser.role === 'admin' && (
+                          <button onClick={() => handleDeleteEntry(entry.id)} className="delete-entry-button">Delete</button>
+                        )}
                         <button onClick={() => handleEditClick(entry)} className="edit-entry-button">Edit</button>
                       </td>
                     )}
