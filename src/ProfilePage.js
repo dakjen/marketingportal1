@@ -345,6 +345,7 @@ function ProfilePage() {
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -355,6 +356,7 @@ function ProfilePage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -365,6 +367,7 @@ function ProfilePage() {
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -375,6 +378,7 @@ function ProfilePage() {
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
                 required
+                disabled={currentUser.role === 'admin2'}
               />
             </div>
             <div>
@@ -383,6 +387,7 @@ function ProfilePage() {
                 id="newRole"
                 value={newRole}
                 onChange={(e) => setNewRole(e.target.value)}
+                disabled={currentUser.role === 'admin2'}
               >
                 <option value="external">External</option>
                 <option value="internal">Internal</option>
@@ -390,7 +395,7 @@ function ProfilePage() {
                 <option value="admin2">Viewer</option>
               </select>
             </div>
-            <button type="submit">Add User</button>
+            <button type="submit" disabled={currentUser.role === 'admin2'}>Add User</button>
           </form>
           )}
 
@@ -409,34 +414,39 @@ function ProfilePage() {
                           value={editedUsername}
                           onChange={(e) => setEditedUsername(e.target.value)}
                           placeholder="Username"
+                          disabled={currentUser.role === 'admin2'}
                         />
                         <input
                           type="password"
                           value={editedPassword}
                           onChange={(e) => setEditedPassword(e.target.value)}
                           placeholder="New Password (leave blank to keep current)"
+                          disabled={currentUser.role === 'admin2'}
                         />
                         <input
                           type="text"
                           value={editedName}
                           onChange={(e) => setEditedName(e.target.value)}
+                          disabled={currentUser.role === 'admin2'}
                         />
                         <input
                           type="email"
                           value={editedEmail}
                           onChange={(e) => setEditedEmail(e.target.value)}
+                          disabled={currentUser.role === 'admin2'}
                         />
                         <select
                           value={editedRole}
                           onChange={(e) => setEditedRole(e.target.value)}
+                          disabled={currentUser.role === 'admin2'}
                         >
                           <option value="external">External</option>
                           <option value="internal">Internal</option>
                           <option value="admin">Admin</option>
                           <option value="admin2">Viewer</option>
                         </select>
-                        <button onClick={() => handleSaveEdit(user.username)} className="save-user-button">Save</button>
-                        <button onClick={() => handleCancelEdit} className="cancel-user-button">Cancel</button>
+                        <button onClick={() => handleSaveEdit(user.username)} className="save-user-button" disabled={currentUser.role === 'admin2'}>Save</button>
+                        <button onClick={() => handleCancelEdit} className="cancel-user-button" disabled={currentUser.role === 'admin2'}>Cancel</button>
                       </div>
                     ) : (
                       <> 

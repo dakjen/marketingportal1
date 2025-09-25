@@ -80,101 +80,99 @@ import React, { useContext, useState, useEffect } from 'react';
    
      return (
        <div className="project-management-container">
-         <h2>Project Management</h2>
-         <div className="project-management-layout">
-          {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
-           <div className="permissions-sidebar">
-             <div className="user-permissions-section">
-               <h3>User Project Permissions</h3>
-               <div className="user-selection">
-                 <label htmlFor="user-select">Select User:</label>
-                 <select id="user-select" onChange={(e) => setSelectedUser(users.find(u => u.
+         {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') ? (
+           <>
+             <h2>Project Management</h2>
+             <div className="project-management-layout">
+               <div className="permissions-sidebar">
+                 <div className="user-permissions-section">
+                   <h3>User Project Permissions</h3>
+                   <div className="user-selection">
+                     <label htmlFor="user-select">Select User:</label>
+                     <select id="user-select" onChange={(e) => setSelectedUser(users.find(u => u.
        username === e.target.value) || null)} disabled={currentUser.role === 'admin2'}>
-                   <option value="">-- Select a user --</option>
-                   {users.map(user => (
-                     <option key={user.username} value={user.username}>{user.username
+                       <option value="">-- Select a user --</option>
+                       {users.map(user => (
+                         <option key={user.username} value={user.username}>{user.username
        }</option>
-                   ))}
-                 </select>
-               </div>
-   
-               {selectedUser && (
-                 <div className="permissions-checklist">
-                   <h4>Permissions for {selectedUser.username}</h4>
-                   {allProjects.map(project => (
-                     <div key={project.name} className="permission-item">
-                       <input
-                         type="checkbox"
-                         id={`perm-${project.name}`}
-                         checked={permissionChanges[project.name] || false}
-                         onChange={() => handlePermissionChange(project.name)}
-                         disabled={currentUser.role === 'admin2'}
-                       />
-                       <label htmlFor={`perm-${project.name}`}>{project.name}</label>
+                       ))}
+                     </select>
+                   </div>
+       
+                   {selectedUser && (
+                     <div className="permissions-checklist">
+                       <h4>Permissions for {selectedUser.username}</h4>
+                       {allProjects.map(project => (
+                         <div key={project.name} className="permission-item">
+                           <input
+                             type="checkbox"
+                             id={`perm-${project.name}`}
+                             checked={permissionChanges[project.name] || false}
+                             onChange={() => handlePermissionChange(project.name)}
+                             disabled={currentUser.role === 'admin2'}
+                           />
+                           <label htmlFor={`perm-${project.name}`}>{project.name}</label>
+                         </div>
+                       ))}
+                       <button onClick={handleSavePermissions} disabled={currentUser.role === 'admin2'}>Save Permissions</button>
                      </div>
-                   ))}
-                   <button onClick={handleSavePermissions} disabled={currentUser.role === 'admin2'}>Save Permissions</button>
+                   )}
                  </div>
-               )}
+               </div>
+               <div className="main-content">
+                 <div className="project-creation-section">
+                   <h3>Create New Project</h3>
+                   <form onSubmit={handleAddProject} className="add-project-form">
+                     <input
+                       type="text"
+                       placeholder="New Project Name"
+                       value={newProjectName}
+                       onChange={(e) => setNewProjectName(e.target.value)}
+                       disabled={currentUser.role === 'admin2'}
+                     />
+                     <button type="submit" disabled={currentUser.role === 'admin2'}>Create Project</button>
+                   </form>
+                 </div>
+       
+       
+       
+                 <div className="project-list-section">
+                   <h3>Active Projects</h3>
+                   <ul className="project-list">
+                     {activeProjects.map(project => (
+                       <li key={project.name}>
+                         <span>{project.name}</span>
+                         <div>
+                           <button className="archive-button" onClick={() => archiveProject(project.name)}>Archive</button>
+                           <button className="delete-button-less-prominent" onClick={() => deleteProject(project.name)}>Delete</button>
+                         </div>
+                       </li>
+                     ))}
+                   </ul>
+                 </div>
+       
+                 <div className="project-list-section">
+                   <h3>Archived Projects</h3>
+                   <ul className="project-list">
+                     {archivedProjects.map(project => (
+                       <li key={project.name}>
+                         <span>{project.name}</span>
+                         <div>
+                           <button className="unarchive-button" onClick={() => unarchiveProject(project.name)}>Unarchive</button>
+                           <button className="delete-button-less-prominent" onClick={() => deleteProject(project.name)}>Delete</button>
+                         </div>
+                       </li>
+                     ))}
+                   </ul>
+                 </div>
+               </div>
              </div>
-           </div>
-          )}
-           <div className="main-content">
-            {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
-             <div className="project-creation-section">
-               <h3>Create New Project</h3>
-               <form onSubmit={handleAddProject} className="add-project-form">
-                 <input
-                   type="text"
-                   placeholder="New Project Name"
-                   value={newProjectName}
-                   onChange={(e) => setNewProjectName(e.target.value)}
-                   disabled={currentUser.role === 'admin2'}
-                 />
-                 <button type="submit" disabled={currentUser.role === 'admin2'}>Create Project</button>
-               </form>
-             </div>
-            )}
- 
-
-
-          <div className="project-list-section">
-            <h3>Active Projects</h3>
-            <ul className="project-list">
-              {activeProjects.map(project => (
-                <li key={project.name}>
-                  <span>{project.name}</span>
-                  {currentUser && currentUser.role === 'admin' && (
-                  <div>
-                    <button className="archive-button" onClick={() => archiveProject(project.name)}>Archive</button>
-                    <button className="delete-button-less-prominent" onClick={() => deleteProject(project.name)}>Delete</button>
-                  </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="project-list-section">
-            <h3>Archived Projects</h3>
-            <ul className="project-list">
-              {archivedProjects.map(project => (
-                <li key={project.name}>
-                  <span>{project.name}</span>
-                  {currentUser && currentUser.role === 'admin' && (
-                  <div>
-                    <button className="unarchive-button" onClick={() => unarchiveProject(project.name)}>Unarchive</button>
-                    <button className="delete-button-less-prominent" onClick={() => deleteProject(project.name)}>Delete</button>
-                  </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+           </>
+         ) : (
+           <p>You do not have permission to view this page.</p>
+         )}
+       </div>
+     );
 }
  
  export default ProjectManagementPage;

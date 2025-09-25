@@ -130,7 +130,7 @@ function PhysicalMarketingEntries() {
         {!activeProject && <p className="no-project-selected">Please select a project to view/add entries.</p>}
       </div>
 
-      {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
+      {currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal' || currentUser.role === 'admin2') && (
         <>
           <h3>Create New Entry</h3>
           <form onSubmit={handleSubmit}>
@@ -224,14 +224,14 @@ function PhysicalMarketingEntries() {
               <th>Length of Time</th>
               <th>User</th>
               <th>Notes</th>
-              {currentUser && currentUser.role === 'admin' && <th>Actions</th>}
+              {currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal') && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
             {entries.map((entry, index) => (
               <tr key={index}>
                 {editingIndex === index ? (
-                  <td colSpan={currentUser && currentUser.role === 'admin' ? 7 : 6}> {/* Adjust colspan based on admin role */}
+                  <td colSpan={currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal') ? 7 : 6}> {/* Adjust colspan based on admin or internal role */}
                     <div className="edit-entry-form-inline">
                       <label>Date:</label>
                       <input type="date" value={editedDate} onChange={(e) => setEditedDate(e.target.value)} />
@@ -267,7 +267,7 @@ function PhysicalMarketingEntries() {
                     <td>{entry.lengthOfTime}</td>
                     <td>{entry.name}</td>
                     <td>{entry.notes}</td>
-                    {currentUser && currentUser.role === 'admin' && (
+                    {currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal') && (
                       <td>
                         <button onClick={() => handleDeleteEntry(index)} className="delete-entry-button">Delete</button>
                         <button onClick={() => handleEditClick(entry, index)} className="edit-entry-button">Edit</button>

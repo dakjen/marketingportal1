@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from './AuthContext';
 import './Dashboard.css'; // Import the CSS file
 
 function Dashboard({ projects, activeProject, selectProject }) {
+  const { currentUser } = useContext(AuthContext);
 
+  const displayProjects = currentUser && currentUser.role === 'external'
+    ? projects.filter(project => currentUser.allowedProjects.includes(project.name))
+    : projects;
   const [totalPhysicalSpend, setTotalPhysicalSpend] = useState(0);
   const [currentMonthPhysicalSpend, setCurrentMonthPhysicalSpend] = useState(0);
   const [firstMonthPhysicalSpend, setFirstMonthPhysicalSpend] = useState(0);
@@ -168,7 +173,7 @@ const containerClassName = activeProject ? "dashboard-container" : "dashboard-co
         <h1 className="dashboard-title">Marketing Spend Dashboard</h1>
         <select onChange={(e) => selectProject(e.target.value)} value={activeProject ? activeProject.name : ''}>
           <option value="">Select Project</option>
-          {projects.map(project => (
+          {displayProjects.map(project => (
             <option key={project.name} value={project.name}>{project.name}</option>
           ))}
         </select>
