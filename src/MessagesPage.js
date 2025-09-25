@@ -149,7 +149,34 @@ function MessagesPage() {
   const archiveRequests = messages.filter(msg => msg.message_type === 'archive_request' && !msg.is_read);
   const regularMessages = messages.filter(msg => msg.message_type === 'regular');
 
-  const conversations = [...new Set(regularMessages.flatMap(msg => [msg.sender_username, msg.recipient_username]))].filter(username => username && username !== currentUser.username);
+  const conversations = [...new Set(regularMessages.flatMap(msg => [msg.sender_username, msg.recipient_username]))]
+    .filter(username => username && username !== currentUser.username)
+    .map(username => ({
+      username,
+      unreadCount: regularMessages.filter(msg => msg.sender_username === username && !msg.is_read).length
+    }));
+
+  const handleSelectConversation = async (username) => {
+    setSelectedConversation(username);
+
+    const unreadMessages = regularMessages.filter(msg => msg.sender_username === username && !msg.is_read);
+    for (const msg of unreadMessages) {
+      try {
+        await fetch(`/api/messages/${msg.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Role': currentUser.role,
+          },
+          body: JSON.stringify({ is_read: true }),
+        });
+        // Optimistically update the UI
+        setMessages(prevMessages => prevMessages.map(m => m.id === msg.id ? { ...m, is_read: true } : m));
+      } catch (error) {
+        console.error('Error marking message as read:', error);
+      }
+    }
+  };
 
   return (
     <div className="messages-container">
