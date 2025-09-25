@@ -387,6 +387,22 @@ app.put('/api/messages/:id', authorizeRole(['admin', 'internal']), async (req, r
   }
 });
 
+app.get('/api/messages/unread-count', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const username = req.headers['x-user-username'];
+
+  try {
+    const result = await pool.query(
+      'SELECT COUNT(*) FROM messages WHERE recipient_username = $1 AND is_read = false',
+      [username]
+    );
+    const unreadCount = parseInt(result.rows[0].count, 10);
+    res.status(200).json({ unreadCount });
+  } catch (error) {
+    console.error('Error fetching unread message count:', error.stack);
+    res.status(500).json({ message: 'Error fetching unread message count', error: error.message });
+  }
+});
+
 // Archive Endpoint
 app.put('/api/entries/:entryType/:id/archive', authorizeRole(['admin']), async (req, res) => {
   const { entryType, id } = req.params;

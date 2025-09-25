@@ -24,7 +24,7 @@
 
 .archive-requests {
   margin-bottom: 20px;
-  border: 1px solid #ccc;
+  background-color: #646464;
   padding: 15px;
   border-radius: 5px;
 }
@@ -44,6 +44,7 @@
 
 .conversations-sidebar h3 {
   margin-top: 0;
+  color: #c07481;
 }
 
 .conversations-sidebar ul {
@@ -55,11 +56,21 @@
 .conversations-sidebar li {
   padding: 10px;
   cursor: pointer;
+  color: #c07481;
 }
 
 .conversations-sidebar li.active {
   background-color: #f0f0f0;
   font-weight: bold;
+}
+
+.notification-bubble {
+  background-color: #c07481;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 10px;
+  margin-left: 10px;
 }
 
 .conversation-view {
@@ -81,12 +92,12 @@
 
 .message.sent {
   text-align: right;
-  color: #c07481;
+  color: #000000;
 }
 
 .message.received {
   text-align: left;
-  color: #000000;
+  color: #444444;
 }
 
 .message-input {

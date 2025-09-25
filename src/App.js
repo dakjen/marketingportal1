@@ -30,6 +30,32 @@ import MessagesPage from './MessagesPage';
      const { isLoggedIn, logout, currentUser } = useContext(AuthContext);
      const { projects, activeProject, selectProject } = useContext(ProjectContext);
      const [showDropdown, setShowDropdown] = useState(false);
+     const [unreadCount, setUnreadCount] = useState(0);
+
+     useEffect(() => {
+       const fetchUnreadCount = async () => {
+         if (!currentUser) return;
+
+         try {
+           const response = await fetch('/api/messages/unread-count', {
+             headers: {
+               'X-User-Username': currentUser.username,
+             },
+           });
+           if (response.ok) {
+             const data = await response.json();
+             setUnreadCount(data.unreadCount);
+           }
+         } catch (error) {
+           console.error('Failed to fetch unread message count:', error);
+         }
+       };
+
+       fetchUnreadCount();
+       const interval = setInterval(fetchUnreadCount, 30000); // Poll every 30 seconds
+
+       return () => clearInterval(interval);
+     }, [currentUser]);
    
      return (
        <div>

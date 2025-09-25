@@ -27,8 +27,8 @@ nav {
 .tab-item a {
   display: block;
   padding: 10px 15px;
-  background-color: #23203e; /* Accent color */
-  border: 1px solid #23203e; /* Accent color */
+  #000000 /* Accent color */
+  border: 1px solid #000000; /* Accent color */
   border-bottom: none;
   border-radius: 5px 5px 0 0;
   text-decoration: none;
@@ -44,7 +44,7 @@ nav {
 
 .tab-item a.active {
   background-color: #333050; /* Active tab background */
-  border-color: #23203e; /* Accent color */
+  border-color: #000000; /* Accent color */
   border-bottom: 1px solid #333050; /* To cover the border-bottom of the container */
   color: #fff;
 }
@@ -101,7 +101,7 @@ nav {
 .dropdown-item {
   padding: 10px 15px;
   text-decoration: none;
-  color: #23203e;
+  color: #000000;
   background-color: transparent;
   border: none;
   text-align: left;

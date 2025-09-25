@@ -57,6 +57,7 @@ function MessagesPage() {
       }
     };
     fetchMessages();
+    setSelectedConversation(null); // Reset conversation on project change
   }, [activeProject, currentUser]);
 
   const handleSendMessage = async () => {
@@ -197,9 +198,10 @@ function MessagesPage() {
         <div className="conversations-sidebar">
           <h3>Conversations</h3>
           <ul>
-            {conversations.map(username => (
-              <li key={username} onClick={() => setSelectedConversation(username)} className={selectedConversation === username ? 'active' : ''}>
-                {username}
+            {conversations.map(conv => (
+              <li key={conv.username} onClick={() => handleSelectConversation(conv.username)} className={selectedConversation === conv.username ? 'active' : ''}>
+                {conv.username}
+                {conv.unreadCount > 0 && <span className="notification-bubble">{conv.unreadCount}</span>}
               </li>
             ))}
           </ul>
@@ -238,6 +240,30 @@ function MessagesPage() {
 
       {showNewMessageModal && (
         <div className="new-message-modal">
+          <div className="modal-content">
+            <h3>Start New Message</h3>
+            <select value={recipient} onChange={(e) => setRecipient(e.target.value)}>
+              <option value="">Select Recipient</option>
+              {users.map(user => (
+                <option key={user.username} value={user.username}>{user.username}</option>
+              ))}
+            </select>
+            <textarea
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
+            />
+            <button onClick={handleSendMessage}>Send</button>
+            <button onClick={() => setShowNewMessageModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default MessagesPage;
+modal">
           <div className="modal-content">
             <h3>Start New Message</h3>
             <select value={recipient} onChange={(e) => setRecipient(e.target.value)}>
