@@ -69,6 +69,7 @@ import React, { useContext, useState } from 'react';
                    </li>
                  )}
                  <li className="tab-item profile-dropdown-container">
+                   {currentUser && <p className="user-display">User: {currentUser.username}</p>}
                    <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
                      <i className="fas fa-user-circle"></i>
                    </div>
@@ -88,8 +89,6 @@ import React, { useContext, useState } from 'react';
            </ul>
            {isLoggedIn && (
              <div className="app-login-status-display">
-        {currentUser && <p>User: {currentUser.username}</p>}
-        <p>Status: {isLoggedIn ? 'Logged In' : 'Logged Out'}</p>
        </div>
            )}
          </nav>
@@ -148,6 +147,14 @@ import React, { useContext, useState } from 'react';
              </PrivateRoute>
            }
          />
+         <Route
+            path="/messages"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'internal']}>
+                <MessagesPage />
+              </PrivateRoute>
+            }
+          />
        </Routes>
      </div>
    );
