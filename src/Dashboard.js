@@ -21,143 +21,158 @@ function Dashboard({ projects, activeProject, selectProject }) {
   const [totalSpend, setTotalSpend] = useState(0);
 
   useEffect(() => {
-    if (!activeProject) {
-      setTotalPhysicalSpend(0);
-      setCurrentMonthPhysicalSpend(0);
-      setFirstMonthPhysicalSpend(0);
-      setAverageMonthlyPhysicalSpend(0);
-      setTotalSocialMediaSpend(0);
-      setCurrentMonthSocialMediaSpend(0);
-      setFirstMonthSocialMediaSpend(0);
-      setAverageMonthlySocialMediaSpend(0);
-      setTotalSpend(0);
-      return;
-    }
+    const fetchEntryData = async () => {
+      if (!activeProject || !currentUser) {
+        setTotalPhysicalSpend(0);
+        setCurrentMonthPhysicalSpend(0);
+        setFirstMonthPhysicalSpend(0);
+        setAverageMonthlyPhysicalSpend(0);
+        setTotalSocialMediaSpend(0);
+        setCurrentMonthSocialMediaSpend(0);
+        setFirstMonthSocialMediaSpend(0);
+        setAverageMonthlySocialMediaSpend(0);
+        setTotalSpend(0);
+        return;
+      }
 
-    const physicalKey = `${activeProject.name}_physicalMarketingEntries`;
+      const headers = {
+        'X-User-Role': currentUser.role,
+        'X-User-Allowed-Projects': JSON.stringify(currentUser.allowedProjects || []),
+      };
 
-    const savedPhysicalEntries = localStorage.getItem(physicalKey);
-    if (savedPhysicalEntries) {
-      const parsedPhysicalEntries = JSON.parse(savedPhysicalEntries);
+      try {
+        // Fetch Physical Marketing Entries
+        const physicalResponse = await fetch(`/api/physicalmarketingentries?project_name=${activeProject.name}`, { headers });
+        if (!physicalResponse.ok) {
+          throw new Error(`HTTP error! status: ${physicalResponse.status}`);
+        }
+        const physicalData = await physicalResponse.json();
+        const parsedPhysicalEntries = physicalData.entries;
 
-      const calculatedTotalPhysicalSpend = parsedPhysicalEntries.reduce((sum, entry) => {
-        const cost = parseFloat(entry.cost);
-        return isNaN(cost) ? sum : sum + cost;
-      }, 0);
-      setTotalPhysicalSpend(calculatedTotalPhysicalSpend);
-
-      // Calculate Current Month Physical Spend
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-      const calculatedCurrentMonthSpend = parsedPhysicalEntries.reduce((sum, entry) => {
-        const entryDate = new Date(entry.date);
-        if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
+        const calculatedTotalPhysicalSpend = parsedPhysicalEntries.reduce((sum, entry) => {
           const cost = parseFloat(entry.cost);
           return isNaN(cost) ? sum : sum + cost;
-        }
-        return sum;
-      }, 0);
-      setCurrentMonthPhysicalSpend(calculatedCurrentMonthSpend);
+        }, 0);
+        setTotalPhysicalSpend(calculatedTotalPhysicalSpend);
 
-      // Calculate First Month Physical Spend and Average Monthly Spend
-      if (parsedPhysicalEntries.length > 0) {
-        const sortedEntries = [...parsedPhysicalEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
-        const firstEntryDate = new Date(sortedEntries[0].date);
-        const firstMonth = firstEntryDate.getMonth();
-        const firstYear = firstEntryDate.getFullYear();
-
-        const calculatedFirstMonthSpend = sortedEntries.reduce((sum, entry) => {
+        // Calculate Current Month Physical Spend
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        const calculatedCurrentMonthSpend = parsedPhysicalEntries.reduce((sum, entry) => {
           const entryDate = new Date(entry.date);
-          if (entryDate.getMonth() === firstMonth && entryDate.getFullYear() === firstYear) {
+          if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
             const cost = parseFloat(entry.cost);
             return isNaN(cost) ? sum : sum + cost;
           }
           return sum;
         }, 0);
-        setFirstMonthPhysicalSpend(calculatedFirstMonthSpend);
+        setCurrentMonthPhysicalSpend(calculatedCurrentMonthSpend);
 
-        // Calculate Average Monthly Spend
-        const monthlySpends = {};
-        sortedEntries.forEach(entry => {
-          const entryDate = new Date(entry.date);
-          const monthYear = `${entryDate.getMonth()}-${entryDate.getFullYear()}`;
-          const cost = parseFloat(entry.cost);
-          if (!isNaN(cost)) {
-            monthlySpends[monthYear] = (monthlySpends[monthYear] || 0) + cost;
-          }
-        });
+        // Calculate First Month Physical Spend and Average Monthly Spend
+        if (parsedPhysicalEntries.length > 0) {
+          const sortedEntries = [...parsedPhysicalEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
+          const firstEntryDate = new Date(sortedEntries[0].date);
+          const firstMonth = firstEntryDate.getMonth();
+          const firstYear = firstEntryDate.getFullYear();
 
-        const numberOfMonths = Object.keys(monthlySpends).length;
-        const totalSpendForAllMonths = Object.values(monthlySpends).reduce((sum, spend) => sum + spend, 0);
-        setAverageMonthlyPhysicalSpend(numberOfMonths > 0 ? totalSpendForAllMonths / numberOfMonths : 0);
-      }
-    }
+          const calculatedFirstMonthSpend = sortedEntries.reduce((sum, entry) => {
+            const entryDate = new Date(entry.date);
+            if (entryDate.getMonth() === firstMonth && entryDate.getFullYear() === firstYear) {
+              const cost = parseFloat(entry.cost);
+              return isNaN(cost) ? sum : sum + cost;
+            }
+            return sum;
+          }, 0);
+          setFirstMonthPhysicalSpend(calculatedFirstMonthSpend);
 
-    const socialKey = `${activeProject.name}_socialMediaEntries`;
-    const savedSocialMediaEntries = localStorage.getItem(socialKey);
-    if (savedSocialMediaEntries) {
-      const parsedSocialMediaEntries = JSON.parse(savedSocialMediaEntries);
+          // Calculate Average Monthly Spend
+          const monthlySpends = {};
+          sortedEntries.forEach(entry => {
+            const entryDate = new Date(entry.date);
+            const monthYear = `${entryDate.getMonth()}-${entryDate.getFullYear()}`;
+            const cost = parseFloat(entry.cost);
+            if (!isNaN(cost)) {
+              monthlySpends[monthYear] = (monthlySpends[monthYear] || 0) + cost;
+            }
+          });
 
-      const calculatedTotalSocialMediaSpend = parsedSocialMediaEntries.reduce((sum, entry) => {
-        const cost = parseFloat(entry.cost);
-        return isNaN(cost) ? sum : sum + cost;
-      }, 0);
-      setTotalSocialMediaSpend(calculatedTotalSocialMediaSpend);
+          const numberOfMonths = Object.keys(monthlySpends).length;
+          const totalSpendForAllMonths = Object.values(monthlySpends).reduce((sum, spend) => sum + spend, 0);
+          setAverageMonthlyPhysicalSpend(numberOfMonths > 0 ? totalSpendForAllMonths / numberOfMonths : 0);
+        } else {
+          setFirstMonthPhysicalSpend(0);
+          setAverageMonthlyPhysicalSpend(0);
+        }
 
-      // Calculate Current Month Social Media Spend
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-      const calculatedCurrentMonthSpend = parsedSocialMediaEntries.reduce((sum, entry) => {
-        const entryDate = new Date(entry.date);
-        if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
+        // Fetch Social Media Entries
+        const socialResponse = await fetch(`/api/socialmediaentries?project_name=${activeProject.name}`, { headers });
+        if (!socialResponse.ok) {
+          throw new Error(`HTTP error! status: ${socialResponse.status}`);
+        }
+        const socialData = await socialResponse.json();
+        const parsedSocialMediaEntries = socialData.entries;
+
+        const calculatedTotalSocialMediaSpend = parsedSocialMediaEntries.reduce((sum, entry) => {
           const cost = parseFloat(entry.cost);
           return isNaN(cost) ? sum : sum + cost;
-        }
-        return sum;
-      }, 0);
-      setCurrentMonthSocialMediaSpend(calculatedCurrentMonthSpend);
+        }, 0);
+        setTotalSocialMediaSpend(calculatedTotalSocialMediaSpend);
 
-      // Calculate First Month Social Media Spend and Average Monthly Spend
-      if (parsedSocialMediaEntries.length > 0) {
-        const sortedEntries = [...parsedSocialMediaEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
-        const firstEntryDate = new Date(sortedEntries[0].date);
-        const firstMonth = firstEntryDate.getMonth();
-        const firstYear = firstEntryDate.getFullYear();
-
-        const calculatedFirstMonthSpend = sortedEntries.reduce((sum, entry) => {
+        // Calculate Current Month Social Media Spend
+        const calculatedCurrentMonthSpendSocial = parsedSocialMediaEntries.reduce((sum, entry) => {
           const entryDate = new Date(entry.date);
-          if (entryDate.getMonth() === firstMonth && entryDate.getFullYear() === firstYear) {
+          if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
             const cost = parseFloat(entry.cost);
             return isNaN(cost) ? sum : sum + cost;
           }
           return sum;
         }, 0);
-        setFirstMonthSocialMediaSpend(calculatedFirstMonthSpend);
+        setCurrentMonthSocialMediaSpend(calculatedCurrentMonthSpendSocial);
 
-        // Calculate Average Monthly Spend
-        const monthlySpends = {};
-        sortedEntries.forEach(entry => {
-          const entryDate = new Date(entry.date);
-          const monthYear = `${entryDate.getMonth()}-${entryDate.getFullYear()}`;
-          const cost = parseFloat(entry.cost);
-          if (!isNaN(cost)) {
-            monthlySpends[monthYear] = (monthlySpends[monthYear] || 0) + cost;
-          }
-        });
+        // Calculate First Month Social Media Spend and Average Monthly Spend
+        if (parsedSocialMediaEntries.length > 0) {
+          const sortedEntries = [...parsedSocialMediaEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
+          const firstEntryDate = new Date(sortedEntries[0].date);
+          const firstMonth = firstEntryDate.getMonth();
+          const firstYear = firstEntryDate.getFullYear();
 
-        const firstMonthYear = `${firstMonth}-${firstYear}`;
-        if (monthlySpends[firstMonthYear]) {
-          delete monthlySpends[firstMonthYear];
+          const calculatedFirstMonthSpendSocial = sortedEntries.reduce((sum, entry) => {
+            const entryDate = new Date(entry.date);
+            if (entryDate.getMonth() === firstMonth && entryDate.getFullYear() === firstYear) {
+              const cost = parseFloat(entry.cost);
+              return isNaN(cost) ? sum : sum + cost;
+            }
+            return sum;
+          }, 0);
+          setFirstMonthSocialMediaSpend(calculatedFirstMonthSpendSocial);
+
+          // Calculate Average Monthly Spend
+          const monthlySpends = {};
+          sortedEntries.forEach(entry => {
+            const entryDate = new Date(entry.date);
+            const monthYear = `${entryDate.getMonth()}-${entryDate.getFullYear()}`;
+            const cost = parseFloat(entry.cost);
+            if (!isNaN(cost)) {
+              monthlySpends[monthYear] = (monthlySpends[monthYear] || 0) + cost;
+            }
+          });
+
+          const numberOfMonths = Object.keys(monthlySpends).length;
+          const totalSpendForAllMonths = Object.values(monthlySpends).reduce((sum, spend) => sum + spend, 0);
+          setAverageMonthlySocialMediaSpend(numberOfMonths > 0 ? totalSpendForAllMonths / numberOfMonths : 0);
+        } else {
+          setFirstMonthSocialMediaSpend(0);
+          setAverageMonthlySocialMediaSpend(0);
         }
 
-        const numberOfMonths = Object.keys(monthlySpends).length;
-        const totalSpendForAllMonths = Object.values(monthlySpends).reduce((sum, spend) => sum + spend, 0);
-        setAverageMonthlySocialMediaSpend(numberOfMonths > 0 ? totalSpendForAllMonths / numberOfMonths : 0);
+      } catch (error) {
+        console.error('Error fetching dashboard entry data:', error);
+        alert('Failed to load dashboard data. Please try again.');
       }
-    }
-  }, [activeProject]); // Re-run effect when activeProject changes
+    };
+    fetchEntryData();
+  }, [activeProject, currentUser]);
 
   useEffect(() => {
     setTotalSpend(totalPhysicalSpend + totalSocialMediaSpend);

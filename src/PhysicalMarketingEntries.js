@@ -14,22 +14,35 @@ function PhysicalMarketingEntries() {
   const [lengthOfTimeUnit, setLengthOfTimeUnit] = useState('Days'); // New state for dropdown
   const [notes, setNotes] = useState('');
 
-  const [entries, setEntries] = useState(() => {
-    // Initialize state from localStorage
-    if (!activeProject) return []; // This conditional is fine within the initializer
-    const savedEntries = localStorage.getItem(`${activeProject.name}_physicalMarketingEntries`);
-    return savedEntries ? JSON.parse(savedEntries) : [];
-  });
+  const [entries, setEntries] = useState([]);
 
-  // Effect to reload entries when activeProject changes
+  // Effect to load entries when activeProject or currentUser changes
   useEffect(() => {
-    if (activeProject) {
-      const savedEntries = localStorage.getItem(`${activeProject.name}_physicalMarketingEntries`);
-      setEntries(savedEntries ? JSON.parse(savedEntries) : []);
-    } else {
-      setEntries([]);
-    }
-  }, [activeProject]);
+    const fetchEntries = async () => {
+      if (!activeProject || !currentUser) {
+        setEntries([]);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/physicalmarketingentries?project_name=${activeProject.name}`, {
+          headers: {
+            'X-User-Role': currentUser.role,
+            'X-User-Allowed-Projects': JSON.stringify(currentUser.allowedProjects || []),
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setEntries(data.entries);
+      } catch (error) {
+        console.error("Failed to fetch physical marketing entries:", error);
+        alert('Failed to load physical marketing entries. Please try again.');
+      }
+    };
+    fetchEntries();
+  }, [activeProject, currentUser]);
 
   const [editingIndex, setEditingIndex] = useState(null); // Stores the index of the entry being edited
   const [editedDate, setEditedDate] = useState('');
@@ -39,13 +52,9 @@ function PhysicalMarketingEntries() {
   const [editedLengthOfTimeUnit, setEditedLengthOfTimeUnit] = useState('Days');
   const [editedNotes, setEditedNotes] = useState('');
 
-  // Save entries to localStorage whenever the entries state changes
-  useEffect(() => {
-    if (!activeProject) return;
-    localStorage.setItem(`${activeProject.name}_physicalMarketingEntries`, JSON.stringify(entries));
-  }, [entries, activeProject]);
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!activeProject) {
       alert('Please select a project first.');
@@ -56,52 +65,124 @@ function PhysicalMarketingEntries() {
       alert('Please enter a value for Length of Time.');
       return;
     }
-    const newEntry = { date, cost, type, lengthOfTime, name: currentUser.username, notes };
-    setEntries([...entries, newEntry]);
-    // Clear form fields
-    setDate('');
-    setCost('');
-    setType('');
-    setLengthOfTimeValue('');
-    setLengthOfTimeUnit('Days'); // Reset to default
-    setNotes('');
-  };
 
-  const handleDeleteEntry = (indexToDelete) => {
-    if (!activeProject) return;
-    if (window.confirm('Are you sure you want to delete this entry?')) {
-      const updatedEntries = entries.filter((_, index) => index !== indexToDelete);
-      setEntries(updatedEntries);
+    const newEntryData = {
+      project_name: activeProject.name,
+      date,
+      cost: parseFloat(cost),
+      type,
+      length_of_time: lengthOfTime,
+      username: currentUser.username,
+      notes,
+    };
+
+    try {
+      const response = await fetch('/api/physicalmarketingentries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role,
+          'X-User-Allowed-Projects': JSON.stringify(currentUser.allowedProjects || []),
+        },
+        body: JSON.stringify(newEntryData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add entry');
+      }
+
+      const addedEntry = await response.json();
+      setEntries(prevEntries => [...prevEntries, addedEntry]);
+
+      alert('Entry added successfully!');
+      // Clear form fields
+      setDate('');
+      setCost('');
+      setType('');
+      setLengthOfTimeValue('');
+      setLengthOfTimeUnit('Days'); // Reset to default
+      setNotes('');
+    } catch (error) {
+      console.error('Error adding physical marketing entry:', error);
+      alert(error.message || 'Failed to add entry. Please try again.');
     }
   };
 
-  const handleEditClick = (entry, index) => {
-    setEditingIndex(index);
+  const handleDeleteEntry = async (idToDelete) => {
+    if (!activeProject) return;
+    if (window.confirm('Are you sure you want to delete this entry?')) {
+      try {
+        const response = await fetch(`/api/physicalmarketingentries/${idToDelete}`, {
+          method: 'DELETE',
+          headers: {
+            'X-User-Role': currentUser.role,
+            'X-User-Allowed-Projects': JSON.stringify(currentUser.allowedProjects || []),
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to delete entry');
+        }
+
+        setEntries(prevEntries => prevEntries.filter(entry => entry.id !== idToDelete));
+        alert('Entry deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting physical marketing entry:', error);
+        alert(error.message || 'Failed to delete entry. Please try again.');
+      }
+    }
+  };
+
+  const handleEditClick = (entry) => {
+    setEditingIndex(entry.id); // Use entry.id as the editing index
     setEditedDate(entry.date);
     setEditedCost(entry.cost);
     setEditedType(entry.type);
-    const [value, unit] = entry.lengthOfTime.split(' ');
+    const [value, unit] = entry.length_of_time.split(' ');
     setEditedLengthOfTimeValue(value || '');
     setEditedLengthOfTimeUnit(unit || 'Days');
     setEditedNotes(entry.notes);
   };
 
-  const handleSaveEdit = (indexToSave) => {
+  const handleSaveEdit = async (idToSave) => {
     if (!activeProject) return;
-    const updatedEntries = entries.map((entry, index) =>
-      index === indexToSave
-        ? {
-            ...entry,
-            date: editedDate,
-            cost: editedCost,
-            type: editedType,
-            lengthOfTime: `${editedLengthOfTimeValue} ${editedLengthOfTimeUnit}`.trim(),
-            notes: editedNotes,
-          }
-        : entry
-    );
-    setEntries(updatedEntries);
-    setEditingIndex(null); // Exit edit mode
+    const updatedEntryData = {
+      project_name: activeProject.name,
+      date: editedDate,
+      cost: parseFloat(editedCost),
+      type: editedType,
+      length_of_time: `${editedLengthOfTimeValue} ${editedLengthOfTimeUnit}`.trim(),
+      username: currentUser.username,
+      notes: editedNotes,
+    };
+
+    try {
+      const response = await fetch(`/api/physicalmarketingentries/${idToSave}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role,
+          'X-User-Allowed-Projects': JSON.stringify(currentUser.allowedProjects || []),
+        },
+        body: JSON.stringify(updatedEntryData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update entry');
+      }
+
+      const updatedEntry = await response.json();
+      setEntries(prevEntries => prevEntries.map(entry => entry.id === idToSave ? updatedEntry : entry));
+
+      alert('Entry updated successfully!');
+      setEditingIndex(null); // Exit edit mode
+    } catch (error) {
+      console.error('Error updating physical marketing entry:', error);
+      alert(error.message || 'Failed to update entry. Please try again.');
+    }
   };
 
   const handleCancelEdit = () => {
@@ -228,9 +309,9 @@ function PhysicalMarketingEntries() {
             </tr>
           </thead>
           <tbody>
-            {entries.map((entry, index) => (
-              <tr key={index}>
-                {editingIndex === index ? (
+            {entries.map((entry) => (
+              <tr key={entry.id}>
+                {editingIndex === entry.id ? (
                   <td colSpan={currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal') ? 7 : 6}> {/* Adjust colspan based on admin or internal role */}
                     <div className="edit-entry-form-inline">
                       <label>Date:</label>
@@ -255,7 +336,7 @@ function PhysicalMarketingEntries() {
                       </select>
                       <label>Notes:</label>
                       <textarea value={editedNotes} onChange={(e) => setEditedNotes(e.target.value)} rows="1"></textarea>
-                      <button onClick={() => handleSaveEdit(index)} className="save-entry-button">Save</button>
+                      <button onClick={() => handleSaveEdit(entry.id)} className="save-entry-button">Save</button>
                       <button onClick={handleCancelEdit} className="cancel-entry-button">Cancel</button>
                     </div>
                   </td>
@@ -264,13 +345,13 @@ function PhysicalMarketingEntries() {
                     <td>{entry.date}</td>
                     <td>{entry.cost}</td>
                     <td>{entry.type}</td>
-                    <td>{entry.lengthOfTime}</td>
-                    <td>{entry.name}</td>
+                    <td>{entry.length_of_time}</td>
+                    <td>{entry.username}</td>
                     <td>{entry.notes}</td>
                     {currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal') && (
                       <td>
-                        <button onClick={() => handleDeleteEntry(index)} className="delete-entry-button">Delete</button>
-                        <button onClick={() => handleEditClick(entry, index)} className="edit-entry-button">Edit</button>
+                        <button onClick={() => handleDeleteEntry(entry.id)} className="delete-entry-button">Delete</button>
+                        <button onClick={() => handleEditClick(entry)} className="edit-entry-button">Edit</button>
                       </td>
                     )}
                   </>
