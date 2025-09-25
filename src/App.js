@@ -5,6 +5,7 @@ import React, { useContext, useState } from 'react';
      import SocialMediaEntries from './SocialMediaEntries';
      import PhysicalMarketingEntries from './PhysicalMarketingEntries';
      import ProjectManagementPage from './ProjectManagementPage';
+import MessagesPage from './MessagesPage';
      import LoginPage from './LoginPage';
      import ProfilePage from './ProfilePage';
      import ContactAdminPage from './ContactAdminPage';
