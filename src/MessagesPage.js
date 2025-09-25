@@ -263,27 +263,3 @@ function MessagesPage() {
 }
 
 export default MessagesPage;
-modal">
-          <div className="modal-content">
-            <h3>Start New Message</h3>
-            <select value={recipient} onChange={(e) => setRecipient(e.target.value)}>
-              <option value="">Select Recipient</option>
-              {users.map(user => (
-                <option key={user.username} value={user.username}>{user.username}</option>
-              ))}
-            </select>
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
-            />
-            <button onClick={handleSendMessage}>Send</button>
-            <button onClick={() => setShowNewMessageModal(false)}>Cancel</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default MessagesPage;
