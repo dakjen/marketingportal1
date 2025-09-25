@@ -99,7 +99,48 @@ function MessagesPage() {
   };
 
   const handleArchive = async (message) => {
-    // ... (implementation from before)
+    try {
+      // Archive the entry
+      const archiveResponse = await fetch(`/api/entries/${message.related_entry_type}/${message.related_entry_id}/archive`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role,
+        },
+      });
+
+      if (!archiveResponse.ok) {
+        const errorData = await archiveResponse.json();
+        throw new Error(errorData.message || 'Failed to archive entry');
+      }
+
+      // Mark the message as read
+      const readResponse = await fetch(`/api/messages/${message.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Role': currentUser.role,
+          },
+          body: JSON.stringify({ is_read: true }),
+        }
+      );
+
+      if (!readResponse.ok) {
+        const errorData = await readResponse.json();
+        throw new Error(errorData.message || 'Failed to mark message as read');
+      }
+
+      // Update the UI
+      setMessages(prevMessages => prevMessages.map(msg =>
+        msg.id === message.id ? { ...msg, is_read: true } : msg
+      ));
+
+      alert('Entry archived successfully!');
+    } catch (error) {
+      console.error('Error archiving entry:', error);
+      alert(error.message || 'Failed to archive entry. Please try again.');
+    }
   };
 
   const archiveRequests = messages.filter(msg => msg.message_type === 'archive_request' && !msg.is_read);
@@ -115,7 +156,21 @@ function MessagesPage() {
       </div>
 
       <div className="project-selection">
-        {/* ... project selection ... */}
+        <label htmlFor="project-select">Select Project:</label>
+        <select
+          id="project-select"
+          value={activeProject ? activeProject.name : ''}
+          onChange={(e) => selectProject(e.target.value)}
+        >
+          <option value="">-- Select a Project --</option>
+          {projects.map((project) => (
+            <option key={project.name} value={project.name}>
+              {project.name}
+            </option>
+          ))}
+        </select>
+        {activeProject && <p>Current Project: <strong>{activeProject.name}</strong></p>}
+        {!activeProject && <p className="no-project-selected">Please select a project to view messages.</p>}
       </div>
 
       {currentUser.role === 'admin' && (

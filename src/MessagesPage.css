@@ -11,7 +11,7 @@
 
 .start-message-button {
   padding: 10px 15px;
-  background-color: #007bff;
+  background-color: #444444;
   color: white;
   border: none;
   border-radius: 5px;
@@ -81,10 +81,12 @@
 
 .message.sent {
   text-align: right;
+  color: #c07481;
 }
 
 .message.received {
   text-align: left;
+  color: #000000;
 }
 
 .message-input {
