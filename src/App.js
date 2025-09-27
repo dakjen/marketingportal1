@@ -58,69 +58,69 @@ import MessagesPage from './MessagesPage';
      }, [currentUser]);
    
      return (
-       <div>
-         <nav>
-           <ul className="tabs-container">
-             {isLoggedIn && (
-               <>
-                 <li className="tab-item">
-                   <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
-                     Dashboard
-                   </NavLink>
-                 </li>
-                 {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
-                   <li className="tab-item">
-                     <NavLink to="/social-media" className={({ isActive }) => (isActive ? 'active' : '')}>
-                       Social media entries
-                     </NavLink>
-                   </li>
-                 )}
-                 {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
-                   <li className="tab-item">
-                     <NavLink to="/physical-marketing" className={({ isActive }) => (isActive ? 'active' : '')}>
-                       Physical marketing entries
-                                           </NavLink>
-                                        </li>
-                                      )}
-                                      {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
-                                        <li className="tab-item">
-                                          <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
-                                            Messages
-                                          </NavLink>
-                                        </li>
-                                      )}
-                                      {(currentUser?.role === 'admin' || currentUser?.role === 'admin2') && (                   <li className="tab-item">
-                     <NavLink to="/project-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
-                       Project Management
-                     </NavLink>
-                   </li>
-                 )}
-                 <li className="tab-item profile-dropdown-container">
-                   {currentUser && <p className="user-display">User: {currentUser.username}</p>}
-                   <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
-                     <i className="fas fa-user-circle"></i>
-                   </div>
-                   {showDropdown && (
-                     <div className="dropdown-menu">
-                       <NavLink to="/profile" className="dropdown-item" onClick={() => setShowDropdown(false)}>
-                         View Profile
-                       </NavLink>
-                       <button onClick={logout} className="dropdown-item">
-                         Logout
-                       </button>
-                     </div>
-                   )}
-                 </li>
-               </>
-             )}
-           </ul>
-           {isLoggedIn && (
-             <div className="app-login-status-display">
-       </div>
-           )}
-         </nav>
-         <hr />
-         <Routes>
+    <div className="app-container">
+      {isLoggedIn && (
+        <>
+          <nav>
+            <ul className="tabs-container">
+              <li className="tab-item">
+                <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+                  Dashboard
+                </NavLink>
+              </li>
+              {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
+                <li className="tab-item">
+                  <NavLink to="/social-media" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    Social media entries
+                  </NavLink>
+                </li>
+              )}
+              {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
+                <li className="tab-item">
+                  <NavLink to="/physical-marketing" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    Physical marketing entries
+                  </NavLink>
+                </li>
+              )}
+              {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
+                <li className="tab-item">
+                  <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    Messages
+                  </NavLink>
+                </li>
+              )}
+              {(currentUser?.role === 'admin' || currentUser?.role === 'admin2') && (                   <li className="tab-item">
+                <NavLink to="/project-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
+                  Project Management
+                </NavLink>
+              </li>
+              )}
+              <li className="tab-item profile-dropdown-container">
+                {currentUser && <p className="user-display">User: {currentUser.username}</p>}
+                <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
+                  <i className="fas fa-user-circle"></i>
+                </div>
+                {showDropdown && (
+                  <div className="dropdown-menu">
+                    <NavLink to="/profile" className="dropdown-item" onClick={() => setShowDropdown(false)}>
+                      View Profile
+                    </NavLink>
+                    <button onClick={logout} className="dropdown-item">
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </li>
+            </ul>
+            <div className="app-login-status-display">
+      </div>
+          </nav>
+          <hr />
+        </>
+      )}
+      <div className="main-content">
+        {isLoggedIn && <Sidebar />}
+        <Routes>
            <Route path="/intro" element={isLoggedIn ? <Navigate to="/" /> : <IntroScreen />} />
            <Route path="/request-account" element={isLoggedIn ? <Navigate to="/" /> : <RequestAccountPage />} />
 
