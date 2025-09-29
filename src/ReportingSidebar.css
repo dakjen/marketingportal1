@@ -27,7 +27,11 @@
 
 .reporting-sidebar li {
   margin-bottom: 8px;
-  color: #646464; /* New color */
+}
+
+.reporting-sidebar li a {
+  color: #000000; /* Black color for links */
+  text-decoration: none; /* Remove underline */
 }
 
 .reporting-sidebar .sidebar-title {
