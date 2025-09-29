@@ -4,3 +4,59 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.report-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.report-section h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.report-controls label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.report-controls input[type="date"],
+.report-controls textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.report-controls button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.report-controls button:hover {
+  background-color: #0056b3;
+}
+
+.report-output {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.report-output h4 {
+  margin-top: 0;
+  color: #555;
+}
