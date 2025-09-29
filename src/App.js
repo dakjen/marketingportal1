@@ -6,6 +6,7 @@ import React, { useContext, useState, useEffect } from 'react';
      import PhysicalMarketingEntries from './PhysicalMarketingEntries';
      import ProjectManagementPage from './ProjectManagementPage';
 import MessagesPage from './MessagesPage';
+import Sidebar from './Sidebar';
      import LoginPage from './LoginPage';
      import ProfilePage from './ProfilePage';
      import ContactAdminPage from './ContactAdminPage';
@@ -174,19 +175,19 @@ import MessagesPage from './MessagesPage';
              </PrivateRoute>
            }
          />
-         <Route
-            path="/messages"
-            element={
-              <PrivateRoute allowedRoles={['admin', 'internal']}>
-                <MessagesPage />
-              </PrivateRoute>
-            }
-          />
-       </Routes>
-     </div>
-   );
- }
- 
+                    <Route
+                     path="/messages"
+                     element={
+                       <PrivateRoute allowedRoles={['admin', 'internal']}>
+                         <MessagesPage />
+                       </PrivateRoute>
+                     }
+                   />
+                </Routes>
+               </div>
+             </div>
+           );
+         } 
  function App() {
   const AppProviders = () => {
     const { reloadUser } = useContext(AuthContext);
