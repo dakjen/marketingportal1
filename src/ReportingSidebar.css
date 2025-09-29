@@ -44,5 +44,5 @@
 }
 
 .reporting-sidebar h2 a {
-  text-decoration: none;
+  text-decoration: none !important;
 }
