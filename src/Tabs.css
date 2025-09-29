@@ -11,3 +11,28 @@
   font-size: 12px;
   margin-left: 5px;
 }
+
+.tabs-container {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+.tab-item {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.tab-item a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.tab-item a.active {
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+}
