@@ -41,6 +41,7 @@ import Sidebar from './Sidebar';
            const response = await fetch('/api/messages/unread-count', {
              headers: {
                'X-User-Username': currentUser.username,
+               'X-User-Role': currentUser.role,
              },
            });
            if (response.ok) {
