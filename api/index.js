@@ -4,7 +4,6 @@ const express = require('express');
 const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs'); // Import the file system module
 
 const app = express();
 app.use(express.json());
@@ -46,12 +45,6 @@ pool.connect((err, client, release) => {
     console.log('Database connected successfully at:', result.rows[0].now);
   });
 });
-
-// Ensure the uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-}
 
 // Create tables if they don't exist
 (async () => {
@@ -123,15 +116,8 @@ if (!fs.existsSync(uploadsDir)) {
   }
 })();
 
-// Multer setup for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
+// Multer setup for file uploads (using memory storage for serverless environments)
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Basic test endpoint
@@ -221,10 +207,14 @@ app.get('/api/socialmedia/uploads', async (req, res) => {
 
 app.post('/api/socialmedia/uploads', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
   const { project_name, file_name, type } = req.body;
-  const { path: file_path } = req.file;
   const uploader_username = req.headers['x-user-username'];
 
-  if (!project_name || !file_name || !file_path || !uploader_username || !type) {
+  // In a real-world scenario, you would upload the file to a cloud storage service here.
+  // For now, we'll just log its buffer size to confirm it was received.
+  console.log(`Received file: ${req.file.originalname}, size: ${req.file.buffer.length} bytes`);
+  const file_path = `/${project_name}/socialmedia/${file_name}`; // Simulate a file path
+
+  if (!project_name || !file_name || !uploader_username || !type) {
     return res.status(400).json({ message: 'Missing required fields.' });
   }
 
@@ -257,10 +247,14 @@ app.get('/api/physicalmarketing/uploads', async (req, res) => {
 
 app.post('/api/physicalmarketing/uploads', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
   const { project_name, file_name, type } = req.body;
-  const { path: file_path } = req.file;
   const uploader_username = req.headers['x-user-username'];
 
-  if (!project_name || !file_name || !file_path || !uploader_username || !type) {
+  // In a real-world scenario, you would upload the file to a cloud storage service here.
+  // For now, we'll just log its buffer size to confirm it was received.
+  console.log(`Received file: ${req.file.originalname}, size: ${req.file.buffer.length} bytes`);
+  const file_path = `/${project_name}/physicalmarketing/${file_name}`; // Simulate a file path
+
+  if (!project_name || !file_name || !uploader_username || !type) {
     return res.status(400).json({ message: 'Missing required fields.' });
   }
 
@@ -273,112 +267,6 @@ app.post('/api/physicalmarketing/uploads', authorizeRole(['admin', 'internal']),
   } catch (error) {
     console.error('Error adding physical marketing upload:', error.stack);
     res.status(500).json({ message: 'Error adding physical marketing upload', error: error.message });
-  }
-});
-
-// Basic test endpoint
-app.get('/api/test', (req, res) => {
-  res.status(200).json({ message: 'API is working!' });
-});
-
-// Basic projects endpoint (demonstrates fetching from DB)
-app.get('/api/projects', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT id, name, is_archived FROM projects ORDER BY name');
-    res.status(200).json({ projects: result.rows });
-  } catch (error) {
-    console.error('Error fetching projects:', error.stack);
-    res.status(500).json({ message: 'Error fetching projects', error: error.message });
-  }
-});
-
-// Add a new project
-app.post('/api/projects', authorizeRole(['admin']), async (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: 'Project name is required.' });
-  }
-  try {
-    const result = await pool.query(
-      'INSERT INTO projects(name) VALUES($1) RETURNING id, name, is_archived',
-      [name]
-    );
-    res.status(201).json(result.rows[0]);
-
-    // Automatically grant permission to all admin users for the new project
-    try {
-      const adminUsers = await pool.query(`SELECT username, allowed_projects FROM users WHERE role = 'admin'`);
-      for (const admin of adminUsers.rows) {
-        if (!admin.allowed_projects.includes(name)) {
-          const updatedAllowedProjects = [...admin.allowed_projects, name];
-          await pool.query(
-            'UPDATE users SET allowed_projects = $1 WHERE username = $2',
-            [updatedAllowedProjects, admin.username]
-          );
-        }
-      }
-      console.log(`Project ${name} added to allowed_projects for all admins.`);
-    } catch (adminUpdateError) {
-      console.error('Error updating admin permissions for new project:', adminUpdateError.stack);
-    }
-
-  } catch (error) {
-    console.error('Error adding project:', error.stack);
-    if (error.code === '23505') { // Unique violation
-      return res.status(409).json({ message: 'Project with this name already exists.' });
-    }
-    res.status(500).json({ message: 'Error adding project', error: error.message });
-  }
-});
-
-// Delete a project
-app.delete('/api/projects/:name', authorizeRole(['admin']), async (req, res) => {
-  const { name } = req.params;
-  try {
-    const result = await pool.query('DELETE FROM projects WHERE name = $1 RETURNING name', [name]);
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'Project not found.' });
-    }
-    res.status(200).json({ message: `Project ${name} deleted successfully.` });
-  } catch (error) {
-    console.error('Error deleting project:', error); // Log the full error object
-    res.status(500).json({ message: 'Error deleting project', error: error.message });
-  }
-});
-
-// Social Media Uploads Endpoints
-app.get('/api/socialmedia/uploads', async (req, res) => {
-  const { project_name } = req.query;
-  if (!project_name) {
-    return res.status(400).json({ message: 'Project name is required.' });
-  }
-  try {
-    const result = await pool.query('SELECT * FROM social_media_uploads WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
-    res.status(200).json({ uploads: result.rows });
-  } catch (error) {
-    console.error('Error fetching social media uploads:', error.stack);
-    res.status(500).json({ message: 'Error fetching social media uploads', error: error.message });
-  }
-});
-
-app.post('/api/socialmedia/uploads', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
-  const { project_name, file_name, type } = req.body;
-  const { path: file_path } = req.file;
-  const uploader_username = req.headers['x-user-username'];
-
-  if (!project_name || !file_name || !file_path || !uploader_username || !type) {
-    return res.status(400).json({ message: 'Missing required fields.' });
-  }
-
-  try {
-    const result = await pool.query(
-      'INSERT INTO social_media_uploads(project_name, file_name, file_path, uploader_username, type) VALUES($1, $2, $3, $4, $5) RETURNING *',
-      [project_name, file_name, file_path, uploader_username, type]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error('Error adding social media upload:', error.stack);
-    res.status(500).json({ message: 'Error adding social media upload', error: error.message });
   }
 });
 
