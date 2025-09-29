@@ -191,7 +191,10 @@ function GeneratedReportsPage() {
               <input type="date" value={generalReportEndDate} onChange={(e) => setGeneralReportEndDate(e.target.value)} />
             </label>
             <label>Prompt:
-              <textarea value={generalReportPrompt} onChange={(e) => setGeneralReportPrompt(e.target.value)} rows="3"></textarea>
+              <select value={generalReportPrompt} onChange={(e) => setGeneralReportPrompt(e.target.value)}>
+                <option value="">Select a prompt</option>
+                <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
+              </select>
             </label>
             <button onClick={() => handleGenerateReport('general')}>Generate General Report</button>
           </div>
@@ -222,7 +225,10 @@ function GeneratedReportsPage() {
               <input type="date" value={socialMediaReportEndDate} onChange={(e) => setSocialMediaReportEndDate(e.target.value)} />
             </label>
             <label>Prompt:
-              <textarea value={socialMediaReportPrompt} onChange={(e) => setSocialMediaReportPrompt(e.target.value)} rows="3"></textarea>
+              <select value={socialMediaReportPrompt} onChange={(e) => setSocialMediaReportPrompt(e.target.value)}>
+                <option value="">Select a prompt</option>
+                <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
+              </select>
             </label>
             <button onClick={() => handleGenerateReport('socialMedia')}>Generate Social Media Report</button>
           </div>
