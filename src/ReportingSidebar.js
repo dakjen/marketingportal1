@@ -5,7 +5,7 @@ import './ReportingSidebar.css';
 function ReportingSidebar() {
   return (
     <div className="reporting-sidebar">
-      <h2>Project Reporting</h2>
+      <NavLink to="/reporting"><h2>Project Reporting</h2></NavLink>
       <ul>
         <li><NavLink to="/reporting/monthly-reports">Monthly Reports</NavLink></li>
         <li><NavLink to="/reporting/social-media">Social Media</NavLink></li>
