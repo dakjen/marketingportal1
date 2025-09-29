@@ -11,6 +11,7 @@ import OperationsSocialMediaPage from './OperationsSocialMediaPage';
 import OperationsPhysicalPage from './OperationsPhysicalPage';
 import OperationsWinsPage from './OperationsWinsPage';
 import OperationsPropertyManagementPage from './OperationsPropertyManagementPage';
+import ProjectSwitcher from './ProjectSwitcher'; // New import
 
 function ReportingPage() {
 
@@ -19,6 +20,7 @@ function ReportingPage() {
     <div className="reporting-page-wrapper"> {/* New wrapper for sidebar and content */}
       <ReportingSidebar /> {/* Reporting page's dedicated sidebar */}
       <div className="reporting-main-content">
+        <ProjectSwitcher />
         <Routes>
           <Route path="/" element={
             <div className="reporting-boxes-container">

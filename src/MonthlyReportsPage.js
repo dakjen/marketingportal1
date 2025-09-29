@@ -68,7 +68,7 @@ function MonthlyReportsPage() {
 
   return (
     <div className="monthly-reports-page-container">
-      <h2>Monthly Reports for {activeProject ? activeProject.name : '...'}</h2>
+      <h2>Monthly Reports</h2>
       {monthlyData.length > 0 ? (
         <table>
           <thead>
