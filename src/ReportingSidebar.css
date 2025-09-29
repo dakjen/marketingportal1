@@ -5,6 +5,14 @@
   border-right: 1px solid #eee;
 }
 
+.reporting-sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #fff; /* White color for visibility on dark background */
+  font-size: 1.5em;
+  text-align: center;
+}
+
 .reporting-sidebar h3 {
   margin-top: 0;
   margin-bottom: 15px;
@@ -20,13 +28,13 @@
 
 .reporting-sidebar li {
   margin-bottom: 8px;
-  color: #f0f0f0; /* Lighter color for list items */
+  color: #c07481; /* New color */
 }
 
 .reporting-sidebar .sidebar-title {
   margin-top: 20px; /* Space before title */
   margin-bottom: 10px;
-  color: #fff; /* White color for visibility on dark background */
+  color: #c07481; /* New color */
   font-size: 1.1em;
   font-weight: bold;
   text-transform: uppercase;

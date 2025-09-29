@@ -4,6 +4,7 @@ import './ReportingSidebar.css';
 function ReportingSidebar() {
   return (
     <div className="reporting-sidebar">
+      <h2>Project Reporting</h2>
       <ul>
         <li>Monthly Reports</li>
         <li>Social Media</li>
