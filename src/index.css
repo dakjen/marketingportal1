@@ -6,6 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #d8c49c;
+  padding-left: 220px; /* Space for the fixed sidebar */
 }
 
 code {
@@ -22,5 +23,4 @@ code {
   flex-grow: 1; /* Allow it to take up remaining space */
   display: flex; /* Enable flexbox for its children (nav and main-content) */
   flex-direction: column; /* Stack children vertically */
-  margin-left: 220px; /* Offset for the fixed sidebar */
 }
