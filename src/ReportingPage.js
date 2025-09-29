@@ -34,6 +34,21 @@ function ReportingPage() {
           <input type="file" onChange={handleFileChange} />
           <button onClick={handleUpload} disabled={!selectedFile}>Upload</button>
         </div>
+
+        <div className="reporting-boxes-container">
+          <div className="reporting-box">
+            <h4>Reports</h4>
+          </div>
+          <div className="reporting-box">
+            <h4>Analytics</h4>
+          </div>
+          <div className="reporting-box">
+            <h4>Submit</h4>
+          </div>
+          <div className="reporting-box">
+            <h4>Budget</h4>
+          </div>
+        </div>
       </div>
     </div>
   );
