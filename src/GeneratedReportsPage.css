@@ -1,6 +1,20 @@
 .generated-reports-page-container {
+  display: flex;
+  gap: 20px;
   padding: 20px;
   background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-generator-section {
+  flex: 2;
+}
+
+.generated-reports-list-section {
+  flex: 1;
+  padding: 20px;
+  background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -59,4 +73,51 @@
 .report-output h4 {
   margin-top: 0;
   color: #555;
+}
+
+.save-report-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.save-report-controls input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.generated-reports-list-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.generated-reports-list-section th,
+.generated-reports-list-section td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.generated-reports-list-section button {
+  background-color: #28a745;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.generated-reports-list-section button:hover {
+  background-color: #218838;
+}
+
+.generated-reports-list-section button.delete-button {
+  background-color: #dc3545;
+}
+
+.generated-reports-list-section button.delete-button:hover {
+  background-color: #c82333;
 }
