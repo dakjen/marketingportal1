@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -11,4 +11,16 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh; /* Ensure it takes at least the full viewport height */
+}
+
+.content-wrapper {
+  flex-grow: 1; /* Allow it to take up remaining space */
+  display: flex; /* Enable flexbox for its children (nav and main-content) */
+  flex-direction: column; /* Stack children vertically */
+  margin-left: 220px; /* Offset for the fixed sidebar */
 }
