@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom'; // New import
 import './ReportingSidebar.css';
 
 function ReportingSidebar() {
@@ -6,18 +7,18 @@ function ReportingSidebar() {
     <div className="reporting-sidebar">
       <h2>Project Reporting</h2>
       <ul>
-        <li>Monthly Reports</li>
-        <li>Social Media</li>
-        <li>Physical Marketing</li>
-        <li>Generated Reports</li>
+        <li><NavLink to="/reporting/monthly-reports">Monthly Reports</NavLink></li>
+        <li><NavLink to="/reporting/social-media">Social Media</NavLink></li>
+        <li><NavLink to="/reporting/physical-marketing">Physical Marketing</NavLink></li>
+        <li><NavLink to="/reporting/generated-reports">Generated Reports</NavLink></li>
       </ul>
       <h3 className="sidebar-title">Operations</h3>
       <ul>
-        <li>Dashboard</li>
-        <li>Social Media</li>
-        <li>Physical</li>
-        <li>Wins</li>
-        <li>Property Management</li>
+        <li><NavLink to="/reporting/operations/dashboard">Dashboard</NavLink></li>
+        <li><NavLink to="/reporting/operations/social-media">Social Media</NavLink></li>
+        <li><NavLink to="/reporting/operations/physical">Physical</NavLink></li>
+        <li><NavLink to="/reporting/operations/wins">Wins</NavLink></li>
+        <li><NavLink to="/reporting/operations/property-management">Property Management</NavLink></li>
       </ul>
     </div>
   );
