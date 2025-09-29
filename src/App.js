@@ -175,19 +175,20 @@ import Sidebar from './Sidebar';
              </PrivateRoute>
            }
          />
-                    <Route
-                     path="/messages"
-                     element={
-                       <PrivateRoute allowedRoles={['admin', 'internal']}>
-                         <MessagesPage />
-                       </PrivateRoute>
-                     }
-                   />
-                </Routes>
-               </div>
-             </div>
-           );
-         } 
+         <Route
+            path="/messages"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'internal']}>
+                <MessagesPage />
+              </PrivateRoute>
+            }
+          />
+       </Routes>
+      </div>
+    </div>
+  );
+}
+
  function App() {
   const AppProviders = () => {
     const { reloadUser } = useContext(AuthContext);
