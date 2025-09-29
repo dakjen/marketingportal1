@@ -116,6 +116,8 @@ pool.connect((err, client, release) => {
   }
 })();
 
+// --- End of table creation logic ---
+
 // Multer setup for file uploads (using memory storage for serverless environments)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
