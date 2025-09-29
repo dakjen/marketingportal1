@@ -191,7 +191,7 @@ import ReportingPage from './ReportingPage';
             }
           />
          <Route
-            path="/reporting"
+            path="/reporting/*"
             element={
               <PrivateRoute allowedRoles={['admin', 'internal']}>
                 <ReportingPage />
