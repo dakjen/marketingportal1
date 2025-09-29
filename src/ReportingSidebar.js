@@ -9,6 +9,7 @@ function ReportingSidebar() {
         <li>Monthly Reports</li>
         <li>Social Media</li>
         <li>Physical Marketing</li>
+        <li>Generated Reports</li>
       </ul>
       <h3 className="sidebar-title">Operations</h3>
       <ul>
