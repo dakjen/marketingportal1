@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const PDFDocument = require('pdfkit');
 
 const app = express();
 app.use(express.json());
@@ -109,6 +110,17 @@ pool.connect((err, client, release) => {
         uploader_username TEXT NOT NULL,
         upload_date TIMESTAMPTZ DEFAULT NOW(),
         type TEXT
+      );
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS generated_reports (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        report_name TEXT NOT NULL,
+        report_type TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        uploader_username TEXT NOT NULL,
+        generation_date TIMESTAMPTZ DEFAULT NOW()
       );
     `);
     console.log('Entry tables checked/created successfully.');
@@ -344,6 +356,99 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
   } catch (error) {
     console.error('Error generating AI report:', error.stack);
     res.status(500).json({ message: 'Error generating AI report', error: error.message });
+  }
+});
+
+// API endpoint to save generated reports as PDF
+app.post('/api/save-report', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { reportContent, reportName, reportType, project_name } = req.body;
+  const uploader_username = req.headers['x-user-username'];
+
+  if (!reportContent || !reportName || !reportType || !project_name || !uploader_username) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const doc = new PDFDocument();
+    let buffers = [];
+    doc.on('data', buffers.push.bind(buffers));
+    doc.on('end', async () => {
+      let pdfBuffer = Buffer.concat(buffers);
+      // In a real-world scenario, upload pdfBuffer to cloud storage (e.g., S3)
+      // For now, we simulate a file path and save metadata to DB
+      const file_path = `/${project_name}/generated_reports/${reportName}.pdf`;
+
+      try {
+        const result = await pool.query(
+          'INSERT INTO generated_reports(project_name, report_name, report_type, file_path, uploader_username) VALUES($1, $2, $3, $4, $5) RETURNING *',
+          [project_name, reportName, reportType, file_path, uploader_username]
+        );
+        res.status(201).json(result.rows[0]);
+      } catch (dbError) {
+        console.error('Error saving generated report metadata to DB:', dbError.stack);
+        res.status(500).json({ message: 'Error saving report metadata', error: dbError.message });
+      }
+    });
+    doc.text(reportContent);
+    doc.end();
+
+  } catch (error) {
+    console.error('Error generating PDF or saving report:', error.stack);
+    res.status(500).json({ message: 'Error generating PDF or saving report', error: error.message });
+  }
+});
+
+// API endpoint to list generated reports
+app.get('/api/generated-reports', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT * FROM generated_reports WHERE project_name = $1 ORDER BY generation_date DESC', [project_name]);
+    res.status(200).json({ reports: result.rows });
+  } catch (error) {
+    console.error('Error fetching generated reports:', error.stack);
+    res.status(500).json({ message: 'Error fetching generated reports', error: error.message });
+  }
+});
+
+// API endpoint to view a generated report (PDF)
+app.get('/api/generated-reports/:id/view', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT file_path FROM generated_reports WHERE id = $1', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Report not found.' });
+    }
+    const report = result.rows[0];
+    // In a real-world scenario, you would fetch the PDF from cloud storage using report.file_path
+    // For now, we'll simulate a PDF response
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${report.file_path.split('/').pop()}"`);
+    const doc = new PDFDocument();
+    doc.text(`Simulated PDF content for report ID: ${id}\n\nPath: ${report.file_path}`);
+    doc.end();
+    doc.pipe(res);
+
+  } catch (error) {
+    console.error('Error viewing generated report:', error.stack);
+    res.status(500).json({ message: 'Error viewing generated report', error: error.message });
+  }
+});
+
+// API endpoint to delete a generated report
+app.delete('/api/generated-reports/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM generated_reports WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Report not found.' });
+    }
+    res.status(200).json({ message: 'Generated report deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting generated report:', error.stack);
+    res.status(500).json({ message: 'Error deleting generated report', error: error.message });
   }
 });
 
