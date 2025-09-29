@@ -1,6 +1,13 @@
-.reporting-page-container {
+.reporting-page-wrapper {
+  display: flex;
+  height: calc(100vh - 100px); /* Adjust height as needed, considering header/footer */
+}
+
+.reporting-main-content {
+  flex-grow: 1;
   padding: 20px;
   background-color: #f0f0f0;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 20px; /* Space between sidebar and main content */
 }

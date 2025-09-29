@@ -1,0 +1,23 @@
+.reporting-sidebar {
+  width: 200px;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-right: 1px solid #eee;
+}
+
+.reporting-sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.reporting-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reporting-sidebar li {
+  margin-bottom: 10px;
+  color: #555;
+}
