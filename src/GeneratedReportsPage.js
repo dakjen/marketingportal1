@@ -224,12 +224,7 @@ function GeneratedReportsPage() {
             <label>End Date:
               <input type="date" value={socialMediaReportEndDate} onChange={(e) => setSocialMediaReportEndDate(e.target.value)} />
             </label>
-            <label>Prompt:
-              <select value={socialMediaReportPrompt} onChange={(e) => setSocialMediaReportPrompt(e.target.value)}>
-                <option value="">Select a prompt</option>
-                <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
-              </select>
-            </label>
+
             <button onClick={() => handleGenerateReport('socialMedia')}>Generate Social Media Report</button>
           </div>
           <div className="report-output">
@@ -324,4 +319,4 @@ function GeneratedReportsPage() {
   );
 }
 
-export default GeneratedReportsPage;
+export default GeneratedReportsPage;rtsPage;

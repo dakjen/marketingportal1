@@ -319,10 +319,11 @@ app.delete('/api/physicalmarketing/uploads/:id', authorizeRole(['admin']), async
 
 // API endpoint for AI report generation
 app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (req, res) => {
-  const { reportType, startDate, endDate, prompt: userPrompt, project_name } = req.body;
+  const { reportType, startDate, endDate, project_name } = req.body;
+  const userPrompt = "Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.";
 
-  if (!reportType || !userPrompt || !project_name) {
-    return res.status(400).json({ message: 'Missing required fields: reportType, prompt, project_name.' });
+  if (!reportType || !project_name) {
+    return res.status(400).json({ message: 'Missing required fields: reportType, project_name.' });
   }
 
   let dataForAI = [];
