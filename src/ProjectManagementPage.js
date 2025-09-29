@@ -4,7 +4,7 @@ import React, { useContext, useState, useEffect } from 'react';
      import './ProjectManagementPage.css';
      
      function ProjectManagementPage() {
-       const { projects, allProjects, activeProject, addProject, selectProject, deleteProject, archiveProject, unarchiveProject }
+       const { projects, allProjects, addProject, deleteProject, archiveProject, unarchiveProject }
      = useContext(ProjectContext);
        const { currentUser } = useContext(AuthContext);
        console.log('ProjectManagementPage re-rendering. Projects:', projects);
@@ -36,8 +36,7 @@ import React, { useContext, useState, useEffect } from 'react';
          const initialPermissions = {};
         // Use allProjects from context, not from localStorage
       allProjects.forEach(project => {
-             initialPermissions[project.name] = (selectedUser.allowedProjects || []).includes(project.
-      name);
+             initialPermissions[project.name] = (selectedUser.allowedProjects || []).includes(project.name);
         });
         setPermissionChanges(initialPermissions);
         } else {
@@ -89,12 +88,10 @@ import React, { useContext, useState, useEffect } from 'react';
                    <h3>User Project Permissions</h3>
                    <div className="user-selection">
                      <label htmlFor="user-select">Select User:</label>
-                     <select id="user-select" onChange={(e) => setSelectedUser(users.find(u => u.
-       username === e.target.value) || null)} disabled={currentUser.role === 'admin2'}>
+                     <select id="user-select" onChange={(e) => setSelectedUser(users.find(u => u.username === e.target.value) || null)} disabled={currentUser.role === 'admin2'}>
                        <option value="">-- Select a user --</option>
                        {users.map(user => (
-                         <option key={user.username} value={user.username}>{user.username
-       }</option>
+                         <option key={user.username} value={user.username}>{user.username}</option>
                        ))}
                      </select>
                    </div>

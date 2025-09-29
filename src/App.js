@@ -86,7 +86,7 @@ import Sidebar from './Sidebar';
               {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
                 <li className="tab-item">
                   <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
-                    Messages
+                    Messages {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
                   </NavLink>
                 </li>
               )}

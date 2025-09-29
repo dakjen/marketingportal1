@@ -3,19 +3,11 @@ import { AuthContext } from './AuthContext';
 import './ProfilePage.css';
 
 function ProfilePage() {
-  const { currentUser, updateCurrentUser, reloadUser, changePassword, logout } = useContext(AuthContext);
-  const [isEditing, setIsEditing] = useState(false);
+  const { currentUser, updateCurrentUser, changePassword, logout } = useContext(AuthContext);
   const [changeOldPassword, setChangeOldPassword] = useState('');
   const [changeNewPassword, setChangeNewPassword] = useState('');
   const [changeConfirmNewPassword, setChangeConfirmNewPassword] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    username: '',
-    name: '',
-    email: '',
-    role: '',
-    allowedProjects: [],
-  });
   const [users, setUsers] = useState([]);
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
