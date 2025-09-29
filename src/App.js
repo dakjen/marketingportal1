@@ -61,6 +61,7 @@ import Sidebar from './Sidebar';
    
      return (
     <div className="app-container">
+      {isLoggedIn && <Sidebar />}
       {isLoggedIn && (
         <>
           <nav>

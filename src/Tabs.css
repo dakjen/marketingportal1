@@ -1,6 +1,7 @@
 nav {
   position: relative;
   padding-top: 30px; /* Make space for the status display */
+  margin-left: 220px; /* Offset for the fixed sidebar */
 }
 
 .tabs-container {
