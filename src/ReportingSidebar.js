@@ -4,11 +4,18 @@ import './ReportingSidebar.css';
 function ReportingSidebar() {
   return (
     <div className="reporting-sidebar">
-      <h3>Reporting Options</h3>
       <ul>
-        <li>Option 1</li>
-        <li>Option 2</li>
-        <li>Option 3</li>
+        <li>Monthly Reports</li>
+        <li>Social Media</li>
+        <li>Physical Marketing</li>
+      </ul>
+      <h3 className="sidebar-title">Operations</h3>
+      <ul>
+        <li>Dashboard</li>
+        <li>Social Media</li>
+        <li>Physical</li>
+        <li>Wins</li>
+        <li>Property Management</li>
       </ul>
     </div>
   );
