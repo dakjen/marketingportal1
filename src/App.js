@@ -6,6 +6,7 @@ import React, { useContext, useState, useEffect } from 'react';
      import PhysicalMarketingEntries from './PhysicalMarketingEntries';
      import ProjectManagementPage from './ProjectManagementPage';
 import MessagesPage from './MessagesPage';
+import ReportingPage from './ReportingPage';
      import LoginPage from './LoginPage';
      import ProfilePage from './ProfilePage';
      import ContactAdminPage from './ContactAdminPage';
@@ -87,6 +88,13 @@ import MessagesPage from './MessagesPage';
                 <li className="tab-item">
                   <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
                     Messages {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
+                  </NavLink>
+                </li>
+              )}
+              {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
+                <li className="tab-item">
+                  <NavLink to="/reporting" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    Reporting
                   </NavLink>
                 </li>
               )}
@@ -179,6 +187,14 @@ import MessagesPage from './MessagesPage';
             element={
               <PrivateRoute allowedRoles={['admin', 'internal']}>
                 <MessagesPage />
+              </PrivateRoute>
+            }
+          />
+         <Route
+            path="/reporting"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'internal']}>
+                <ReportingPage />
               </PrivateRoute>
             }
           />
