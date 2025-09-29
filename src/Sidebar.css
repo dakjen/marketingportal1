@@ -29,3 +29,17 @@
   color: #ffffff;
   background-color: #333;
 }
+
+.sidebar.collapsed {
+  width: 60px; /* Smaller width when collapsed */
+}
+
+.sidebar.collapsed .sidebar-logo {
+  width: 80%; /* Adjust logo size */
+}
+
+.sidebar.collapsed a {
+  font-size: 0; /* Hide text */
+  padding: 12px 0; /* Adjust padding */
+  text-align: center;
+}

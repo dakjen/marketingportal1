@@ -2,9 +2,9 @@ import React from 'react';
 import './Sidebar.css';
 import logo from './assets/djcreative-logo.png';
 
-function Sidebar() {
+function Sidebar({ isCollapsed }) {
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <img src={logo} alt="Logo" className="sidebar-logo" />
       <a href="#tools">Tools</a>
       <a href="#analytics">Analytics</a>
