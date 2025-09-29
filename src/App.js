@@ -6,7 +6,6 @@ import React, { useContext, useState, useEffect } from 'react';
      import PhysicalMarketingEntries from './PhysicalMarketingEntries';
      import ProjectManagementPage from './ProjectManagementPage';
 import MessagesPage from './MessagesPage';
-import Sidebar from './Sidebar';
      import LoginPage from './LoginPage';
      import ProfilePage from './ProfilePage';
      import ContactAdminPage from './ContactAdminPage';
@@ -32,11 +31,6 @@ import Sidebar from './Sidebar';
      const { projects, activeProject, selectProject } = useContext(ProjectContext);
      const [showDropdown, setShowDropdown] = useState(false);
      const [unreadCount, setUnreadCount] = useState(0);
-     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // New state for sidebar
-
-     const toggleSidebar = () => {
-       setIsSidebarCollapsed(!isSidebarCollapsed);
-     };
 
      useEffect(() => {
        const fetchUnreadCount = async () => {
@@ -66,13 +60,9 @@ import Sidebar from './Sidebar';
    
      return (
     <div className="app-container">
-      {isLoggedIn && <Sidebar />}
       {isLoggedIn && (
         <>
           <nav>
-            <button onClick={toggleSidebar} className="sidebar-toggle-button">
-              {isSidebarCollapsed ? 'Expand' : 'Collapse'} Sidebar
-            </button>
             <ul className="tabs-container">
               <li className="tab-item">
                 <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
@@ -129,8 +119,7 @@ import Sidebar from './Sidebar';
           <hr />
         </>
       )}
-      <div className={`main-content ${isSidebarCollapsed ? 'collapsed-sidebar-margin' : ''}`}>
-        {isLoggedIn && <Sidebar isCollapsed={isSidebarCollapsed} />}
+      <div className="main-content">
         <Routes>
            <Route path="/intro" element={isLoggedIn ? <Navigate to="/" /> : <IntroScreen />} />
            <Route path="/request-account" element={isLoggedIn ? <Navigate to="/" /> : <RequestAccountPage />} />

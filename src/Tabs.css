@@ -116,11 +116,6 @@ nav {
 
 .main-content {
   padding: 20px;
-  margin-left: 220px; /* Default margin when sidebar is expanded */
-}
-
-.collapsed-sidebar-margin {
-  margin-left: 0; /* When sidebar is collapsed, main content has no left margin */
 }
 
 .unread-count {

@@ -6,21 +6,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #d8c49c;
-  padding-left: 220px; /* Space for the fixed sidebar */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-.app-container {
-  display: flex;
-  min-height: 100vh; /* Ensure it takes at least the full viewport height */
-}
-
-.content-wrapper {
-  flex-grow: 1; /* Allow it to take up remaining space */
-  display: flex; /* Enable flexbox for its children (nav and main-content) */
-  flex-direction: column; /* Stack children vertically */
 }
