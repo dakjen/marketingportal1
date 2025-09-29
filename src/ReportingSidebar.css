@@ -1,21 +1,21 @@
 .reporting-sidebar {
   width: 200px;
   padding: 20px;
-  background-color: #646464;
+  background-color: #c07481;
   border-right: 1px solid #eee;
 }
 
 .reporting-sidebar h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #fff; /* White color for visibility on dark background */
+  color: #646464; /* New color */
   font-size: 1.5em;
 }
 
 .reporting-sidebar h3 {
   margin-top: 0;
   margin-bottom: 15px;
-  color: #333;
+  color: #646464;
 }
 
 .reporting-sidebar ul {
@@ -27,13 +27,13 @@
 
 .reporting-sidebar li {
   margin-bottom: 8px;
-  color: #c07481; /* New color */
+  color: #646464; /* New color */
 }
 
 .reporting-sidebar .sidebar-title {
   margin-top: 20px; /* Space before title */
   margin-bottom: 10px;
-  color: #c07481; /* New color */
+  color: #646464; /* New color */
   font-size: 1.1em;
   font-weight: bold;
   text-transform: uppercase;
