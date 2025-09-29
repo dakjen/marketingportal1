@@ -86,15 +86,15 @@ import ReportingPage from './ReportingPage';
               )}
               {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
                 <li className="tab-item">
-                  <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
-                    Messages {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
+                  <NavLink to="/reporting" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    Reporting
                   </NavLink>
                 </li>
               )}
               {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
                 <li className="tab-item">
-                  <NavLink to="/reporting" className={({ isActive }) => (isActive ? 'active' : '')}>
-                    Reporting
+                  <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    Messages {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
                   </NavLink>
                 </li>
               )}
