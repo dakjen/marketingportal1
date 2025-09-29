@@ -84,7 +84,7 @@ import ReportingPage from './ReportingPage';
                   </NavLink>
                 </li>
               )}
-              {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
+              {(currentUser?.role === 'admin') && (
                 <li className="tab-item">
                   <NavLink to="/reporting" className={({ isActive }) => (isActive ? 'active' : '')}>
                     Reporting
