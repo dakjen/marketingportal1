@@ -9,16 +9,28 @@ function SocialMediaReportingPage() {
   const [uploads, setUploads] = useState([]);
   const [fileName, setFileName] = useState('');
   const [file, setFile] = useState(null);
+  const [type, setType] = useState(''); // New state for type
 
-  // Placeholder for fetching uploads
-  useEffect(() => {
-    if (activeProject) {
-      // TODO: Fetch uploads for the active project
-      setUploads([
-        { id: 1, name: 'Social Media Report Q1.csv', uploader: 'dakota', date: '2025-09-29' },
-        { id: 2, name: 'Instagram Campaign Analysis.csv', uploader: 'jennifer', date: '2025-09-28' },
-      ]);
+  const fetchUploads = async () => {
+    if (!activeProject) {
+      setUploads([]);
+      return;
     }
+    try {
+      const response = await fetch(`/api/socialmedia/uploads?project_name=${activeProject.name}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUploads(data.uploads);
+    } catch (error) {
+      console.error("Failed to fetch uploads:", error);
+      alert('Failed to load uploads. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    fetchUploads();
   }, [activeProject]);
 
   const handleFileChange = (e) => {
@@ -27,12 +39,71 @@ function SocialMediaReportingPage() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file || !fileName) {
-      alert('Please provide a file and a name.');
+    if (!file || !fileName || !type) {
+      alert('Please provide a file, a name, and a type.');
       return;
     }
-    // TODO: Implement file upload logic
-    alert(`Uploading ${fileName}...`);
+    if (!activeProject) {
+      alert('Please select a project first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('file_name', fileName);
+    formData.append('project_name', activeProject.name);
+    formData.append('type', type); // Append the type
+
+    try {
+      const response = await fetch('/api/socialmedia/uploads', {
+        method: 'POST',
+        headers: {
+          'X-User-Username': currentUser.username,
+          'X-User-Role': currentUser.role,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to upload file');
+      }
+
+      alert('File uploaded successfully!');
+      setFileName('');
+      setFile(null);
+      setType(''); // Clear type
+      fetchUploads(); // Re-fetch uploads to update the list
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert(error.message || 'Failed to upload file. Please try again.');
+    }
+  };
+
+  const handleDeleteUpload = async (idToDelete) => {
+    if (!window.confirm('Are you sure you want to delete this upload?')) {
+      return;
+    }
+    try {
+      const response = await fetch(`/api/socialmedia/uploads/${idToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'X-User-Username': currentUser.username,
+          'X-User-Role': currentUser.role,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete upload');
+      }
+
+      alert('Upload deleted successfully!');
+      fetchUploads(); // Re-fetch uploads to update the list
+    } catch (error) {
+      console.error('Error deleting upload:', error);
+      alert(error.message || 'Failed to delete upload. Please try again.');
+    }
   };
 
   return (
@@ -60,6 +131,23 @@ function SocialMediaReportingPage() {
               required
             />
           </div>
+          <div>
+            <label htmlFor="type">Type:</label>
+            <select
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            >
+              <option value="">Select Type</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Google Ads">Google Ads</option>
+              <option value="LinkedIn">LinkedIn</option>
+              <option value="Bluesky">Bluesky</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
           <button type="submit">Upload</button>
         </form>
       </div>
@@ -70,6 +158,7 @@ function SocialMediaReportingPage() {
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Type</th>
                 <th>Uploader</th>
                 <th>Date</th>
                 <th>Actions</th>
@@ -78,13 +167,14 @@ function SocialMediaReportingPage() {
             <tbody>
               {uploads.map((upload) => (
                 <tr key={upload.id}>
-                  <td>{upload.name}</td>
-                  <td>{upload.uploader}</td>
-                  <td>{upload.date}</td>
+                  <td>{upload.file_name}</td>
+                  <td>{upload.type}</td>
+                  <td>{upload.uploader_username}</td>
+                  <td>{new Date(upload.upload_date).toLocaleDateString()}</td>
                   <td>
                     <button>View</button>
-                    {currentUser && currentUser.role !== 'internal' && (
-                      <button>Delete</button>
+                    {currentUser && currentUser.role !== 'internal' && currentUser.role !== 'view-only' && (
+                      <button onClick={() => handleDeleteUpload(upload.id)}>Delete</button>
                     )}
                   </td>
                 </tr>

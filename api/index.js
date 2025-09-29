@@ -2,6 +2,9 @@ require('dotenv').config();
 
 const express = require('express');
 const { Pool } = require('pg');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs'); // Import the file system module
 
 const app = express();
 app.use(express.json());
@@ -43,6 +46,12 @@ pool.connect((err, client, release) => {
     console.log('Database connected successfully at:', result.rows[0].now);
   });
 });
+
+// Ensure the uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
 
 // Create tables if they don't exist
 (async () => {
@@ -86,11 +95,33 @@ pool.connect((err, client, release) => {
         is_read BOOLEAN DEFAULT false
       );
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS social_media_uploads (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        file_name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        uploader_username TEXT NOT NULL,
+        upload_date TIMESTAMPTZ DEFAULT NOW(),
+        type TEXT
+      );
+    `);
     console.log('Entry tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating entry tables:', err.stack);
   }
 })();
+
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage });
 
 // Basic test endpoint
 app.get('/api/test', (req, res) => {
@@ -159,6 +190,42 @@ app.delete('/api/projects/:name', authorizeRole(['admin']), async (req, res) => 
   } catch (error) {
     console.error('Error deleting project:', error); // Log the full error object
     res.status(500).json({ message: 'Error deleting project', error: error.message });
+  }
+});
+
+// Social Media Uploads Endpoints
+app.get('/api/socialmedia/uploads', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT * FROM social_media_uploads WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
+    res.status(200).json({ uploads: result.rows });
+  } catch (error) {
+    console.error('Error fetching social media uploads:', error.stack);
+    res.status(500).json({ message: 'Error fetching social media uploads', error: error.message });
+  }
+});
+
+app.post('/api/socialmedia/uploads', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
+  const { project_name, file_name, type } = req.body;
+  const { path: file_path } = req.file;
+  const uploader_username = req.headers['x-user-username'];
+
+  if (!project_name || !file_name || !file_path || !uploader_username || !type) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO social_media_uploads(project_name, file_name, file_path, uploader_username, type) VALUES($1, $2, $3, $4, $5) RETURNING *',
+      [project_name, file_name, file_path, uploader_username, type]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error adding social media upload:', error.stack);
+    res.status(500).json({ message: 'Error adding social media upload', error: error.message });
   }
 });
 
