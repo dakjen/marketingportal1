@@ -36,16 +36,16 @@ function ReportingPage() {
               </div>
             </div>
           } />
-          <Route path="/monthly-reports" element={<MonthlyReportsPage />} />
-          <Route path="/social-media" element={<SocialMediaReportingPage />} />
-          <Route path="/physical-marketing" element={<PhysicalMarketingReportingPage />} />
+          <Route path="monthly-reports" element={<MonthlyReportsPage />} />
+          <Route path="social-media" element={<SocialMediaReportingPage />} />
+          <Route path="physical-marketing" element={<PhysicalMarketingReportingPage />} />
           {/* Placeholder for Generated Reports and Operations routes */}
-          <Route path="/generated-reports" element={<GeneratedReportsPage />} />
-          <Route path="/operations/dashboard" element={<OperationsDashboardPage />} />
-          <Route path="/operations/social-media" element={<OperationsSocialMediaPage />} />
-          <Route path="/operations/physical" element={<OperationsPhysicalPage />} />
-          <Route path="/operations/wins" element={<OperationsWinsPage />} />
-          <Route path="/operations/property-management" element={<OperationsPropertyManagementPage />} />
+          <Route path="generated-reports" element={<GeneratedReportsPage />} />
+          <Route path="operations/dashboard" element={<OperationsDashboardPage />} />
+          <Route path="operations/social-media" element={<OperationsSocialMediaPage />} />
+          <Route path="operations/physical" element={<OperationsPhysicalPage />} />
+          <Route path="operations/wins" element={<OperationsWinsPage />} />
+          <Route path="operations/property-management" element={<OperationsPropertyManagementPage />} />
         </Routes>
       </div>
     </div>
