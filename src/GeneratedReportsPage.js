@@ -257,8 +257,6 @@ function GeneratedReportsPage() {
               <select value={physicalMarketingReportPrompt} onChange={(e) => setPhysicalMarketingReportPrompt(e.target.value)}>
                 <option value="">Select a prompt</option>
                 <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
-                <option value="Summarize spend by marketing type.">Summarize spend by marketing type.</option>
-                <option value="Identify successful physical marketing channels.">Identify successful physical marketing channels.</option>
               </select>
             </label>
             <button onClick={() => handleGenerateReport('physicalMarketing')}>Generate Physical Marketing Report</button>
