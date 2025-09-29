@@ -9,16 +9,22 @@
 
 .report-generator-section {
   flex: 2;
+  min-width: 0; /* Allow flex item to shrink */
 }
 
 .generated-reports-list-section {
   flex: 1;
+  min-width: 0; /* Allow flex item to shrink */
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.report-output p {
+  white-space: pre-wrap; /* Preserve whitespace and line breaks */
+  word-break: break-word; /* Break long words */
+}
 .report-section {
   margin-bottom: 30px;
   padding: 20px;
