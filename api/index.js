@@ -4,6 +4,7 @@ const express = require('express');
 const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 app.use(express.json());
@@ -122,6 +123,10 @@ pool.connect((err, client, release) => {
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+// Initialize Google Generative AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+
 // Basic test endpoint
 app.get('/api/test', (req, res) => {
   res.status(200).json({ message: 'API is working!' });
@@ -232,6 +237,20 @@ app.post('/api/socialmedia/uploads', authorizeRole(['admin', 'internal']), uploa
   }
 });
 
+app.delete('/api/socialmedia/uploads/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM social_media_uploads WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Upload not found.' });
+    }
+    res.status(200).json({ message: 'Social media upload deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting social media upload:', error.stack);
+    res.status(500).json({ message: 'Error deleting social media upload', error: error.message });
+  }
+});
+
 // Physical Marketing Uploads Endpoints
 app.get('/api/physicalmarketing/uploads', async (req, res) => {
   const { project_name } = req.query;
@@ -269,6 +288,62 @@ app.post('/api/physicalmarketing/uploads', authorizeRole(['admin', 'internal']),
   } catch (error) {
     console.error('Error adding physical marketing upload:', error.stack);
     res.status(500).json({ message: 'Error adding physical marketing upload', error: error.message });
+  }
+});
+
+app.delete('/api/physicalmarketing/uploads/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM physical_marketing_uploads WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Upload not found.' });
+    }
+    res.status(200).json({ message: 'Physical marketing upload deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting physical marketing upload:', error.stack);
+    res.status(500).json({ message: 'Error deleting physical marketing upload', error: error.message });
+  }
+});
+
+// API endpoint for AI report generation
+app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { reportType, startDate, endDate, prompt: userPrompt, project_name } = req.body;
+
+  if (!reportType || !userPrompt || !project_name) {
+    return res.status(400).json({ message: 'Missing required fields: reportType, prompt, project_name.' });
+  }
+
+  let dataForAI = [];
+  try {
+    if (reportType === 'socialMedia' || reportType === 'general') {
+      const socialResult = await pool.query(
+        'SELECT * FROM social_media_entries WHERE project_name = $1 AND date BETWEEN $2 AND $3 ORDER BY date DESC',
+        [project_name, startDate, endDate]
+      );
+      dataForAI = dataForAI.concat(socialResult.rows);
+    }
+    if (reportType === 'physicalMarketing' || reportType === 'general') {
+      const physicalResult = await pool.query(
+        'SELECT * FROM physical_marketing_entries WHERE project_name = $1 AND date BETWEEN $2 AND $3 ORDER BY date DESC',
+        [project_name, startDate, endDate]
+      );
+      dataForAI = dataForAI.concat(physicalResult.rows);
+    }
+
+    if (dataForAI.length === 0) {
+      return res.status(404).json({ message: 'No data found for the selected criteria.' });
+    }
+
+    const fullPrompt = `Generate a ${reportType} report for project ${project_name} from ${startDate} to ${endDate}. Analyze the following data and respond to the user's prompt: "${userPrompt}".\n\nData: ${JSON.stringify(dataForAI)}`;
+
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = response.text();
+    res.status(200).json({ report: text });
+
+  } catch (error) {
+    console.error('Error generating AI report:', error.stack);
+    res.status(500).json({ message: 'Error generating AI report', error: error.message });
   }
 });
 
