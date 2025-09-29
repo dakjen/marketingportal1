@@ -42,3 +42,7 @@
   font-weight: bold;
   text-transform: uppercase;
 }
+
+.reporting-sidebar h2 a {
+  text-decoration: none;
+}
