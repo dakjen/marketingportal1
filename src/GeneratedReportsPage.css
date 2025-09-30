@@ -26,6 +26,38 @@
   overflow-x: auto; /* Add horizontal scroll if content overflows */
 }
 
+.report-category-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.report-category-section h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.generated-reports-list-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.generated-reports-list-section th,
+.generated-reports-list-section td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.generated-reports-list-section tr:last-child td {
+  border-bottom: none;
+}
+
 .report-output p {
   white-space: pre-wrap; /* Preserve whitespace and line breaks */
   word-break: break-word; /* Break long words */
