@@ -33,6 +33,10 @@ function OperationsWinsPage() {
   useEffect(() => {
     if (activeProject && allUsers.length > 0) {
       const usersForProject = allUsers.filter(user => {
+        // Only include admin, admin2, or internal users
+        if (user.role !== 'admin' && user.role !== 'admin2' && user.role !== 'internal') {
+          return false;
+        }
         // Admins can see all projects, so they should always be in the list
         if (user.role === 'admin' || user.role === 'admin2') {
           return true;
