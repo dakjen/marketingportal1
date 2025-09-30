@@ -5,7 +5,14 @@ function OperationsPhysicalPage() {
   return (
     <div className="operations-physical-page-container">
       <h2>Operations Physical</h2>
-      <p>Content for Operations Physical.</p>
+      <div className="operations-physical-left-column">
+        <h3>Left Column Content</h3>
+        <p>This is placeholder content for the left column of the Operations Physical page.</p>
+      </div>
+      <div className="operations-physical-right-column">
+        <h3>Right Column Content</h3>
+        <p>This is placeholder content for the right column of the Operations Physical page.</p>
+      </div>
     </div>
   );
 }

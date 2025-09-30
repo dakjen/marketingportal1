@@ -5,7 +5,14 @@ function OperationsPropertyManagementPage() {
   return (
     <div className="operations-property-management-page-container">
       <h2>Operations Property Management</h2>
-      <p>Content for Operations Property Management.</p>
+      <div className="operations-property-management-left-column">
+        <h3>Left Column Content</h3>
+        <p>This is placeholder content for the left column of the Operations Property Management page.</p>
+      </div>
+      <div className="operations-property-management-right-column">
+        <h3>Right Column Content</h3>
+        <p>This is placeholder content for the right column of the Operations Property Management page.</p>
+      </div>
     </div>
   );
 }
