@@ -7,19 +7,16 @@ function GeneratedReportsPage() {
   const { currentUser } = useContext(AuthContext);
   const { activeProject } = useContext(ProjectContext);
 
-  const [generalReportPrompt, setGeneralReportPrompt] = useState('');
   const [generalReportStartDate, setGeneralReportStartDate] = useState('');
   const [generalReportEndDate, setGeneralReportEndDate] = useState('');
   const [generalReportOutput, setGeneralReportOutput] = useState('');
   const [generalReportName, setGeneralReportName] = useState('');
 
-  const [socialMediaReportPrompt, setSocialMediaReportPrompt] = useState('');
   const [socialMediaReportStartDate, setSocialMediaReportStartDate] = useState('');
   const [socialMediaReportEndDate, setSocialMediaReportEndDate] = useState('');
   const [socialMediaReportOutput, setSocialMediaReportOutput] = useState('');
   const [socialMediaReportName, setSocialMediaReportName] = useState('');
 
-  const [physicalMarketingReportPrompt, setPhysicalMarketingReportPrompt] = useState('');
   const [physicalMarketingReportStartDate, setPhysicalMarketingReportStartDate] = useState('');
   const [physicalMarketingReportEndDate, setPhysicalMarketingReportEndDate] = useState('');
   const [physicalMarketingReportOutput, setPhysicalMarketingReportOutput] = useState('');
@@ -55,23 +52,24 @@ function GeneratedReportsPage() {
       return;
     }
 
-    let prompt, startDate, endDate, setOutput;
+    let startDate, endDate, setOutput;
+    let prompt = ""; // Initialize prompt here
 
     switch (reportType) {
       case 'general':
-        prompt = generalReportPrompt;
+        prompt = "Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.";
         startDate = generalReportStartDate;
         endDate = generalReportEndDate;
         setOutput = setGeneralReportOutput;
         break;
       case 'socialMedia':
-        prompt = socialMediaReportPrompt;
+        // Social media reports don't have a prompt dropdown, so prompt is not used here
         startDate = socialMediaReportStartDate;
         endDate = socialMediaReportEndDate;
         setOutput = setSocialMediaReportOutput;
         break;
       case 'physicalMarketing':
-        prompt = physicalMarketingReportPrompt;
+        prompt = "Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.";
         startDate = physicalMarketingReportStartDate;
         endDate = physicalMarketingReportEndDate;
         setOutput = setPhysicalMarketingReportOutput;
@@ -190,12 +188,6 @@ function GeneratedReportsPage() {
             <label>End Date:
               <input type="date" value={generalReportEndDate} onChange={(e) => setGeneralReportEndDate(e.target.value)} />
             </label>
-            <label>Prompt:
-              <select value={generalReportPrompt} onChange={(e) => setGeneralReportPrompt(e.target.value)}>
-                <option value="">Select a prompt</option>
-                <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
-              </select>
-            </label>
             <button onClick={() => handleGenerateReport('general')}>Generate General Report</button>
           </div>
           <div className="report-output">
@@ -252,12 +244,6 @@ function GeneratedReportsPage() {
             </label>
             <label>End Date:
               <input type="date" value={physicalMarketingReportEndDate} onChange={(e) => setPhysicalMarketingReportEndDate(e.target.value)} />
-            </label>
-            <label>Prompt:
-              <select value={physicalMarketingReportPrompt} onChange={(e) => setPhysicalMarketingReportPrompt(e.target.value)}>
-                <option value="">Select a prompt</option>
-                <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
-              </select>
             </label>
             <button onClick={() => handleGenerateReport('physicalMarketing')}>Generate Physical Marketing Report</button>
           </div>
