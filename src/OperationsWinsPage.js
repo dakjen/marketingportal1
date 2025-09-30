@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from './AuthContext';
+import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import './OperationsWinsPage.css';
 
 function OperationsWinsPage() {
   const { currentUser } = useContext(AuthContext);
+  const { activeProject } = useContext(ProjectContext); // Access activeProject
   const [selectedUser, setSelectedUser] = useState('');
   const [winDescription, setWinDescription] = useState('');
   const [winDate, setWinDate] = useState('');
   const [winCategory, setWinCategory] = useState('');
   const [allUsers, setAllUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -27,6 +30,22 @@ function OperationsWinsPage() {
     fetchAllUsers();
   }, []);
 
+  useEffect(() => {
+    if (activeProject && allUsers.length > 0) {
+      const usersForProject = allUsers.filter(user => {
+        // Admins can see all projects, so they should always be in the list
+        if (user.role === 'admin' || user.role === 'admin2') {
+          return true;
+        }
+        // Otherwise, check if the user is allowed for the active project
+        return user.allowedProjects && user.allowedProjects.includes(activeProject.name);
+      });
+      setFilteredUsers(usersForProject);
+    } else if (!activeProject) {
+      setFilteredUsers([]); // Clear users if no project is active
+    }
+  }, [activeProject, allUsers]); // Re-run when activeProject or allUsers change
+
   const handleWinSubmit = (event) => {
     event.preventDefault();
     // Here you would typically send this data to your backend API
@@ -35,6 +54,7 @@ function OperationsWinsPage() {
       winDescription,
       winDate,
       winCategory,
+      projectName: activeProject ? activeProject.name : 'N/A',
     });
     alert('Win submitted! Check console for data.');
     // Clear form
@@ -60,7 +80,7 @@ function OperationsWinsPage() {
                 required
               >
                 <option value="">Select a user</option>
-                {allUsers.map(user => (
+                {filteredUsers.map(user => (
                   <option key={user.username} value={user.username}>{user.username}</option>
                 ))}
               </select>
