@@ -11,6 +11,9 @@
   flex: 1;
   min-width: 0; /* Allow flex item to shrink */
   overflow-x: auto; /* Add horizontal scroll if content overflows */
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for the report sections */
+  gap: 20px; /* Space between grid items */
 }
 
 .generated-reports-list-section {
