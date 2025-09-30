@@ -12,7 +12,7 @@
   min-width: 0; /* Allow flex item to shrink */
   overflow-x: auto; /* Add horizontal scroll if content overflows */
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two columns for the report sections */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Condensed, responsive columns */
   gap: 20px; /* Space between grid items */
 }
 
