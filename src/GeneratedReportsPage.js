@@ -181,100 +181,102 @@ function GeneratedReportsPage() {
       <div className="report-generator-section">
         <h2>Generated Reports</h2>
 
-        <div className="report-section">
-          <h3>General Reports</h3>
-          <div className="report-controls">
-            <label>Start Date:
-              <input type="date" value={generalReportStartDate} onChange={(e) => setGeneralReportStartDate(e.target.value)} />
-            </label>
-            <label>End Date:
-              <input type="date" value={generalReportEndDate} onChange={(e) => setGeneralReportEndDate(e.target.value)} />
-            </label>
-            <label>Prompt:
-              <select value={generalReportPrompt} onChange={(e) => setGeneralReportPrompt(e.target.value)}>
-                <option value="">Select a prompt</option>
-                <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
-              </select>
-            </label>
-            <button onClick={() => handleGenerateReport('general')}>Generate General Report</button>
+        <div className="report-forms-container">
+          <div className="report-section">
+            <h3>General Reports</h3>
+            <div className="report-controls">
+              <label>Start Date:
+                <input type="date" value={generalReportStartDate} onChange={(e) => setGeneralReportStartDate(e.target.value)} />
+              </label>
+              <label>End Date:
+                <input type="date" value={generalReportEndDate} onChange={(e) => setGeneralReportEndDate(e.target.value)} />
+              </label>
+              <label>Prompt:
+                <select value={generalReportPrompt} onChange={(e) => setGeneralReportPrompt(e.target.value)}>
+                  <option value="">Select a prompt</option>
+                  <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
+                </select>
+              </label>
+              <button onClick={() => handleGenerateReport('general')}>Generate General Report</button>
+            </div>
+            <div className="report-output">
+              <h4>Report Output:</h4>
+              <p>{generalReportOutput}</p>
+              {generalReportOutput && generalReportOutput !== 'Generating report...' && generalReportOutput !== 'Error generating report.' && (
+                <div className="save-report-controls">
+                  <input
+                    type="text"
+                    placeholder="Report Name"
+                    value={generalReportName}
+                    onChange={(e) => setGeneralReportName(e.target.value)}
+                  />
+                  <button onClick={() => handleSaveReport(generalReportOutput, 'general', generalReportName)}>Save as PDF</button>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="report-output">
-            <h4>Report Output:</h4>
-            <p>{generalReportOutput}</p>
-            {generalReportOutput && generalReportOutput !== 'Generating report...' && generalReportOutput !== 'Error generating report.' && (
-              <div className="save-report-controls">
-                <input
-                  type="text"
-                  placeholder="Report Name"
-                  value={generalReportName}
-                  onChange={(e) => setGeneralReportName(e.target.value)}
-                />
-                <button onClick={() => handleSaveReport(generalReportOutput, 'general', generalReportName)}>Save as PDF</button>
-              </div>
-            )}
-          </div>
-        </div>
 
-        <div className="report-section">
-          <h3>Social Media Reports</h3>
-          <div className="report-controls">
-            <label>Start Date:
-              <input type="date" value={socialMediaReportStartDate} onChange={(e) => setSocialMediaReportStartDate(e.target.value)} />
-            </label>
-            <label>End Date:
-              <input type="date" value={socialMediaReportEndDate} onChange={(e) => setSocialMediaReportEndDate(e.target.value)} />
-            </label>
+          <div className="report-section">
+            <h3>Social Media Reports</h3>
+            <div className="report-controls">
+              <label>Start Date:
+                <input type="date" value={socialMediaReportStartDate} onChange={(e) => setSocialMediaReportStartDate(e.target.value)} />
+              </label>
+              <label>End Date:
+                <input type="date" value={socialMediaReportEndDate} onChange={(e) => setSocialMediaReportEndDate(e.target.value)} />
+              </label>
 
-            <button onClick={() => handleGenerateReport('socialMedia')}>Generate Social Media Report</button>
+              <button onClick={() => handleGenerateReport('socialMedia')}>Generate Social Media Report</button>
+            </div>
+            <div className="report-output">
+              <h4>Report Output:</h4>
+              <p>{socialMediaReportOutput}</p>
+              {socialMediaReportOutput && socialMediaReportOutput !== 'Generating report...' && socialMediaReportOutput !== 'Error generating report.' && (
+                <div className="save-report-controls">
+                  <input
+                    type="text"
+                    placeholder="Report Name"
+                    value={socialMediaReportName}
+                    onChange={(e) => setSocialMediaReportName(e.target.value)}
+                  />
+                  <button onClick={() => handleSaveReport(socialMediaReportOutput, 'socialMedia', socialMediaReportName)}>Save as PDF</button>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="report-output">
-            <h4>Report Output:</h4>
-            <p>{socialMediaReportOutput}</p>
-            {socialMediaReportOutput && socialMediaReportOutput !== 'Generating report...' && socialMediaReportOutput !== 'Error generating report.' && (
-              <div className="save-report-controls">
-                <input
-                  type="text"
-                  placeholder="Report Name"
-                  value={socialMediaReportName}
-                  onChange={(e) => setSocialMediaReportName(e.target.value)}
-                />
-                <button onClick={() => handleSaveReport(socialMediaReportOutput, 'socialMedia', socialMediaReportName)}>Save as PDF</button>
-              </div>
-            )}
-          </div>
-        </div>
 
-        <div className="report-section">
-          <h3>Physical Marketing Reports</h3>
-          <div className="report-controls">
-            <label>Start Date:
-              <input type="date" value={physicalMarketingReportStartDate} onChange={(e) => setPhysicalMarketingReportStartDate(e.target.value)} />
-            </label>
-            <label>End Date:
-              <input type="date" value={physicalMarketingReportEndDate} onChange={(e) => setPhysicalMarketingReportEndDate(e.target.value)} />
-            </label>
-            <label>Prompt:
-              <select value={physicalMarketingReportPrompt} onChange={(e) => setPhysicalMarketingReportPrompt(e.target.value)}>
-                <option value="">Select a prompt</option>
-                <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
-              </select>
-            </label>
-            <button onClick={() => handleGenerateReport('physicalMarketing')}>Generate Physical Marketing Report</button>
-          </div>
-          <div className="report-output">
-            <h4>Report Output:</h4>
-            <p>{physicalMarketingReportOutput}</p>
-            {physicalMarketingReportOutput && physicalMarketingReportOutput !== 'Generating report...' && physicalMarketingReportOutput !== 'Error generating report.' && (
-              <div className="save-report-controls">
-                <input
-                  type="text"
-                  placeholder="Report Name"
-                  value={physicalMarketingReportName}
-                  onChange={(e) => setPhysicalMarketingReportName(e.target.value)}
-                />
-                <button onClick={() => handleSaveReport(physicalMarketingReportOutput, 'physicalMarketing', physicalMarketingReportName)}>Save as PDF</button>
-              </div>
-            )}
+          <div className="report-section">
+            <h3>Physical Marketing Reports</h3>
+            <div className="report-controls">
+              <label>Start Date:
+                <input type="date" value={physicalMarketingReportStartDate} onChange={(e) => setPhysicalMarketingReportStartDate(e.target.value)} />
+              </label>
+              <label>End Date:
+                <input type="date" value={physicalMarketingReportEndDate} onChange={(e) => setPhysicalMarketingReportEndDate(e.target.value)} />
+              </label>
+              <label>Prompt:
+                <select value={physicalMarketingReportPrompt} onChange={(e) => setPhysicalMarketingReportPrompt(e.target.value)}>
+                  <option value="">Select a prompt</option>
+                  <option value="Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.">Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.</option>
+                </select>
+              </label>
+              <button onClick={() => handleGenerateReport('physicalMarketing')}>Generate Physical Marketing Report</button>
+            </div>
+            <div className="report-output">
+              <h4>Report Output:</h4>
+              <p>{physicalMarketingReportOutput}</p>
+              {physicalMarketingReportOutput && physicalMarketingReportOutput !== 'Generating report...' && physicalMarketingReportOutput !== 'Error generating report.' && (
+                <div className="save-report-controls">
+                  <input
+                    type="text"
+                    placeholder="Report Name"
+                    value={physicalMarketingReportName}
+                    onChange={(e) => setPhysicalMarketingReportName(e.target.value)}
+                  />
+                  <button onClick={() => handleSaveReport(physicalMarketingReportOutput, 'physicalMarketing', physicalMarketingReportName)}>Save as PDF</button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -12,6 +12,12 @@
   min-width: 0; /* Allow flex item to shrink */
 }
 
+.report-forms-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns */
+  gap: 20px; /* Space between grid items */
+}
+
 .generated-reports-list-section {
   flex: 1;
   min-width: 0; /* Allow flex item to shrink */
