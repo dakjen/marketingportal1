@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from './AuthContext';
 import './OperationsWinsPage.css';
 
 function OperationsWinsPage() {
+  const { currentUser } = useContext(AuthContext);
   const [selectedUser, setSelectedUser] = useState('');
   const [winDescription, setWinDescription] = useState('');
   const [winDate, setWinDate] = useState('');
   const [winCategory, setWinCategory] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
 
-  // Placeholder for project users - in a real app, this would be fetched from an API
-  const projectUsers = [
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' },
-    { id: 3, name: 'Peter Jones' },
-  ];
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await fetch('/api/users');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setAllUsers(data.users);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+        alert('Failed to load users. Please try again.');
+      }
+    };
+    fetchAllUsers();
+  }, []);
 
   const handleWinSubmit = (event) => {
     event.preventDefault();
@@ -47,8 +60,8 @@ function OperationsWinsPage() {
                 required
               >
                 <option value="">Select a user</option>
-                {projectUsers.map(user => (
-                  <option key={user.id} value={user.name}>{user.name}</option>
+                {allUsers.map(user => (
+                  <option key={user.username} value={user.username}>{user.username}</option>
                 ))}
               </select>
             </div>
