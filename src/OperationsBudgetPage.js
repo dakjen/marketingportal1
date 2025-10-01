@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './OperationsBudgetPage.css';
 
-function OperationsBudgetPage() {
+export function OperationsBudgetPage() {
   const [marketingType, setMarketingType] = useState('');
   const [budgetAmount, setBudgetAmount] = useState('');
   const [budgetInterval, setBudgetInterval] = useState('Monthly');
