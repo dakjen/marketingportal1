@@ -36,7 +36,10 @@ export function OperationsBudgetPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setAllBudgetEntries(data.entries);
+      setAllBudgetEntries(data.entries.map(entry => ({
+        ...entry,
+        amount: parseFloat(entry.amount)
+      })));
     } catch (error) {
       console.error("Failed to fetch budget entries:", error);
       alert('Failed to load budget entries. Please try again.');
