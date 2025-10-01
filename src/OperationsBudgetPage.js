@@ -18,10 +18,12 @@ export function OperationsBudgetPage() {
   const [socialMediaMarketingType, setSocialMediaMarketingType] = useState('');
   const [socialMediaBudgetAmount, setSocialMediaBudgetAmount] = useState('');
   const [socialMediaBudgetInterval, setSocialMediaBudgetInterval] = useState('Monthly');
+  const [socialMediaMonthAllocation, setSocialMediaMonthAllocation] = useState('month 1');
 
   const [physicalMarketingType, setPhysicalMarketingType] = useState('');
   const [physicalMarketingBudgetAmount, setPhysicalMarketingBudgetAmount] = useState('');
   const [physicalMarketingBudgetInterval, setPhysicalMarketingBudgetInterval] = useState('Monthly');
+  const [physicalMarketingMonthAllocation, setPhysicalMarketingMonthAllocation] = useState('month 1');
 
   const [allBudgetEntries, setAllBudgetEntries] = useState([]);
 
@@ -69,6 +71,7 @@ export function OperationsBudgetPage() {
       type: socialMediaMarketingType,
       amount: parseFloat(socialMediaBudgetAmount),
       interval: socialMediaBudgetInterval,
+      month_allocation: socialMediaMonthAllocation,
     };
 
     try {
@@ -114,6 +117,7 @@ export function OperationsBudgetPage() {
       type: physicalMarketingType,
       amount: parseFloat(physicalMarketingBudgetAmount),
       interval: physicalMarketingBudgetInterval,
+      month_allocation: physicalMarketingMonthAllocation,
     };
 
     try {
@@ -192,6 +196,17 @@ export function OperationsBudgetPage() {
                 <option value="Weekly">Weekly</option>
               </select>
             </div>
+            <div>
+              <label htmlFor="socialMediaMonthAllocation">Month Allocation:</label>
+              <select
+                id="socialMediaMonthAllocation"
+                value={socialMediaMonthAllocation}
+                onChange={(e) => setSocialMediaMonthAllocation(e.target.value)}
+              >
+                <option value="month 1">Month 1</option>
+                <option value="after">After</option>
+              </select>
+            </div>
             <button onClick={handleAddSocialMediaEntry}>Add Entry</button>
           </div>
 
@@ -247,6 +262,17 @@ export function OperationsBudgetPage() {
               >
                 <option value="Monthly">Monthly</option>
                 <option value="Weekly">Weekly</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="physicalMarketingMonthAllocation">Month Allocation:</label>
+              <select
+                id="physicalMarketingMonthAllocation"
+                value={physicalMarketingMonthAllocation}
+                onChange={(e) => setPhysicalMarketingMonthAllocation(e.target.value)}
+              >
+                <option value="month 1">Month 1</option>
+                <option value="after">After</option>
               </select>
             </div>
             <button onClick={handleAddPhysicalMarketingEntry}>Add Entry</button>

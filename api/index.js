@@ -135,6 +135,7 @@ pool.connect((err, client, release) => {
         type TEXT NOT NULL,
         amount NUMERIC NOT NULL,
         interval TEXT NOT NULL,
+        month_allocation TEXT NOT NULL DEFAULT 'month 1',
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
@@ -668,14 +669,14 @@ app.get('/api/budget-entries', async (req, res) => {
 });
 
 app.post('/api/budget-entries', authorizeRole(['admin', 'internal']), async (req, res) => {
-  const { project_name, type, amount, interval } = req.body;
-  if (!project_name || !type || !amount || !interval) {
+  const { project_name, type, amount, interval, month_allocation } = req.body;
+  if (!project_name || !type || !amount || !interval || !month_allocation) {
     return res.status(400).json({ message: 'Missing required fields.' });
   }
   try {
     const result = await pool.query(
-      'INSERT INTO budget_entries(project_name, type, amount, interval) VALUES($1, $2, $3, $4) RETURNING *'
-      , [project_name, type, amount, interval]
+      'INSERT INTO budget_entries(project_name, type, amount, interval, month_allocation) VALUES($1, $2, $3, $4, $5) RETURNING *'
+      , [project_name, type, amount, interval, month_allocation]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
