@@ -7,6 +7,8 @@ import './OperationsBudgetPage.css';
 export function OperationsBudgetPage() {
   const { activeProject } = useContext(ProjectContext);
 
+  console.log('OperationsBudgetPage mounted/rendered. Active Project:', activeProject);
+
   const [socialMediaMarketingType, setSocialMediaMarketingType] = useState('');
   const [socialMediaBudgetAmount, setSocialMediaBudgetAmount] = useState('');
   const [socialMediaBudgetInterval, setSocialMediaBudgetInterval] = useState('Monthly');
@@ -28,6 +30,7 @@ export function OperationsBudgetPage() {
   ];
 
   const fetchBudgetEntries = async () => {
+    console.log('fetchBudgetEntries called. Active Project:', activeProject);
     if (!activeProject) {
       setAllBudgetEntries([]);
       setSocialMediaBudgetEntries([]);
@@ -40,6 +43,7 @@ export function OperationsBudgetPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      console.log('Fetched budget entries:', data.entries);
       setAllBudgetEntries(data.entries);
     } catch (error) {
       console.error("Failed to fetch budget entries:", error);
@@ -49,16 +53,19 @@ export function OperationsBudgetPage() {
 
   /* eslint-disable-next-line no-undef */
   useEffect(() => {
+    console.log('useEffect for fetchBudgetEntries triggered. Active Project:', activeProject);
     fetchBudgetEntries();
   }, [activeProject]);
 
   /* eslint-disable-next-line no-undef */
   useEffect(() => {
+    console.log('useEffect for filtering budget entries triggered. All Budget Entries:', allBudgetEntries);
     setSocialMediaBudgetEntries(allBudgetEntries.filter(entry => socialMediaTypes.includes(entry.type)));
     setPhysicalMarketingBudgetEntries(allBudgetEntries.filter(entry => physicalMarketingTypes.includes(entry.type)));
   }, [allBudgetEntries, socialMediaTypes, physicalMarketingTypes]);
 
   const handleAddSocialMediaEntry = async () => {
+    console.log('handleAddSocialMediaEntry called. Active Project:', activeProject);
     if (!activeProject) {
       alert('Please select an active project first.');
       return;
@@ -76,6 +83,7 @@ export function OperationsBudgetPage() {
     };
 
     try {
+      console.log('Posting new social media entry:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
@@ -99,6 +107,7 @@ export function OperationsBudgetPage() {
   };
 
   const handleAddPhysicalMarketingEntry = async () => {
+    console.log('handleAddPhysicalMarketingEntry called. Active Project:', activeProject);
     if (!activeProject) {
       alert('Please select an active project first.');
       return;
@@ -116,6 +125,7 @@ export function OperationsBudgetPage() {
     };
 
     try {
+      console.log('Posting new physical marketing entry:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
