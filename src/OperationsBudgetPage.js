@@ -56,7 +56,7 @@ export function OperationsBudgetPage() {
   /* eslint-disable-next-line no-undef */
   useEffect(() => {
     console.log('useEffect for fetchBudgetEntries triggered. Active Project:', activeProject);
-    refetchBudgetEntries();
+    // refetchBudgetEntries(); // Temporarily removed
   }, [activeProject]);
 
   /* eslint-disable-next-line no-undef */
