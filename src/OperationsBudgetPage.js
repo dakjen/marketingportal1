@@ -207,6 +207,17 @@ export function OperationsBudgetPage() {
                 <option value="after">After</option>
               </select>
             </div>
+            <div>
+              <label htmlFor="socialMediaMonthAllocation">Month Allocation:</label>
+              <select
+                id="socialMediaMonthAllocation"
+                value={socialMediaMonthAllocation}
+                onChange={(e) => setSocialMediaMonthAllocation(e.target.value)}
+              >
+                <option value="month 1">Month 1</option>
+                <option value="after">After</option>
+              </select>
+            </div>
             <button onClick={handleAddSocialMediaEntry}>Add Entry</button>
           </div>
 
@@ -262,6 +273,17 @@ export function OperationsBudgetPage() {
               >
                 <option value="Monthly">Monthly</option>
                 <option value="Weekly">Weekly</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="physicalMarketingMonthAllocation">Month Allocation:</label>
+              <select
+                id="physicalMarketingMonthAllocation"
+                value={physicalMarketingMonthAllocation}
+                onChange={(e) => setPhysicalMarketingMonthAllocation(e.target.value)}
+              >
+                <option value="month 1">Month 1</option>
+                <option value="after">After</option>
               </select>
             </div>
             <div>
