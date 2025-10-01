@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import './OperationsBudgetPage.css';
 
 export function OperationsBudgetPage() {
+  const { activeProject } = useContext(ProjectContext);
+
   const [socialMediaMarketingType, setSocialMediaMarketingType] = useState('');
   const [socialMediaBudgetAmount, setSocialMediaBudgetAmount] = useState('');
   const [socialMediaBudgetInterval, setSocialMediaBudgetInterval] = useState('Monthly');
@@ -21,12 +24,17 @@ export function OperationsBudgetPage() {
   ];
 
   const handleAddSocialMediaEntry = () => {
+    if (!activeProject) {
+      alert('Please select an active project first.');
+      return;
+    }
     if (!socialMediaMarketingType || !socialMediaBudgetAmount) {
       alert('Please select a social media marketing type and enter a budget amount.');
       return;
     }
     const newEntry = {
       id: socialMediaBudgetEntries.length + 1,
+      projectName: activeProject.name,
       type: socialMediaMarketingType,
       amount: parseFloat(socialMediaBudgetAmount),
       interval: socialMediaBudgetInterval,
@@ -38,12 +46,17 @@ export function OperationsBudgetPage() {
   };
 
   const handleAddPhysicalMarketingEntry = () => {
+    if (!activeProject) {
+      alert('Please select an active project first.');
+      return;
+    }
     if (!physicalMarketingType || !physicalMarketingBudgetAmount) {
       alert('Please select a physical marketing type and enter a budget amount.');
       return;
     }
     const newEntry = {
       id: physicalMarketingBudgetEntries.length + 1,
+      projectName: activeProject.name,
       type: physicalMarketingType,
       amount: parseFloat(physicalMarketingBudgetAmount),
       interval: physicalMarketingBudgetInterval,
@@ -102,11 +115,11 @@ export function OperationsBudgetPage() {
 
           <div className="budget-entries-list">
             <h3>Current Social Media Budget Entries</h3>
-            {socialMediaBudgetEntries.length === 0 ? (
-              <p>No social media budget entries added yet.</p>
+            {socialMediaBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).length === 0 ? (
+              <p>No social media budget entries added yet for this project.</p>
             ) : (
               <ul>
-                {socialMediaBudgetEntries.map(entry => (
+                {socialMediaBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).map(entry => (
                   <li key={entry.id}>
                     {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval})
                   </li>
@@ -159,11 +172,11 @@ export function OperationsBudgetPage() {
 
           <div className="budget-entries-list">
             <h3>Current Physical Marketing Budget Entries</h3>
-            {physicalMarketingBudgetEntries.length === 0 ? (
-              <p>No physical marketing budget entries added yet.</p>
+            {physicalMarketingBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).length === 0 ? (
+              <p>No physical marketing budget entries added yet for this project.</p>
             ) : (
               <ul>
-                {physicalMarketingBudgetEntries.map(entry => (
+                {physicalMarketingBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).map(entry => (
                   <li key={entry.id}>
                     {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval})
                   </li>
