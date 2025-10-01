@@ -1,7 +1,5 @@
 .generated-reports-page-container {
   display: flex;
-  flex-direction: column; /* Arrange children vertically */
-  height: 100%; /* Take full height of parent */
   gap: 20px;
   padding: 20px;
   background-color: #ffffff;
@@ -9,6 +7,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   max-width: 1200px; /* Limit overall width */
   margin: 0 auto; /* Center the container */
+  align-items: stretch; /* Make children stretch to fill height */
 }
 
 .report-generator-section {
