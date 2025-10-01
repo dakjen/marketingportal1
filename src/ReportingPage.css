@@ -8,6 +8,7 @@
   height: 100%; /* Ensure it takes full height */
   padding: 20px;
   margin-left: 20px; /* Space between sidebar and main content */
+  overflow-y: auto; /* Add scrollbar for vertical overflow */
 }
 
 .reporting-boxes-container {

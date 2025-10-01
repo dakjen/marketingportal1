@@ -3,6 +3,7 @@
   padding: 20px;
   background-color: #c07481;
   border-right: 1px solid #eee;
+  flex-shrink: 0;
 }
 
 .reporting-sidebar h2 {
