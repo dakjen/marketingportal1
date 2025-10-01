@@ -173,14 +173,14 @@ function ReportingPage() {
     }
   };
 
+  const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
+  const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
+
   const parseBudgetInput = () => {
     const lines = budgetInputText.split('\n');
     let newSocialMediaBudget = 0;
     let newPhysicalMarketingBudget = 0;
     const newIndividualBudgets = {};
-
-    const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
-    const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
 
     lines.forEach(line => {
       const trimmedLine = line.trim();
@@ -206,9 +206,6 @@ function ReportingPage() {
     setPhysicalMarketingBudget(newPhysicalMarketingBudget);
     setIndividualBudgets(newIndividualBudgets);
   };
-
-  const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
-  const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
 
   return (
     <div className="reporting-page-wrapper"> {/* New wrapper for sidebar and content */}
