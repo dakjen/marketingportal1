@@ -19,6 +19,7 @@ function ReportingSidebar() {
         <li><NavLink to="/reporting/operations/physical">Physical</NavLink></li>
         <li><NavLink to="/reporting/operations/wins">Wins</NavLink></li>
         <li><NavLink to="/reporting/operations/property-management">Property Management</NavLink></li>
+        <li><NavLink to="/reporting/operations/budget">Budget</NavLink></li> {/* New Budget Link */}
       </ul>
     </div>
   );
