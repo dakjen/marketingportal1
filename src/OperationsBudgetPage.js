@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
+import { AuthContext } from './AuthContext'; // Import AuthContext
 import './OperationsBudgetPage.css';
 
 const socialMediaTypes = [
@@ -12,6 +13,7 @@ const physicalMarketingTypes = [
 
 export function OperationsBudgetPage() {
   const { activeProject } = useContext(ProjectContext);
+  const { currentUser } = useContext(AuthContext);
 
   const [socialMediaMarketingType, setSocialMediaMarketingType] = useState('');
   const [socialMediaBudgetAmount, setSocialMediaBudgetAmount] = useState('');
@@ -50,6 +52,10 @@ export function OperationsBudgetPage() {
       alert('Please select an active project first.');
       return;
     }
+    if (!currentUser) {
+      alert('You must be logged in to add a budget entry.');
+      return;
+    }
     if (!socialMediaMarketingType || !socialMediaBudgetAmount) {
       alert('Please select a social media marketing type and enter a budget amount.');
       return;
@@ -67,6 +73,7 @@ export function OperationsBudgetPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role,
         },
         body: JSON.stringify(newEntryData),
       });
@@ -90,6 +97,10 @@ export function OperationsBudgetPage() {
       alert('Please select an active project first.');
       return;
     }
+    if (!currentUser) {
+      alert('You must be logged in to add a budget entry.');
+      return;
+    }
     if (!physicalMarketingType || !physicalMarketingBudgetAmount) {
       alert('Please select a physical marketing type and enter a budget amount.');
       return;
@@ -107,6 +118,7 @@ export function OperationsBudgetPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role,
         },
         body: JSON.stringify(newEntryData),
       });
