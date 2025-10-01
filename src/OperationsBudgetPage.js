@@ -11,14 +11,21 @@ const physicalMarketingTypes = [
 ];
 
 export function OperationsBudgetPage() {
+  const { activeProject } = useContext(ProjectContext);
 
+  const [socialMediaMarketingType, setSocialMediaMarketingType] = useState('');
+  const [socialMediaBudgetAmount, setSocialMediaBudgetAmount] = useState('');
+  const [socialMediaBudgetInterval, setSocialMediaBudgetInterval] = useState('Monthly');
+
+  const [physicalMarketingType, setPhysicalMarketingType] = useState('');
+  const [physicalMarketingBudgetAmount, setPhysicalMarketingBudgetAmount] = useState('');
+  const [physicalMarketingBudgetInterval, setPhysicalMarketingBudgetInterval] = useState('Monthly');
+
+  const [allBudgetEntries, setAllBudgetEntries] = useState([]);
 
   const refetchBudgetEntries = useCallback(async () => {
-    console.log('refetchBudgetEntries called. Active Project:', activeProject);
     if (!activeProject) {
       setAllBudgetEntries([]);
-      setSocialMediaBudgetEntries([]);
-      setPhysicalMarketingBudgetEntries([]);
       return;
     }
     try {
@@ -27,29 +34,18 @@ export function OperationsBudgetPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log('Fetched budget entries:', data.entries);
       setAllBudgetEntries(data.entries);
     } catch (error) {
       console.error("Failed to fetch budget entries:", error);
       alert('Failed to load budget entries. Please try again.');
     }
-  }, [activeProject, setAllBudgetEntries, setSocialMediaBudgetEntries, setPhysicalMarketingBudgetEntries, socialMediaTypes, physicalMarketingTypes]);
+  }, [activeProject, setAllBudgetEntries]);
 
-  /* eslint-disable-next-line no-undef */
   useEffect(() => {
-    console.log('useEffect for fetchBudgetEntries triggered. Active Project:', activeProject);
     refetchBudgetEntries();
-  }, [activeProject]);
-
-  /* eslint-disable-next-line no-undef */
-  useEffect(() => {
-    console.log('useEffect for filtering budget entries triggered. All Budget Entries:', allBudgetEntries);
-    setSocialMediaBudgetEntries(allBudgetEntries.filter(entry => socialMediaTypes.includes(entry.type)));
-    setPhysicalMarketingBudgetEntries(allBudgetEntries.filter(entry => physicalMarketingTypes.includes(entry.type)));
-  }, [allBudgetEntries, socialMediaTypes, physicalMarketingTypes]);
+  }, [activeProject, refetchBudgetEntries]);
 
   const handleAddSocialMediaEntry = async () => {
-    console.log('handleAddSocialMediaEntry called. Active Project:', activeProject);
     if (!activeProject) {
       alert('Please select an active project first.');
       return;
@@ -67,7 +63,6 @@ export function OperationsBudgetPage() {
     };
 
     try {
-      console.log('Posting new social media entry:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
@@ -91,7 +86,6 @@ export function OperationsBudgetPage() {
   };
 
   const handleAddPhysicalMarketingEntry = async () => {
-    console.log('handleAddPhysicalMarketingEntry called. Active Project:', activeProject);
     if (!activeProject) {
       alert('Please select an active project first.');
       return;
@@ -109,7 +103,6 @@ export function OperationsBudgetPage() {
     };
 
     try {
-      console.log('Posting new physical marketing entry:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
@@ -180,11 +173,11 @@ export function OperationsBudgetPage() {
 
           <div className="budget-entries-list">
             <h3>Current Social Media Budget Entries</h3>
-            {socialMediaBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).length === 0 ? (
+            {allBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name && socialMediaTypes.includes(entry.type)).length === 0 ? (
               <p>No social media budget entries added yet for this project.</p>
             ) : (
               <ul>
-                {socialMediaBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).map(entry => (
+                {allBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name && socialMediaTypes.includes(entry.type)).map(entry => (
                   <li key={entry.id}>
                     {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval})
                   </li>
@@ -237,11 +230,11 @@ export function OperationsBudgetPage() {
 
           <div className="budget-entries-list">
             <h3>Current Physical Marketing Budget Entries</h3>
-            {physicalMarketingBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).length === 0 ? (
+            {allBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name && physicalMarketingTypes.includes(entry.type)).length === 0 ? (
               <p>No physical marketing budget entries added yet for this project.</p>
             ) : (
               <ul>
-                {physicalMarketingBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name).map(entry => (
+                {allBudgetEntries.filter(entry => activeProject && entry.projectName === activeProject.name && physicalMarketingTypes.includes(entry.type)).map(entry => (
                   <li key={entry.id}>
                     {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval})
                   </li>
