@@ -99,6 +99,7 @@ function ProfilePage() {
 
   const handleDeleteUser = async (usernameToDelete) => {
     if (window.confirm(`Are you sure you want to delete user ${usernameToDelete}?`)) {
+      console.log('handleDeleteUser: Current User Role:', currentUser?.role);
       try {
         const response = await fetch(`/api/users/${usernameToDelete}`, {
           method: 'DELETE',
