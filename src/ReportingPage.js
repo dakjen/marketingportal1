@@ -72,19 +72,37 @@ function ReportingPage() {
         return;
       }
       try {
-    const response = await fetch(`/api/project-data?project_name=${encodeURIComponent(activeProject.name)}`);
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Failed to fetch project spend data:", response.status, errorData);
-          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    const responseProjectData = await fetch(`/api/project-data?project_name=${encodeURIComponent(activeProject.name)}`);
+        if (!responseProjectData.ok) {
+          const errorData = await responseProjectData.json();
+          console.error("Failed to fetch project spend data:", responseProjectData.status, errorData);
+          throw new Error(errorData.message || `HTTP error! status: ${responseProjectData.status}`);
         }
-        const data = await response.json();
-        setProjectSpendData(data.spend);
+        const projectData = await responseProjectData.json();
+        setProjectSpendData(projectData.spend);
 
-        // Calculate total monthly spend
+        const responseBudgetEntries = await fetch(`/api/budget-entries?project_name=${encodeURIComponent(activeProject.name)}`);
+        if (!responseBudgetEntries.ok) {
+          const errorData = await responseBudgetEntries.json();
+          console.error("Failed to fetch budget entries data:", responseBudgetEntries.status, errorData);
+          throw new Error(errorData.message || `HTTP error! status: ${responseBudgetEntries.status}`);
+        }
+        const budgetEntriesData = await responseBudgetEntries.json();
+
+        // Combine spend data from project-data and budget-entries
+        const combinedSpendData = [
+          ...projectData.spend,
+          ...budgetEntriesData.entries.map(entry => ({
+            date: entry.created_at, // Use created_at for budget entries
+            amount: parseFloat(entry.amount),
+            type: entry.type // Use the type from budget entry
+          }))
+        ];
+
+        // Calculate total monthly spend from combined data
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
-        const monthlySpend = data.spend.filter(item => {
+        const monthlySpend = combinedSpendData.filter(item => {
           const itemDate = new Date(item.date);
           return itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear;
         }).reduce((sum, item) => sum + item.amount, 0);
