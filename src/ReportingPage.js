@@ -26,6 +26,8 @@ function ReportingPage() {
   const [projectSpendData, setProjectSpendData] = useState([]);
   const [monthlySpendChartData, setMonthlySpendChartData] = useState([]);
   const [selectedMonthlyReport, setSelectedMonthlyReport] = useState(''); // New state for selected report
+  const [projectBudget, setProjectBudget] = useState(0); // New state for project budget
+  const [totalSpent, setTotalSpent] = useState(0); // New state for total spent
 
   const handleFileUpload = (file) => {
     setUploadedFiles(prevFiles => [...prevFiles, file]);
@@ -97,6 +99,12 @@ function ReportingPage() {
     } else {
       setMonthlySpendChartData([]);
     }
+  }, [projectSpendData]);
+
+  // Calculate total spent whenever projectSpendData changes
+  useEffect(() => {
+    const calculatedTotalSpent = projectSpendData.reduce((sum, item) => sum + item.amount, 0);
+    setTotalSpent(calculatedTotalSpent);
   }, [projectSpendData]);
 
   const handleSubmitMonthlyReport = async () => {
@@ -183,6 +191,16 @@ function ReportingPage() {
                 </div>
                 <div className="reporting-box">
                   <h4>Budget</h4>
+                  <p>
+                    Budget: $<input
+                      type="number"
+                      value={projectBudget}
+                      onChange={(e) => setProjectBudget(parseFloat(e.target.value) || 0)}
+                      placeholder="Enter budget"
+                    />
+                  </p>
+                  <p>Total Spent: ${totalSpent.toFixed(2)}</p>
+                  <p>Remaining: ${(projectBudget - totalSpent).toFixed(2)}</p>
                 </div>
               </div>
               <div className="budget-container">
