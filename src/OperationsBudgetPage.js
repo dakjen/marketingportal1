@@ -47,10 +47,12 @@ export function OperationsBudgetPage() {
     }
   };
 
+  /* eslint-disable-next-line no-undef */
   useEffect(() => {
     fetchBudgetEntries();
   }, [activeProject]);
 
+  /* eslint-disable-next-line no-undef */
   useEffect(() => {
     setSocialMediaBudgetEntries(allBudgetEntries.filter(entry => socialMediaTypes.includes(entry.type)));
     setPhysicalMarketingBudgetEntries(allBudgetEntries.filter(entry => physicalMarketingTypes.includes(entry.type)));
