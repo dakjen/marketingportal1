@@ -30,6 +30,7 @@ function ReportingPage() {
   const [socialMediaBudget, setSocialMediaBudget] = useState(0); // New state for social media budget
   const [physicalMarketingBudget, setPhysicalMarketingBudget] = useState(0); // New state for physical marketing budget
   const [budgetInputText, setBudgetInputText] = useState(''); // New state for budget input text
+  const [individualBudgets, setIndividualBudgets] = useState({}); // New state for individual category budgets
   const [totalSpent, setTotalSpent] = useState(0); // New state for total spent
   const [socialMediaSpent, setSocialMediaSpent] = useState(0); // New state for social media spent
   const [physicalMarketingSpent, setPhysicalMarketingSpent] = useState(0); // New state for physical marketing spent
@@ -172,90 +173,56 @@ function ReportingPage() {
     }
   };
 
-  const parseBudgetInput = () => {
-    const lines = budgetInputText.split('\n');
-    let smBudget = 0;
-    let pmBudget = 0;
-
-    lines.forEach(line => {
-      const trimmedLine = line.trim();
-      if (trimmedLine.startsWith('Social Media:')) {
-        const amount = parseFloat(trimmedLine.replace('Social Media:', '').trim());
-        if (!isNaN(amount)) {
-          smBudget = amount;
+    const parseBudgetInput = () => {
+      const lines = budgetInputText.split('\n');
+      let newSocialMediaBudget = 0;
+      let newPhysicalMarketingBudget = 0;
+      const newIndividualBudgets = {};
+ 
+      const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
+      const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
+ 
+      lines.forEach(line => {
+        const trimmedLine = line.trim();
+        const match = trimmedLine.match(/^(.*?)\$(\d+\.?\d*)$/);
+ 
+        if (match) {
+          const category = match[1].trim();
+          const amount = parseFloat(match[2]);
+ 
+          if (!isNaN(amount)) {
+            newIndividualBudgets[category] = amount;
+ 
+            if (socialMediaCategories.includes(category)) {
+              newSocialMediaBudget += amount;
+            } else if (physicalMarketingCategories.includes(category)) {
+              newPhysicalMarketingBudget += amount;
+            }
+          }
         }
-      } else if (trimmedLine.startsWith('Physical Marketing:')) {
-        const amount = parseFloat(trimmedLine.replace('Physical Marketing:', '').trim());
-        if (!isNaN(amount)) {
-          pmBudget = amount;
-        }
-      }
-    });
-
-    setSocialMediaBudget(smBudget);
-    setPhysicalMarketingBudget(pmBudget);
-    alert('Budgets parsed successfully!');
-  };
-
-  return (
-    <div className="reporting-page-wrapper"> {/* New wrapper for sidebar and content */}
-      <ReportingSidebar /> {/* Reporting page's dedicated sidebar */}
-      <div className="reporting-main-content">
-        <ProjectSwitcher />
-        <Routes>
-          <Route path="/" element={
-            <div>
-              <div className="reporting-boxes-container">
+      });
+ 
+      setSocialMediaBudget(newSocialMediaBudget);
+      setPhysicalMarketingBudget(newPhysicalMarketingBudget);
+      setIndividualBudgets(newIndividualBudgets);
+    };
                 <div className="reporting-box">
-                  <h4>Reports</h4>
-                </div>
-                <div className="reporting-box">
-                  <h4>Analytics</h4>
-                  <p>Social Media Uploads: {socialMediaUploads.length}</p>
-                  <p>Physical Marketing Uploads: {physicalMarketingUploads.length}</p>
-                </div>
-                <div className="reporting-box">
-                  <h4>Submit</h4>
-                  <p>Submit monthly report to Project Lead</p>
-                  <select
-                    value={selectedMonthlyReport}
-                    onChange={(e) => setSelectedMonthlyReport(e.target.value)}
-                    style={{ marginBottom: '10px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', width: '100%' }}
-                  >
-                    <option value="">Select a report</option>
-                    {uploadedFiles.map((file, index) => (
-                      <option key={index} value={file.name}>{file.name}</option>
-                    ))}
-                  </select>
-                  <button onClick={handleSubmitMonthlyReport}>Submit Report</button>
-                </div>
-                <div className="reporting-box">
-                  <h4>Budget</h4>
-                  <p>Enter budgets (e.g., "Social Media: 1000", "Physical Marketing: 500"):</p>
+                  <h4>Approved Budget</h4>
+                  <p>Enter budgets (e.g., "Instagram$200.00", "Facebook$320.00"):</p>
                   <textarea
                     value={budgetInputText}
                     onChange={(e) => setBudgetInputText(e.target.value)}
                     placeholder="Paste budget data here"
-                    rows="5"
+                    rows="8"
                     style={{ width: '100%', marginBottom: '10px' }}
                   ></textarea>
                   <button onClick={parseBudgetInput}>Parse Budget</button>
-
-                  <p>Social Media Budget: ${socialMediaBudget.toFixed(2)}</p>
-                  <p>Social Media Spent: ${socialMediaSpent.toFixed(2)}</p>
-                  <p>Social Media Remaining: ${(socialMediaBudget - socialMediaSpent).toFixed(2)}</p>
-                  <p>
-                    Physical Marketing Budget: ${physicalMarketingBudget.toFixed(2)}
-                  </p>
-                  <p>Physical Marketing Spent: ${physicalMarketingSpent.toFixed(2)}</p>
-                  <p>Physical Marketing Remaining: ${(physicalMarketingBudget - physicalMarketingSpent).toFixed(2)}</p>
-                  <p>Total Project Budget: ${(socialMediaBudget + physicalMarketingBudget).toFixed(2)}</p>
-                  <p>Total Spent: ${totalSpent.toFixed(2)}</p>
-                  <p>Total Remaining: ${(socialMediaBudget + physicalMarketingBudget - totalSpent).toFixed(2)}</p>
                 </div>
               </div>
               <div className="budget-container">
                 <h3>Budget</h3>
+
+
                 {monthlySpendChartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={monthlySpendChartData}>
@@ -270,6 +237,24 @@ function ReportingPage() {
                 ) : (
                   <p>No budget data available for the active project.</p>
                 )}
+
+                <div className="social-media-categories">
+                  <h4>Social Media Categories</h4>
+                  <ul>
+                    {socialMediaCategories.map(category => (
+                      <li key={category}>{category}: ${individualBudgets[category] ? individualBudgets[category].toFixed(2) : '0.00'}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="physical-marketing-categories">
+                  <h4>Physical Marketing Categories</h4>
+                  <ul>
+                    {physicalMarketingCategories.map(category => (
+                      <li key={category}>{category}: ${individualBudgets[category] ? individualBudgets[category].toFixed(2) : '0.00'}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
               <div className="recent-reports-container">
                 <h3>Recently Uploaded Reports</h3>
