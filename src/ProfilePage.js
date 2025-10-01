@@ -102,6 +102,9 @@ function ProfilePage() {
       try {
         const response = await fetch(`/api/users/${usernameToDelete}`, {
           method: 'DELETE',
+          headers: {
+            'X-User-Role': currentUser?.role || '',
+          },
         });
 
         if (!response.ok) {
