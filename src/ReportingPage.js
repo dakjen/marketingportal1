@@ -178,17 +178,23 @@ function ReportingPage() {
 
   const parseBudgetInput = () => {
     const lines = budgetInputText.split('\n');
+    console.log('Parsing budget input. Lines:', lines);
     let newSocialMediaBudget = 0;
     let newPhysicalMarketingBudget = 0;
     const newIndividualBudgets = {};
 
+    const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
+    const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
+
     lines.forEach(line => {
       const trimmedLine = line.trim();
+      console.log('Processing line:', trimmedLine);
       const match = trimmedLine.match(/^(.*?)\$(\d+\.?\d*)$/);
 
       if (match) {
         const category = match[1].trim();
         const amount = parseFloat(match[2]);
+        console.log('Match found. Category:', category, 'Amount:', amount);
 
         if (!isNaN(amount)) {
           newIndividualBudgets[category] = amount;
@@ -198,7 +204,11 @@ function ReportingPage() {
           } else if (physicalMarketingCategories.includes(category)) {
             newPhysicalMarketingBudget += amount;
           }
+        } else {
+          console.log('Amount is NaN for line:', trimmedLine);
         }
+      } else {
+        console.log('No match found for line:', trimmedLine);
       }
     });
 
