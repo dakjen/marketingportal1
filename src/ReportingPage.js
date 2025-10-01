@@ -99,14 +99,15 @@ function ReportingPage() {
           }))
         ];
 
-        // Calculate total monthly spend from combined data
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getFullYear();
-        const monthlySpend = combinedSpendData.filter(item => {
+        // Calculate total spend for the last 30 days
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const last30DaysSpend = combinedSpendData.filter(item => {
           const itemDate = new Date(item.date);
-          return itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear;
+          return itemDate >= thirtyDaysAgo;
         }).reduce((sum, item) => sum + item.amount, 0);
-        setTotalMonthlySpend(monthlySpend);
+        setTotalMonthlySpend(last30DaysSpend);
 
       } catch (error) {
         console.error("Error in fetchProjectSpend:", error);
