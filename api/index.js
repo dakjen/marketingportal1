@@ -672,6 +672,7 @@ app.post('/api/budget-entries', authorizeRole(['admin', 'internal']), async (req
   const { project_name, type, amount, interval, month_allocation } = req.body;
   console.log('POST /api/budget-entries: req.body:', req.body);
   console.log('POST /api/budget-entries: project_name:', project_name, 'type:', type, 'amount:', amount, 'interval:', interval, 'month_allocation:', month_allocation);
+  console.log('POST /api/budget-entries: typeof project_name:', typeof project_name, 'typeof type:', typeof type, 'typeof amount:', typeof amount, 'typeof interval:', typeof interval, 'typeof month_allocation:', typeof month_allocation);
   if (!project_name || !type || !amount || !interval || !month_allocation) {
     return res.status(400).json({ message: 'Missing required fields.' });
   }
