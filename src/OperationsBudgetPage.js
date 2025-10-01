@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 
 
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
@@ -30,16 +30,17 @@ export function OperationsBudgetPage() {
   ];
 
 
-      const refetchBudgetEntries = async () => {
-        console.log('refetchBudgetEntries called. Active Project:', activeProject);
-        if (!activeProject) {
-          setAllBudgetEntries([]);
-          setSocialMediaBudgetEntries([]);
-          setPhysicalMarketingBudgetEntries([]);
-          return;
-        }
-        try {
-          const response = await fetch(`/api/budget-entries?project_name=${activeProject.name}`);      if (!response.ok) {
+  const refetchBudgetEntries = useCallback(async () => {
+    console.log('refetchBudgetEntries called. Active Project:', activeProject);
+    if (!activeProject) {
+      setAllBudgetEntries([]);
+      setSocialMediaBudgetEntries([]);
+      setPhysicalMarketingBudgetEntries([]);
+      return;
+    }
+    try {
+      const response = await fetch(`/api/budget-entries?project_name=${activeProject.name}`);
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
@@ -49,7 +50,7 @@ export function OperationsBudgetPage() {
       console.error("Failed to fetch budget entries:", error);
       alert('Failed to load budget entries. Please try again.');
     }
-  };
+  }, [activeProject, setAllBudgetEntries, setSocialMediaBudgetEntries, setPhysicalMarketingBudgetEntries, socialMediaTypes, physicalMarketingTypes]);
 
   /* eslint-disable-next-line no-undef */
   useEffect(() => {
