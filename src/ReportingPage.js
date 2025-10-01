@@ -240,22 +240,22 @@ function ReportingPage() {
                     style={{ width: '100%', marginBottom: '10px' }}
                   ></textarea>
                   <button onClick={parseBudgetInput}>Parse Budget</button>
+
+                  <p>Social Media Budget: ${socialMediaBudget.toFixed(2)}</p>
+                  <p>Social Media Spent: ${socialMediaSpent.toFixed(2)}</p>
+                  <p>Social Media Remaining: ${(socialMediaBudget - socialMediaSpent).toFixed(2)}</p>
+                  <p>
+                    Physical Marketing Budget: ${physicalMarketingBudget.toFixed(2)}
+                  </p>
+                  <p>Physical Marketing Spent: ${physicalMarketingSpent.toFixed(2)}</p>
+                  <p>Physical Marketing Remaining: ${(physicalMarketingBudget - physicalMarketingSpent).toFixed(2)}</p>
+                  <p>Total Project Budget: ${(socialMediaBudget + physicalMarketingBudget).toFixed(2)}</p>
+                  <p>Total Spent: ${totalSpent.toFixed(2)}</p>
+                  <p>Total Remaining: ${(socialMediaBudget + physicalMarketingBudget - totalSpent).toFixed(2)}</p>
                 </div>
               </div>
               <div className="budget-container">
                 <h3>Budget</h3>
-                <p>Social Media Budget: ${socialMediaBudget.toFixed(2)}</p>
-                <p>Social Media Spent: ${socialMediaSpent.toFixed(2)}</p>
-                <p>Social Media Remaining: ${(socialMediaBudget - socialMediaSpent).toFixed(2)}</p>
-                <p>
-                  Physical Marketing Budget: ${physicalMarketingBudget.toFixed(2)}
-                </p>
-                <p>Physical Marketing Spent: ${physicalMarketingSpent.toFixed(2)}</p>
-                <p>Physical Marketing Remaining: ${(physicalMarketingBudget - physicalMarketingSpent).toFixed(2)}</p>
-                <p>Total Project Budget: ${(socialMediaBudget + physicalMarketingBudget).toFixed(2)}</p>
-                <p>Total Spent: ${totalSpent.toFixed(2)}</p>
-                <p>Total Remaining: ${(socialMediaBudget + physicalMarketingBudget - totalSpent).toFixed(2)}</p>
-
                 {monthlySpendChartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={monthlySpendChartData}>
