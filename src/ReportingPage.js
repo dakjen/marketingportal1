@@ -29,6 +29,7 @@ function ReportingPage() {
   const [selectedMonthlyReport, setSelectedMonthlyReport] = useState(''); // New state for selected report
   const [socialMediaBudget, setSocialMediaBudget] = useState(0); // New state for social media budget
   const [physicalMarketingBudget, setPhysicalMarketingBudget] = useState(0); // New state for physical marketing budget
+  const [budgetInputText, setBudgetInputText] = useState(''); // New state for budget input text
   const [totalSpent, setTotalSpent] = useState(0); // New state for total spent
   const [socialMediaSpent, setSocialMediaSpent] = useState(0); // New state for social media spent
   const [physicalMarketingSpent, setPhysicalMarketingSpent] = useState(0); // New state for physical marketing spent
@@ -171,6 +172,31 @@ function ReportingPage() {
     }
   };
 
+  const parseBudgetInput = () => {
+    const lines = budgetInputText.split('\n');
+    let smBudget = 0;
+    let pmBudget = 0;
+
+    lines.forEach(line => {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('Social Media:')) {
+        const amount = parseFloat(trimmedLine.replace('Social Media:', '').trim());
+        if (!isNaN(amount)) {
+          smBudget = amount;
+        }
+      } else if (trimmedLine.startsWith('Physical Marketing:')) {
+        const amount = parseFloat(trimmedLine.replace('Physical Marketing:', '').trim());
+        if (!isNaN(amount)) {
+          pmBudget = amount;
+        }
+      }
+    });
+
+    setSocialMediaBudget(smBudget);
+    setPhysicalMarketingBudget(pmBudget);
+    alert('Budgets parsed successfully!');
+  };
+
   return (
     <div className="reporting-page-wrapper"> {/* New wrapper for sidebar and content */}
       <ReportingSidebar /> {/* Reporting page's dedicated sidebar */}
@@ -209,23 +235,21 @@ function ReportingPage() {
               </div>
               <div className="budget-container">
                 <h3>Budget</h3>
-                <p>
-                  Social Media Budget: $<input
-                    type="number"
-                    value={socialMediaBudget}
-                    onChange={(e) => setSocialMediaBudget(parseFloat(e.target.value) || 0)}
-                    placeholder="Enter SM budget"
-                  />
-                </p>
+                <p>Enter budgets (e.g., "Social Media: 1000", "Physical Marketing: 500"):</p>
+                <textarea
+                  value={budgetInputText}
+                  onChange={(e) => setBudgetInputText(e.target.value)}
+                  placeholder="Paste budget data here"
+                  rows="5"
+                  style={{ width: '100%', marginBottom: '10px' }}
+                ></textarea>
+                <button onClick={parseBudgetInput}>Parse Budget</button>
+
+                <p>Social Media Budget: ${socialMediaBudget.toFixed(2)}</p>
                 <p>Social Media Spent: ${socialMediaSpent.toFixed(2)}</p>
                 <p>Social Media Remaining: ${(socialMediaBudget - socialMediaSpent).toFixed(2)}</p>
                 <p>
-                  Physical Marketing Budget: $<input
-                    type="number"
-                    value={physicalMarketingBudget}
-                    onChange={(e) => setPhysicalMarketingBudget(parseFloat(e.target.value) || 0)}
-                    placeholder="Enter PM budget"
-                  />
+                  Physical Marketing Budget: ${physicalMarketingBudget.toFixed(2)}
                 </p>
                 <p>Physical Marketing Spent: ${physicalMarketingSpent.toFixed(2)}</p>
                 <p>Physical Marketing Remaining: ${(physicalMarketingBudget - physicalMarketingSpent).toFixed(2)}</p>
