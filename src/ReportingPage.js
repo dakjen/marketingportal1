@@ -12,6 +12,7 @@ import OperationsSocialMediaPage from './OperationsSocialMediaPage';
 import OperationsPhysicalPage from './OperationsPhysicalPage';
 import OperationsWinsPage from './OperationsWinsPage';
 import OperationsPropertyManagementPage from './OperationsPropertyManagementPage';
+import OperationsBudgetPage from './OperationsBudgetPage'; // New import for Operations Budget Page
 import ProjectSwitcher from './ProjectSwitcher'; // New import
 import { AuthContext } from './AuthContext'; // Import AuthContext
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
@@ -281,6 +282,7 @@ function ReportingPage() {
           <Route path="operations/physical" element={<OperationsPhysicalPage />} />
           <Route path="operations/wins" element={<OperationsWinsPage />} />
           <Route path="operations/property-management" element={<OperationsPropertyManagementPage />} />
+          <Route path="operations/budget" element={<OperationsBudgetPage />} /> {/* New route for Operations Budget Page */}
         </Routes>
       </div>
     </div>
