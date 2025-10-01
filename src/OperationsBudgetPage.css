@@ -10,14 +10,15 @@
 .budget-columns-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Space between columns */
+  gap: 40px; /* Increased space between columns */
 }
 
 .budget-column {
-  flex: 1; /* Each column takes equal space */
-  min-width: 250px; /* Minimum width for columns before wrapping */
+  flex: 1;
+  min-width: 300px; /* Adjusted minimum width */
+  min-height: 400px; /* Added minimum height */
   background-color: #f9f9f9;
-  padding: 15px;
+  padding: 25px; /* Increased padding */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
