@@ -144,7 +144,7 @@ export const ProjectProvider = ({ children, reloadUser }) => {
       deleteProject,
       archiveProject,
       unarchiveProject
-    }), [allProjects, activeProject, currentUser, addProject, selectProject, deleteProject, archiveProject, unarchiveProject]);
+    }), [allProjects, activeProject, currentUser]);
 
     return (
       <ProjectContext.Provider value={contextValue}>
