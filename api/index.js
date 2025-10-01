@@ -153,13 +153,13 @@ app.get('/api/project-data', async (req, res) => {
   try {
     // Fetch social media spend
     const socialMediaSpendResult = await pool.query(
-      'SELECT date, cost FROM social_media_entries WHERE project_name = $1 AND is_archived = false ORDER BY date ASC',
+      'SELECT date, cost FROM social_media_entries WHERE project_name = $1 ORDER BY date ASC',
       [project_name]
     );
 
     // Fetch physical marketing spend
     const physicalMarketingSpendResult = await pool.query(
-      'SELECT date, cost FROM physical_marketing_entries WHERE project_name = $1 AND is_archived = false ORDER BY date ASC',
+      'SELECT date, cost FROM physical_marketing_entries WHERE project_name = $1 ORDER BY date ASC',
       [project_name]
     );
 
