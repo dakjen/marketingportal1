@@ -264,7 +264,7 @@ export function OperationsBudgetPage() {
                 <option value="Monthly">Monthly</option>
                 <option value="Weekly">Weekly</option>
               </select>
-
+            </div>
             <div>
               <label htmlFor="physicalMarketingMonthAllocation">Month Allocation:</label>
               <select
