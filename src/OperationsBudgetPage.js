@@ -35,7 +35,7 @@ export function OperationsBudgetPage() {
       return;
     }
     try {
-      const response = await fetch(`/api/budget-entries?projectName=${activeProject.name}`);
+      const response = await fetch(`/api/budget-entries?project_name=${activeProject.name}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
