@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import './OperationsBudgetPage.css';
 
