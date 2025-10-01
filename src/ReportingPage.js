@@ -34,6 +34,7 @@ function ReportingPage() {
   const [totalSpent, setTotalSpent] = useState(0); // New state for total spent
   const [socialMediaSpent, setSocialMediaSpent] = useState(0); // New state for social media spent
   const [physicalMarketingSpent, setPhysicalMarketingSpent] = useState(0); // New state for physical marketing spent
+  const [totalMonthlySpend, setTotalMonthlySpend] = useState(0); // New state for total monthly spend
 
   const handleFileUpload = (file) => {
     setUploadedFiles(prevFiles => [...prevFiles, file]);
@@ -67,6 +68,7 @@ function ReportingPage() {
       if (!activeProject) {
         setProjectSpendData([]);
         setMonthlySpendChartData([]);
+        setTotalMonthlySpend(0);
         return;
       }
       try {
@@ -78,6 +80,16 @@ function ReportingPage() {
         }
         const data = await response.json();
         setProjectSpendData(data.spend);
+
+        // Calculate total monthly spend
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        const monthlySpend = data.spend.filter(item => {
+          const itemDate = new Date(item.date);
+          return itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear;
+        }).reduce((sum, item) => sum + item.amount, 0);
+        setTotalMonthlySpend(monthlySpend);
+
       } catch (error) {
         console.error("Error in fetchProjectSpend:", error);
         alert(`Failed to load project spend data: ${error.message}. Please try again.`);
@@ -250,17 +262,10 @@ function ReportingPage() {
                   <button onClick={handleSubmitMonthlyReport}>Submit Report</button>
                 </div>
                 <div className="reporting-box">
-                  <h4>Approved Budget</h4>
-                  <p>Enter budgets (e.g., "Instagram$200.00", "Facebook$320.00"):</p>
-                  <textarea
-                    value={budgetInputText}
-                    onChange={(e) => setBudgetInputText(e.target.value)}
-                    placeholder="Paste budget data here"
-                    rows="8"
-                    style={{ width: '100%', marginBottom: '10px' }}
-                  ></textarea>
-                  <button onClick={parseBudgetInput}>Parse Budget</button>
+                  <h4>Total Spend (Current Month)</h4>
+                  <p>${totalMonthlySpend.toFixed(2)}</p>
                 </div>
+
               </div>
               <div className="budget-container">
                 <h3>Budget</h3>
