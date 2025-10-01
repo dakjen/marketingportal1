@@ -75,6 +75,7 @@ export function OperationsBudgetPage() {
     };
 
     try {
+      console.log('handleAddSocialMediaEntry: Sending newEntryData:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
@@ -121,6 +122,7 @@ export function OperationsBudgetPage() {
     };
 
     try {
+      console.log('handleAddPhysicalMarketingEntry: Sending newEntryData:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
