@@ -137,29 +137,7 @@ export function OperationsBudgetPage() {
     }
   };
 
-  const refetchBudgetEntries = useCallback(async () => {
-    if (!activeProject) {
-      setAllBudgetEntries([]);
-      console.log('refetchBudgetEntries: No active project, clearing entries.');
-      return;
-    }
-    try {
-      const response = await fetch(`/api/budget-entries?project_name=${activeProject.name}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log('refetchBudgetEntries: Fetched data:', data);
-      setAllBudgetEntries(data.entries);
-    } catch (error) {
-      console.error("Failed to fetch budget entries:", error);
-      alert('Failed to load budget entries. Please try again.');
-    }
-  }, [activeProject, setAllBudgetEntries]);
 
-  useEffect(() => {
-    refetchBudgetEntries();
-  }, [activeProject, refetchBudgetEntries]);
 
   const handleAddSocialMediaEntry = async () => {
     if (!activeProject) {
