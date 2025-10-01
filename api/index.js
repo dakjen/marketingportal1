@@ -144,6 +144,17 @@ app.get('/api/test', (req, res) => {
   res.status(200).json({ message: 'API is working!' });
 });
 
+// Basic projects endpoint (demonstrates fetching from DB)
+app.get('/api/projects', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, name, is_archived FROM projects ORDER BY name');
+    res.status(200).json({ projects: result.rows });
+  } catch (error) {
+    console.error('Error fetching projects:', error.stack);
+    res.status(500).json({ message: 'Error fetching projects', error: error.message });
+  }
+});
+
 // API endpoint for project data (general project info - this might be redundant or need clarification)
 app.get('/api/project-data', async (req, res) => {
   const { project_name } = req.query;
