@@ -62,7 +62,7 @@ function ReportingPage() {
         return;
       }
       try {
-    const response = await fetch(`/api/project-data?project_name=${encodeURIComponent(projectName)}`);
+    const response = await fetch(`/api/project-data?project_name=${encodeURIComponent(activeProject.name)}`);
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Failed to fetch project spend data:", response.status, errorData);
