@@ -176,8 +176,8 @@ app.get('/api/project-data', async (req, res) => {
 
     // Combine and format spend data
     const combinedSpend = [
-      ...socialMediaSpendResult.rows.map(row => ({ date: row.date, amount: parseFloat(row.cost) })),
-      ...physicalMarketingSpendResult.rows.map(row => ({ date: row.date, amount: parseFloat(row.cost) }))
+      ...socialMediaSpendResult.rows.map(row => ({ date: row.date, amount: parseFloat(row.cost), type: 'socialMedia' })),
+      ...physicalMarketingSpendResult.rows.map(row => ({ date: row.date, amount: parseFloat(row.cost), type: 'physicalMarketing' }))
     ];
 
     res.status(200).json({ spend: combinedSpend });

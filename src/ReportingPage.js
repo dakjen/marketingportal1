@@ -26,8 +26,12 @@ function ReportingPage() {
   const [projectSpendData, setProjectSpendData] = useState([]);
   const [monthlySpendChartData, setMonthlySpendChartData] = useState([]);
   const [selectedMonthlyReport, setSelectedMonthlyReport] = useState(''); // New state for selected report
-  const [projectBudget, setProjectBudget] = useState(0); // New state for project budget
+  const [socialMediaBudget, setSocialMediaBudget] = useState(0); // New state for social media budget
+  const [physicalMarketingBudget, setPhysicalMarketingBudget] = useState(0); // New state for physical marketing budget
+  const [otherBudget, setOtherBudget] = useState(0); // New state for other budget
   const [totalSpent, setTotalSpent] = useState(0); // New state for total spent
+  const [socialMediaSpent, setSocialMediaSpent] = useState(0); // New state for social media spent
+  const [physicalMarketingSpent, setPhysicalMarketingSpent] = useState(0); // New state for physical marketing spent
 
   const handleFileUpload = (file) => {
     setUploadedFiles(prevFiles => [...prevFiles, file]);
@@ -101,10 +105,20 @@ function ReportingPage() {
     }
   }, [projectSpendData]);
 
-  // Calculate total spent whenever projectSpendData changes
+  // Calculate total spent and categorized spent whenever projectSpendData changes
   useEffect(() => {
     const calculatedTotalSpent = projectSpendData.reduce((sum, item) => sum + item.amount, 0);
     setTotalSpent(calculatedTotalSpent);
+
+    const calculatedSocialMediaSpent = projectSpendData
+      .filter(item => item.type === 'socialMedia')
+      .reduce((sum, item) => sum + item.amount, 0);
+    setSocialMediaSpent(calculatedSocialMediaSpent);
+
+    const calculatedPhysicalMarketingSpent = projectSpendData
+      .filter(item => item.type === 'physicalMarketing')
+      .reduce((sum, item) => sum + item.amount, 0);
+    setPhysicalMarketingSpent(calculatedPhysicalMarketingSpent);
   }, [projectSpendData]);
 
   const handleSubmitMonthlyReport = async () => {
@@ -192,15 +206,36 @@ function ReportingPage() {
                 <div className="reporting-box">
                   <h4>Budget</h4>
                   <p>
-                    Budget: $<input
+                    Social Media Budget: $<input
                       type="number"
-                      value={projectBudget}
-                      onChange={(e) => setProjectBudget(parseFloat(e.target.value) || 0)}
-                      placeholder="Enter budget"
+                      value={socialMediaBudget}
+                      onChange={(e) => setSocialMediaBudget(parseFloat(e.target.value) || 0)}
+                      placeholder="Enter SM budget"
                     />
                   </p>
+                  <p>Social Media Spent: ${socialMediaSpent.toFixed(2)}</p>
+                  <p>Social Media Remaining: ${(socialMediaBudget - socialMediaSpent).toFixed(2)}</p>
+                  <p>
+                    Physical Marketing Budget: $<input
+                      type="number"
+                      value={physicalMarketingBudget}
+                      onChange={(e) => setPhysicalMarketingBudget(parseFloat(e.target.value) || 0)}
+                      placeholder="Enter PM budget"
+                    />
+                  </p>
+                  <p>Physical Marketing Spent: ${physicalMarketingSpent.toFixed(2)}</p>
+                  <p>Physical Marketing Remaining: ${(physicalMarketingBudget - physicalMarketingSpent).toFixed(2)}</p>
+                  <p>
+                    Other Budget: $<input
+                      type="number"
+                      value={otherBudget}
+                      onChange={(e) => setOtherBudget(parseFloat(e.target.value) || 0)}
+                      placeholder="Enter Other budget"
+                    />
+                  </p>
+                  <p>Total Project Budget: ${(socialMediaBudget + physicalMarketingBudget + otherBudget).toFixed(2)}</p>
                   <p>Total Spent: ${totalSpent.toFixed(2)}</p>
-                  <p>Remaining: ${(projectBudget - totalSpent).toFixed(2)}</p>
+                  <p>Total Remaining: ${(socialMediaBudget + physicalMarketingBudget + otherBudget - totalSpent).toFixed(2)}</p>
                 </div>
               </div>
               <div className="budget-container">
