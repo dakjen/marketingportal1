@@ -14,10 +14,6 @@ function OperationsBudgetPage() {
           <h3>Physical Marketing Budget</h3>
           <p>Details for Physical Marketing Budget...</p>
         </div>
-        <div className="budget-column">
-          <h3>Other Budget</h3>
-          <p>Details for Other Budget...</p>
-        </div>
       </div>
     </div>
   );

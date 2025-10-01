@@ -29,7 +29,6 @@ function ReportingPage() {
   const [selectedMonthlyReport, setSelectedMonthlyReport] = useState(''); // New state for selected report
   const [socialMediaBudget, setSocialMediaBudget] = useState(0); // New state for social media budget
   const [physicalMarketingBudget, setPhysicalMarketingBudget] = useState(0); // New state for physical marketing budget
-  const [otherBudget, setOtherBudget] = useState(0); // New state for other budget
   const [totalSpent, setTotalSpent] = useState(0); // New state for total spent
   const [socialMediaSpent, setSocialMediaSpent] = useState(0); // New state for social media spent
   const [physicalMarketingSpent, setPhysicalMarketingSpent] = useState(0); // New state for physical marketing spent
@@ -206,41 +205,34 @@ function ReportingPage() {
                 </div>
                 <div className="reporting-box">
                   <h4>Budget</h4>
-                  <p>
-                    Social Media Budget: $<input
-                      type="number"
-                      value={socialMediaBudget}
-                      onChange={(e) => setSocialMediaBudget(parseFloat(e.target.value) || 0)}
-                      placeholder="Enter SM budget"
-                    />
-                  </p>
-                  <p>Social Media Spent: ${socialMediaSpent.toFixed(2)}</p>
-                  <p>Social Media Remaining: ${(socialMediaBudget - socialMediaSpent).toFixed(2)}</p>
-                  <p>
-                    Physical Marketing Budget: $<input
-                      type="number"
-                      value={physicalMarketingBudget}
-                      onChange={(e) => setPhysicalMarketingBudget(parseFloat(e.target.value) || 0)}
-                      placeholder="Enter PM budget"
-                    />
-                  </p>
-                  <p>Physical Marketing Spent: ${physicalMarketingSpent.toFixed(2)}</p>
-                  <p>Physical Marketing Remaining: ${(physicalMarketingBudget - physicalMarketingSpent).toFixed(2)}</p>
-                  <p>
-                    Other Budget: $<input
-                      type="number"
-                      value={otherBudget}
-                      onChange={(e) => setOtherBudget(parseFloat(e.target.value) || 0)}
-                      placeholder="Enter Other budget"
-                    />
-                  </p>
-                  <p>Total Project Budget: ${(socialMediaBudget + physicalMarketingBudget + otherBudget).toFixed(2)}</p>
-                  <p>Total Spent: ${totalSpent.toFixed(2)}</p>
-                  <p>Total Remaining: ${(socialMediaBudget + physicalMarketingBudget + otherBudget - totalSpent).toFixed(2)}</p>
                 </div>
               </div>
               <div className="budget-container">
                 <h3>Budget</h3>
+                <p>
+                  Social Media Budget: $<input
+                    type="number"
+                    value={socialMediaBudget}
+                    onChange={(e) => setSocialMediaBudget(parseFloat(e.target.value) || 0)}
+                    placeholder="Enter SM budget"
+                  />
+                </p>
+                <p>Social Media Spent: ${socialMediaSpent.toFixed(2)}</p>
+                <p>Social Media Remaining: ${(socialMediaBudget - socialMediaSpent).toFixed(2)}</p>
+                <p>
+                  Physical Marketing Budget: $<input
+                    type="number"
+                    value={physicalMarketingBudget}
+                    onChange={(e) => setPhysicalMarketingBudget(parseFloat(e.target.value) || 0)}
+                    placeholder="Enter PM budget"
+                  />
+                </p>
+                <p>Physical Marketing Spent: ${physicalMarketingSpent.toFixed(2)}</p>
+                <p>Physical Marketing Remaining: ${(physicalMarketingBudget - physicalMarketingSpent).toFixed(2)}</p>
+                <p>Total Project Budget: ${(socialMediaBudget + physicalMarketingBudget).toFixed(2)}</p>
+                <p>Total Spent: ${totalSpent.toFixed(2)}</p>
+                <p>Total Remaining: ${(socialMediaBudget + physicalMarketingBudget - totalSpent).toFixed(2)}</p>
+
                 {monthlySpendChartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={monthlySpendChartData}>
