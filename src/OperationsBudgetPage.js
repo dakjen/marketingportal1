@@ -1,34 +1,16 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-
-
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import './OperationsBudgetPage.css';
 
+const socialMediaTypes = [
+  'Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other',
+];
+
+const physicalMarketingTypes = [
+  'Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'
+];
+
 export function OperationsBudgetPage() {
-  const { activeProject } = useContext(ProjectContext);
-  console.log('OperationsBudgetPage rendered. Active Project:', activeProject);
-
-  console.log('OperationsBudgetPage mounted/rendered. Active Project:', activeProject);
-
-  const [socialMediaMarketingType, setSocialMediaMarketingType] = useState('');
-  const [socialMediaBudgetAmount, setSocialMediaBudgetAmount] = useState('');
-  const [socialMediaBudgetInterval, setSocialMediaBudgetInterval] = useState('Monthly');
-
-  const [physicalMarketingType, setPhysicalMarketingType] = useState('');
-  const [physicalMarketingBudgetAmount, setPhysicalMarketingBudgetAmount] = useState('');
-  const [physicalMarketingBudgetInterval, setPhysicalMarketingBudgetInterval] = useState('Monthly');
-
-  const [allBudgetEntries, setAllBudgetEntries] = useState([]);
-  const [socialMediaBudgetEntries, setSocialMediaBudgetEntries] = useState([]);
-  const [physicalMarketingBudgetEntries, setPhysicalMarketingBudgetEntries] = useState([]);
-
-  const socialMediaTypes = [
-    'Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other',
-  ];
-
-  const physicalMarketingTypes = [
-    'Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'
-  ];
 
 
   const refetchBudgetEntries = useCallback(async () => {
@@ -56,7 +38,7 @@ export function OperationsBudgetPage() {
   /* eslint-disable-next-line no-undef */
   useEffect(() => {
     console.log('useEffect for fetchBudgetEntries triggered. Active Project:', activeProject);
-    // refetchBudgetEntries(); // Temporarily removed
+    refetchBudgetEntries();
   }, [activeProject]);
 
   /* eslint-disable-next-line no-undef */
