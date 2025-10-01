@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { AuthContext } from './AuthContext';
 
 export const ProjectContext = createContext(null);
@@ -39,7 +39,7 @@ export const ProjectProvider = ({ children, reloadUser }) => {
     localStorage.setItem('activeProject', JSON.stringify(activeProject));
   }, [activeProject]);
   
-      const addProject = async (projectName) => {
+      const addProject = useCallback(async (projectName) => {
         if (allProjects.some(p => p.name === projectName)) {
           alert('Project with this name already exists.');
           return false;
@@ -68,17 +68,17 @@ export const ProjectProvider = ({ children, reloadUser }) => {
           alert('Failed to add project. Please try again.');
           return false;
         }
-      };  
-    const selectProject = (projectName) => {
+      }, [allProjects, currentUser, reloadUser]);  
+    const selectProject = useCallback((projectName) => {
       const project = allProjects.find(p => p.name === projectName);
       if (project) {
         setActiveProject(project);
       } else {
         setActiveProject(null);
       }
-    };
+    }, [allProjects]);
   
-      const deleteProject = async (projectName) => {
+      const deleteProject = useCallback(async (projectName) => {
         if (window.confirm(`Are you sure you want to delete project ${projectName} and all its data?`)) {
           try {
             const encodedProjectName = encodeURIComponent(projectName);
@@ -102,22 +102,22 @@ export const ProjectProvider = ({ children, reloadUser }) => {
             alert('Failed to delete project. Please try again.');
           }
         }
-      };
-  const archiveProject = (projectName) => {
+      }, [activeProject, currentUser, allProjects]);
+  const archiveProject = useCallback((projectName) => {
     setAllProjects(prevAllProjects =>
       prevAllProjects.map(p =>
         p.name === projectName ? { ...p, isArchived: true } : p
       )
     );
-  };
+  }, []);
 
-  const unarchiveProject = (projectName) => {
+  const unarchiveProject = useCallback((projectName) => {
     setAllProjects(prevAllProjects =>
       prevAllProjects.map(p =>
         p.name === projectName ? { ...p, isArchived: false } : p
       )
     );
-  };
+  }, []);
   
     const contextValue = useMemo(() => ({
       projects: (() => {
