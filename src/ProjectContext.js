@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
 import { AuthContext } from './AuthContext';
 
 export const ProjectContext = createContext(null);
@@ -119,33 +119,35 @@ export const ProjectProvider = ({ children, reloadUser }) => {
     );
   };
   
-    return (
-      <ProjectContext.Provider value={{
-        projects: (() => {
-          const filteredProjects = allProjects.filter(p => {
-            if (currentUser) {
-              if (currentUser.role === 'admin' || currentUser.role === 'admin2') {
+    const contextValue = useMemo(() => ({
+      projects: (() => {
+        const filteredProjects = allProjects.filter(p => {
+          if (currentUser) {
+            if (currentUser.role === 'admin' || currentUser.role === 'admin2') {
+              return true;
+            }
+            if (currentUser.allowedProjects) {
+              if (currentUser.allowedProjects.includes('*')) {
                 return true;
               }
-              if (currentUser.allowedProjects) {
-                if (currentUser.allowedProjects.includes('*')) {
-                  return true;
-                }
-                return currentUser.allowedProjects.includes(p.name);
-              }
+              return currentUser.allowedProjects.includes(p.name);
             }
-            return false;
-          });
-          return filteredProjects;
-        })(),
-        allProjects,
-        activeProject,
-        addProject,
-        selectProject,
-        deleteProject,
-        archiveProject,
-        unarchiveProject
-      }}>
+          }
+          return false;
+        });
+        return filteredProjects;
+      })(),
+      allProjects,
+      activeProject,
+      addProject,
+      selectProject,
+      deleteProject,
+      archiveProject,
+      unarchiveProject
+    }), [allProjects, activeProject, currentUser, addProject, selectProject, deleteProject, archiveProject, unarchiveProject]);
+
+    return (
+      <ProjectContext.Provider value={contextValue}>
         {children}
       </ProjectContext.Provider>
     );
