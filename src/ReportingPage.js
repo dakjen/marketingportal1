@@ -183,21 +183,24 @@ function ReportingPage() {
                 </div>
                 <div className="reporting-box">
                   <h4>Budget</h4>
-                  {monthlySpendChartData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={monthlySpendChartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="spend" fill="#c07481" name="Monthly Spend" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <p>No budget data available for the active project.</p>
-                  )}
                 </div>
+              </div>
+              <div className="budget-container">
+                <h3>Budget</h3>
+                {monthlySpendChartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={monthlySpendChartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="spend" fill="#c07481" name="Monthly Spend" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p>No budget data available for the active project.</p>
+                )}
               </div>
               <div className="recent-reports-container">
                 <h3>Recently Uploaded Reports</h3>
