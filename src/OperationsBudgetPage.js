@@ -56,7 +56,7 @@ export function OperationsBudgetPage() {
     }
 
     const newEntryData = {
-      projectName: activeProject.name,
+      project_name: activeProject.name,
       type: socialMediaMarketingType,
       amount: parseFloat(socialMediaBudgetAmount),
       interval: socialMediaBudgetInterval,
@@ -96,7 +96,7 @@ export function OperationsBudgetPage() {
     }
 
     const newEntryData = {
-      projectName: activeProject.name,
+      project_name: activeProject.name,
       type: physicalMarketingType,
       amount: parseFloat(physicalMarketingBudgetAmount),
       interval: physicalMarketingBudgetInterval,
