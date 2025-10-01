@@ -30,16 +30,16 @@ export function OperationsBudgetPage() {
   ];
 
 
-  const refetchBudgetEntries = async () => {
-    if (!activeProject) {
-      setAllBudgetEntries([]);
-      setSocialMediaBudgetEntries([]);
-      setPhysicalMarketingBudgetEntries([]);
-      return;
-    }
-    try {
-      const response = await fetch(`/api/budget-entries?project_name=${activeProject.name}`);
-      if (!response.ok) {
+      const refetchBudgetEntries = async () => {
+        console.log('refetchBudgetEntries called. Active Project:', activeProject);
+        if (!activeProject) {
+          setAllBudgetEntries([]);
+          setSocialMediaBudgetEntries([]);
+          setPhysicalMarketingBudgetEntries([]);
+          return;
+        }
+        try {
+          const response = await fetch(`/api/budget-entries?project_name=${activeProject.name}`);      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
