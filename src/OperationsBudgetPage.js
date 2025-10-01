@@ -29,8 +29,8 @@ export function OperationsBudgetPage() {
     'Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'
   ];
 
-  const fetchBudgetEntries = async () => {
-    console.log('fetchBudgetEntries called. Active Project:', activeProject);
+
+  const refetchBudgetEntries = async () => {
     if (!activeProject) {
       setAllBudgetEntries([]);
       setSocialMediaBudgetEntries([]);
@@ -54,7 +54,7 @@ export function OperationsBudgetPage() {
   /* eslint-disable-next-line no-undef */
   useEffect(() => {
     console.log('useEffect for fetchBudgetEntries triggered. Active Project:', activeProject);
-    fetchBudgetEntries();
+    refetchBudgetEntries();
   }, [activeProject]);
 
   /* eslint-disable-next-line no-undef */
@@ -99,7 +99,7 @@ export function OperationsBudgetPage() {
       setSocialMediaMarketingType('');
       setSocialMediaBudgetAmount('');
       setSocialMediaBudgetInterval('Monthly');
-      fetchBudgetEntries(); // Re-fetch entries to update the list
+      refetchBudgetEntries(); // Re-fetch entries to update the list
     } catch (error) {
       console.error('Error adding social media budget entry:', error);
       alert('Failed to add social media budget entry. Please try again.');
@@ -141,7 +141,7 @@ export function OperationsBudgetPage() {
       setPhysicalMarketingType('');
       setPhysicalMarketingBudgetAmount('');
       setPhysicalMarketingBudgetInterval('Monthly');
-      fetchBudgetEntries(); // Re-fetch entries to update the list
+      refetchBudgetEntries(); // Re-fetch entries to update the list
     } catch (error) {
       console.error('Error adding physical marketing budget entry:', error);
       alert('Failed to add physical marketing budget entry. Please try again.');
