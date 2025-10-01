@@ -1,3 +1,7 @@
 .project-switcher-container {
   margin-bottom: 20px;
+  background-color: #c07481; /* Tan color */
+  padding: 15px 20px; /* Add some padding */
+  border-radius: 8px; /* Match other boxes */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Match other boxes */
 }
