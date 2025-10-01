@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Routes, Route } from 'react-router-dom'; // New import
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'; // Import Recharts components
 import './ReportingPage.css';
 import ReportingSidebar from './ReportingSidebar'; // New import
 import MonthlyReportsPage from './MonthlyReportsPage';
@@ -22,6 +23,8 @@ function ReportingPage() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [socialMediaUploads, setSocialMediaUploads] = useState([]);
   const [physicalMarketingUploads, setPhysicalMarketingUploads] = useState([]);
+  const [projectSpendData, setProjectSpendData] = useState([]);
+  const [monthlySpendChartData, setMonthlySpendChartData] = useState([]);
 
   const handleFileUpload = (file) => {
     setUploadedFiles(prevFiles => [...prevFiles, file]);
@@ -48,6 +51,50 @@ function ReportingPage() {
   const handlePhysicalMarketingDelete = (idToDelete) => {
     setPhysicalMarketingUploads(prevUploads => prevUploads.filter(upload => upload.id !== idToDelete));
   };
+
+  // Fetch project spend data
+  useEffect(() => {
+    const fetchProjectSpend = async () => {
+      if (!activeProject) {
+        setProjectSpendData([]);
+        setMonthlySpendChartData([]);
+        return;
+      }
+      try {
+        const response = await fetch(`/api/project-spend?project_name=${activeProject.name}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setProjectSpendData(data.spend);
+      } catch (error) {
+        console.error("Failed to fetch project spend data:", error);
+        alert('Failed to load project spend data. Please try again.');
+      }
+    };
+    fetchProjectSpend();
+  }, [activeProject]);
+
+  // Process project spend data for chart
+  useEffect(() => {
+    if (projectSpendData.length > 0) {
+      const monthlyTotals = projectSpendData.reduce((acc, item) => {
+        const date = new Date(item.date);
+        const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        acc[monthYear] = (acc[monthYear] || 0) + item.amount;
+        return acc;
+      }, {});
+
+      const chartData = Object.keys(monthlyTotals).map(monthYear => ({
+        month: monthYear,
+        spend: monthlyTotals[monthYear],
+      })).sort((a, b) => new Date(a.month) - new Date(b.month));
+
+      setMonthlySpendChartData(chartData);
+    } else {
+      setMonthlySpendChartData([]);
+    }
+  }, [projectSpendData]);
 
   const handleSubmitMonthlyReport = async () => {
     if (!activeProject) {
@@ -117,6 +164,20 @@ function ReportingPage() {
                 </div>
                 <div className="reporting-box">
                   <h4>Budget</h4>
+                  {monthlySpendChartData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={monthlySpendChartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="spend" fill="#c07481" name="Monthly Spend" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <p>No budget data available for the active project.</p>
+                  )}
                 </div>
               </div>
               <div className="recent-reports-container">
