@@ -6,6 +6,7 @@ import './OperationsBudgetPage.css';
 
 export function OperationsBudgetPage() {
   const { activeProject } = useContext(ProjectContext);
+  console.log('OperationsBudgetPage rendered. Active Project:', activeProject);
 
   console.log('OperationsBudgetPage mounted/rendered. Active Project:', activeProject);
 
