@@ -1,5 +1,7 @@
 .generated-reports-page-container {
   display: flex;
+  flex-direction: column; /* Arrange children vertically */
+  height: 100%; /* Take full height of parent */
   gap: 20px;
   padding: 20px;
   background-color: #ffffff;
