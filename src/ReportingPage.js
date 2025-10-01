@@ -64,13 +64,15 @@ function ReportingPage() {
       try {
         const response = await fetch(`/api/project-spend?project_name=${activeProject.name}`);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorData = await response.json();
+          console.error("Failed to fetch project spend data:", response.status, errorData);
+          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         setProjectSpendData(data.spend);
       } catch (error) {
-        console.error("Failed to fetch project spend data:", error);
-        alert('Failed to load project spend data. Please try again.');
+        console.error("Error in fetchProjectSpend:", error);
+        alert(`Failed to load project spend data: ${error.message}. Please try again.`);
       }
     };
     fetchProjectSpend();
