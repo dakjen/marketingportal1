@@ -13,20 +13,15 @@ app.use(express.json());
 // Authorization Middleware
 const authorizeRole = (allowedRoles) => (req, res, next) => {
   const userRole = req.headers['x-user-role'];
-  console.log('authorizeRole middleware: Received userRole:', userRole);
-  console.log('authorizeRole middleware: Allowed roles:', allowedRoles);
   
   let effectiveAllowedRoles = [...allowedRoles];
   if (allowedRoles.includes('admin')) {
     effectiveAllowedRoles.push('admin2');
   }
-  console.log('authorizeRole middleware: Effective allowed roles:', effectiveAllowedRoles);
 
   if (!userRole || !effectiveAllowedRoles.includes(userRole)) {
-    console.log('authorizeRole middleware: Authorization failed for userRole:', userRole);
     return res.status(403).json({ message: 'Forbidden: Insufficient permissions.' });
   }
-  console.log('authorizeRole middleware: Authorization successful for userRole:', userRole);
   next();
 };
 
@@ -670,9 +665,6 @@ app.get('/api/budget-entries', async (req, res) => {
 
 app.post('/api/budget-entries', authorizeRole(['admin', 'internal']), async (req, res) => {
   const { project_name, type, amount, interval, month_allocation } = req.body;
-  console.log('POST /api/budget-entries: req.body:', req.body);
-  console.log('POST /api/budget-entries: project_name:', project_name, 'type:', type, 'amount:', amount, 'interval:', interval, 'month_allocation:', month_allocation);
-  console.log('POST /api/budget-entries: typeof project_name:', typeof project_name, 'typeof type:', typeof type, 'typeof amount:', typeof amount, 'typeof interval:', typeof interval, 'typeof month_allocation:', typeof month_allocation);
   if (!project_name || !type || !amount || !interval || !month_allocation) {
     return res.status(400).json({ message: 'Missing required fields.' });
   }
