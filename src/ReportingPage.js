@@ -173,39 +173,38 @@ function ReportingPage() {
     }
   };
 
-    const parseBudgetInput = () => {
-      const lines = budgetInputText.split('\n');
-      let newSocialMediaBudget = 0;
-      let newPhysicalMarketingBudget = 0;
-      const newIndividualBudgets = {};
- 
-      const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
-      const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
- 
-      lines.forEach(line => {
-        const trimmedLine = line.trim();
-        const match = trimmedLine.match(/^(.*?)\$(\d+\.?\d*)$/);
- 
-        if (match) {
-          const category = match[1].trim();
-          const amount = parseFloat(match[2]);
- 
-          if (!isNaN(amount)) {
-            newIndividualBudgets[category] = amount;
- 
-            if (socialMediaCategories.includes(category)) {
-              newSocialMediaBudget += amount;
-            } else if (physicalMarketingCategories.includes(category)) {
-              newPhysicalMarketingBudget += amount;
-            }
-          }
-        }
-      });
- 
-      setSocialMediaBudget(newSocialMediaBudget);
-      setPhysicalMarketingBudget(newPhysicalMarketingBudget);
-      setIndividualBudgets(newIndividualBudgets);
-    };
+  return (
+    <div className="reporting-page-wrapper"> {/* New wrapper for sidebar and content */}
+      <ReportingSidebar /> {/* Reporting page's dedicated sidebar */}
+      <div className="reporting-main-content">
+        <ProjectSwitcher />
+        <Routes>
+          <Route path="/" element={
+            <React.Fragment>
+              <div className="reporting-boxes-container">
+                <div className="reporting-box">
+                  <h4>Reports</h4>
+                </div>
+                <div className="reporting-box">
+                  <h4>Analytics</h4>
+                  <p>Social Media Uploads: {socialMediaUploads.length}</p>
+                  <p>Physical Marketing Uploads: {physicalMarketingUploads.length}</p>
+                </div>
+                <div className="reporting-box">
+                  <h4>Submit</h4>
+                  <p>Submit monthly report to Project Lead</p>
+                  <select
+                    value={selectedMonthlyReport}
+                    onChange={(e) => setSelectedMonthlyReport(e.target.value)}
+                    style={{ marginBottom: '10px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', width: '100%' }}
+                  >
+                    <option value="">Select a report</option>
+                    {uploadedFiles.map((file, index) => (
+                      <option key={index} value={file.name}>{file.name}</option>
+                    ))}
+                  </select>
+                  <button onClick={handleSubmitMonthlyReport}>Submit Report</button>
+                </div>
                 <div className="reporting-box">
                   <h4>Approved Budget</h4>
                   <p>Enter budgets (e.g., "Instagram$200.00", "Facebook$320.00"):</p>
@@ -221,8 +220,6 @@ function ReportingPage() {
               </div>
               <div className="budget-container">
                 <h3>Budget</h3>
-
-
                 {monthlySpendChartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={monthlySpendChartData}>
@@ -270,7 +267,7 @@ function ReportingPage() {
                   <p>No reports uploaded yet.</p>
                 )}
               </div>
-            </div>
+            </React.Fragment>
           } />
           <Route path="monthly-reports" element={<MonthlyReportsPage uploadedFiles={uploadedFiles} handleFileUpload={handleFileUpload} handleFileDelete={handleFileDelete} />} />
           <Route path="social-media" element={<SocialMediaReportingPage uploads={socialMediaUploads} handleUpload={handleSocialMediaUpload} handleDeleteUpload={handleSocialMediaDelete} />} />
