@@ -144,14 +144,35 @@ app.get('/api/test', (req, res) => {
   res.status(200).json({ message: 'API is working!' });
 });
 
-// Basic projects endpoint (demonstrates fetching from DB)
-app.get('/api/projects', async (req, res) => {
+// API endpoint for project data (general project info - this might be redundant or need clarification)
+app.get('/api/project-data', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
   try {
-    const result = await pool.query('SELECT id, name, is_archived FROM projects ORDER BY name');
-    res.status(200).json({ projects: result.rows });
+    // Fetch social media spend
+    const socialMediaSpendResult = await pool.query(
+      'SELECT date, cost FROM social_media_entries WHERE project_name = $1 AND is_archived = false ORDER BY date ASC',
+      [project_name]
+    );
+
+    // Fetch physical marketing spend
+    const physicalMarketingSpendResult = await pool.query(
+      'SELECT date, cost FROM physical_marketing_entries WHERE project_name = $1 AND is_archived = false ORDER BY date ASC',
+      [project_name]
+    );
+
+    // Combine and format spend data
+    const combinedSpend = [
+      ...socialMediaSpendResult.rows.map(row => ({ date: row.date, amount: parseFloat(row.cost) })),
+      ...physicalMarketingSpendResult.rows.map(row => ({ date: row.date, amount: parseFloat(row.cost) }))
+    ];
+
+    res.status(200).json({ spend: combinedSpend });
   } catch (error) {
-    console.error('Error fetching projects:', error.stack);
-    res.status(500).json({ message: 'Error fetching projects', error: error.message });
+    console.error('Error fetching project spend data:', error.stack);
+    res.status(500).json({ message: 'Error fetching project spend data', error: error.message });
   }
 });
 
