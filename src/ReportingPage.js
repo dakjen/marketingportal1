@@ -79,6 +79,7 @@ function ReportingPage() {
           throw new Error(errorData.message || `HTTP error! status: ${responseProjectData.status}`);
         }
         const projectData = await responseProjectData.json();
+        console.log('fetchProjectSpend: projectData.spend:', projectData.spend);
         setProjectSpendData(projectData.spend);
 
         const responseBudgetEntries = await fetch(`/api/budget-entries?project_name=${encodeURIComponent(activeProject.name)}`);
@@ -88,6 +89,7 @@ function ReportingPage() {
           throw new Error(errorData.message || `HTTP error! status: ${responseBudgetEntries.status}`);
         }
         const budgetEntriesData = await responseBudgetEntries.json();
+        console.log('fetchProjectSpend: budgetEntriesData.entries:', budgetEntriesData.entries);
 
         // Combine spend data from project-data and budget-entries
         const combinedSpendData = [
@@ -98,6 +100,7 @@ function ReportingPage() {
             type: entry.type // Use the type from budget entry
           }))
         ];
+        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
 
         // Calculate total spend for the last 30 days
         const thirtyDaysAgo = new Date();
@@ -107,6 +110,7 @@ function ReportingPage() {
           const itemDate = new Date(item.date);
           return itemDate >= thirtyDaysAgo;
         }).reduce((sum, item) => sum + item.amount, 0);
+        console.log('fetchProjectSpend: last30DaysSpend:', last30DaysSpend);
         setTotalMonthlySpend(last30DaysSpend);
 
       } catch (error) {
