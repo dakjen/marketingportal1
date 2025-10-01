@@ -25,6 +25,7 @@ function ReportingPage() {
   const [physicalMarketingUploads, setPhysicalMarketingUploads] = useState([]);
   const [projectSpendData, setProjectSpendData] = useState([]);
   const [monthlySpendChartData, setMonthlySpendChartData] = useState([]);
+  const [selectedMonthlyReport, setSelectedMonthlyReport] = useState(''); // New state for selected report
 
   const handleFileUpload = (file) => {
     setUploadedFiles(prevFiles => [...prevFiles, file]);
@@ -105,9 +106,13 @@ function ReportingPage() {
       alert('You must be logged in to submit a report.');
       return;
     }
+    if (!selectedMonthlyReport) {
+      alert('Please select a monthly report to submit.');
+      return;
+    }
 
     const confirmation = window.confirm(
-      `Are you sure you want to submit the monthly report for project "${activeProject.name}"?`
+      `Are you sure you want to submit the monthly report "${selectedMonthlyReport}" for project "${activeProject.name}"?`
     );
 
     if (confirmation) {
@@ -123,7 +128,8 @@ function ReportingPage() {
             projectName: activeProject.name,
             submittedBy: currentUser.username,
             reportType: 'monthly',
-            message: `New monthly report for project "${activeProject.name}" is complete and submitted by ${currentUser.username}.`,
+            reportName: selectedMonthlyReport, // Include the selected report name
+            message: `New monthly report "${selectedMonthlyReport}" for project "${activeProject.name}" is complete and submitted by ${currentUser.username}.`,
           }),
         });
 
@@ -133,6 +139,7 @@ function ReportingPage() {
         }
 
         alert('Monthly report submitted successfully! Admin has been notified.');
+        setSelectedMonthlyReport(''); // Clear selection after submission
       } catch (error) {
         console.error('Error submitting monthly report:', error);
         alert(error.message || 'Failed to submit monthly report. Please try again.');
@@ -160,6 +167,16 @@ function ReportingPage() {
                 <div className="reporting-box">
                   <h4>Submit</h4>
                   <p>Submit monthly report to Project Lead</p>
+                  <select
+                    value={selectedMonthlyReport}
+                    onChange={(e) => setSelectedMonthlyReport(e.target.value)}
+                    style={{ marginBottom: '10px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', width: '100%' }}
+                  >
+                    <option value="">Select a report</option>
+                    {uploadedFiles.map((file, index) => (
+                      <option key={index} value={file.name}>{file.name}</option>
+                    ))}
+                  </select>
                   <button onClick={handleSubmitMonthlyReport}>Submit Report</button>
                 </div>
                 <div className="reporting-box">
