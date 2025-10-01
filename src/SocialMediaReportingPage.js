@@ -3,41 +3,21 @@ import { AuthContext } from './AuthContext';
 import { ProjectContext } from './ProjectContext';
 import './SocialMediaReportingPage.css';
 
-function SocialMediaReportingPage() {
+function SocialMediaReportingPage({ uploads, handleUpload, handleDeleteUpload }) {
   const { currentUser } = useContext(AuthContext);
   const { activeProject } = useContext(ProjectContext);
-  const [uploads, setUploads] = useState([]);
   const [fileName, setFileName] = useState('');
   const [file, setFile] = useState(null);
   const [type, setType] = useState(''); // New state for type
 
-  const fetchUploads = async () => {
-    if (!activeProject) {
-      setUploads([]);
-      return;
-    }
-    try {
-      const response = await fetch(`/api/socialmedia/uploads?project_name=${activeProject.name}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setUploads(data.uploads);
-    } catch (error) {
-      console.error("Failed to fetch uploads:", error);
-      alert('Failed to load uploads. Please try again.');
-    }
-  };
-
-  useEffect(() => {
-    fetchUploads();
-  }, [activeProject]);
+  // The fetchUploads logic will now be managed by the parent component (ReportingPage)
+  // and passed down via the `uploads` prop.
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  const handleUpload = async (e) => {
+  const handleLocalUpload = async (e) => {
     e.preventDefault();
     if (!file || !fileName || !type) {
       alert('Please provide a file, a name, and a type.');
@@ -73,14 +53,15 @@ function SocialMediaReportingPage() {
       setFileName('');
       setFile(null);
       setType(''); // Clear type
-      fetchUploads(); // Re-fetch uploads to update the list
+      // Call the prop function to update uploads in parent
+      handleUpload({ id: Date.now(), file_name: fileName, type: type, uploader_username: currentUser.username, upload_date: new Date().toISOString() });
     } catch (error) {
       console.error('Error uploading file:', error);
       alert(error.message || 'Failed to upload file. Please try again.');
     }
   };
 
-  const handleDeleteUpload = async (idToDelete) => {
+  const handleLocalDeleteUpload = async (idToDelete) => {
     if (!window.confirm('Are you sure you want to delete this upload?')) {
       return;
     }
@@ -99,7 +80,8 @@ function SocialMediaReportingPage() {
       }
 
       alert('Upload deleted successfully!');
-      fetchUploads(); // Re-fetch uploads to update the list
+      // Call the prop function to update uploads in parent
+      handleDeleteUpload(idToDelete);
     } catch (error) {
       console.error('Error deleting upload:', error);
       alert(error.message || 'Failed to delete upload. Please try again.');
@@ -110,7 +92,7 @@ function SocialMediaReportingPage() {
     <div className="social-media-reporting-page-container">
       <div className="upload-section">
         <h3>Upload Analytics Data</h3>
-        <form onSubmit={handleUpload}>
+        <form onSubmit={handleLocalUpload}>
           <div>
             <label htmlFor="fileName">File Name:</label>
             <input
@@ -174,7 +156,7 @@ function SocialMediaReportingPage() {
                   <td>
                     <button>View</button>
                     {currentUser && currentUser.role !== 'internal' && currentUser.role !== 'view-only' && (
-                      <button onClick={() => handleDeleteUpload(upload.id)}>Delete</button>
+                      <button onClick={() => handleLocalDeleteUpload(upload.id)}>Delete</button>
                     )}
                   </td>
                 </tr>

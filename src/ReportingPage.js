@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Routes, Route } from 'react-router-dom'; // New import
 import './ReportingPage.css';
 import ReportingSidebar from './ReportingSidebar'; // New import
@@ -12,9 +12,16 @@ import OperationsPhysicalPage from './OperationsPhysicalPage';
 import OperationsWinsPage from './OperationsWinsPage';
 import OperationsPropertyManagementPage from './OperationsPropertyManagementPage';
 import ProjectSwitcher from './ProjectSwitcher'; // New import
+import { AuthContext } from './AuthContext'; // Import AuthContext
+import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 
 function ReportingPage() {
+  const { currentUser } = useContext(AuthContext);
+  const { activeProject } = useContext(ProjectContext);
+
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [socialMediaUploads, setSocialMediaUploads] = useState([]);
+  const [physicalMarketingUploads, setPhysicalMarketingUploads] = useState([]);
 
   const handleFileUpload = (file) => {
     setUploadedFiles(prevFiles => [...prevFiles, file]);
@@ -22,6 +29,68 @@ function ReportingPage() {
 
   const handleFileDelete = (fileName) => {
     setUploadedFiles(prevFiles => prevFiles.filter(file => file.name !== fileName));
+  };
+
+  // Placeholder functions for social media uploads
+  const handleSocialMediaUpload = (newUpload) => {
+    setSocialMediaUploads(prevUploads => [...prevUploads, newUpload]);
+  };
+
+  const handleSocialMediaDelete = (idToDelete) => {
+    setSocialMediaUploads(prevUploads => prevUploads.filter(upload => upload.id !== idToDelete));
+  };
+
+  // Placeholder functions for physical marketing uploads
+  const handlePhysicalMarketingUpload = (newUpload) => {
+    setPhysicalMarketingUploads(prevUploads => [...prevUploads, newUpload]);
+  };
+
+  const handlePhysicalMarketingDelete = (idToDelete) => {
+    setPhysicalMarketingUploads(prevUploads => prevUploads.filter(upload => upload.id !== idToDelete));
+  };
+
+  const handleSubmitMonthlyReport = async () => {
+    if (!activeProject) {
+      alert('Please select an active project first.');
+      return;
+    }
+    if (!currentUser) {
+      alert('You must be logged in to submit a report.');
+      return;
+    }
+
+    const confirmation = window.confirm(
+      `Are you sure you want to submit the monthly report for project "${activeProject.name}"?`
+    );
+
+    if (confirmation) {
+      try {
+        const response = await fetch('/api/submit-monthly-report', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Username': currentUser.username,
+            'X-User-Role': currentUser.role,
+          },
+          body: JSON.stringify({
+            projectName: activeProject.name,
+            submittedBy: currentUser.username,
+            reportType: 'monthly',
+            message: `New monthly report for project "${activeProject.name}" is complete and submitted by ${currentUser.username}.`,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to submit monthly report');
+        }
+
+        alert('Monthly report submitted successfully! Admin has been notified.');
+      } catch (error) {
+        console.error('Error submitting monthly report:', error);
+        alert(error.message || 'Failed to submit monthly report. Please try again.');
+      }
+    }
   };
 
   return (
@@ -38,9 +107,13 @@ function ReportingPage() {
                 </div>
                 <div className="reporting-box">
                   <h4>Analytics</h4>
+                  <p>Social Media Uploads: {socialMediaUploads.length}</p>
+                  <p>Physical Marketing Uploads: {physicalMarketingUploads.length}</p>
                 </div>
                 <div className="reporting-box">
                   <h4>Submit</h4>
+                  <p>Submit monthly report to Project Lead</p>
+                  <button onClick={handleSubmitMonthlyReport}>Submit Report</button>
                 </div>
                 <div className="reporting-box">
                   <h4>Budget</h4>
@@ -63,8 +136,8 @@ function ReportingPage() {
             </div>
           } />
           <Route path="monthly-reports" element={<MonthlyReportsPage uploadedFiles={uploadedFiles} handleFileUpload={handleFileUpload} handleFileDelete={handleFileDelete} />} />
-          <Route path="social-media" element={<SocialMediaReportingPage />} />
-          <Route path="physical-marketing" element={<PhysicalMarketingReportingPage />} />
+          <Route path="social-media" element={<SocialMediaReportingPage uploads={socialMediaUploads} handleUpload={handleSocialMediaUpload} handleDeleteUpload={handleSocialMediaDelete} />} />
+          <Route path="physical-marketing" element={<PhysicalMarketingReportingPage uploads={physicalMarketingUploads} handleUpload={handlePhysicalMarketingUpload} handleDeleteUpload={handlePhysicalMarketingDelete} />} />
           {/* Placeholder for Generated Reports and Operations routes */}
           <Route path="generated-reports" element={<GeneratedReportsPage />} />
           <Route path="operations/dashboard" element={<OperationsDashboardPage />} />
