@@ -13,15 +13,20 @@ app.use(express.json());
 // Authorization Middleware
 const authorizeRole = (allowedRoles) => (req, res, next) => {
   const userRole = req.headers['x-user-role'];
+  console.log('authorizeRole middleware: Received userRole:', userRole);
+  console.log('authorizeRole middleware: Allowed roles:', allowedRoles);
   
   let effectiveAllowedRoles = [...allowedRoles];
   if (allowedRoles.includes('admin')) {
     effectiveAllowedRoles.push('admin2');
   }
+  console.log('authorizeRole middleware: Effective allowed roles:', effectiveAllowedRoles);
 
   if (!userRole || !effectiveAllowedRoles.includes(userRole)) {
+    console.log('authorizeRole middleware: Authorization failed for userRole:', userRole);
     return res.status(403).json({ message: 'Forbidden: Insufficient permissions.' });
   }
+  console.log('authorizeRole middleware: Authorization successful for userRole:', userRole);
   next();
 };
 
