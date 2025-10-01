@@ -230,7 +230,7 @@ function ReportingPage() {
                   <button onClick={handleSubmitMonthlyReport}>Submit Report</button>
                 </div>
                 <div className="reporting-box">
-                  <h4>Budget</h4>
+                  <h4>Approved Budget</h4>
                   <p>Enter budgets (e.g., "Social Media: 1000", "Physical Marketing: 500"):</p>
                   <textarea
                     value={budgetInputText}
