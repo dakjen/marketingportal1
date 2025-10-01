@@ -8,11 +8,13 @@ export function OperationsBudgetPage() {
   const [socialMediaMarketingType, setSocialMediaMarketingType] = useState('');
   const [socialMediaBudgetAmount, setSocialMediaBudgetAmount] = useState('');
   const [socialMediaBudgetInterval, setSocialMediaBudgetInterval] = useState('Monthly');
-  const [socialMediaBudgetEntries, setSocialMediaBudgetEntries] = useState([]);
 
   const [physicalMarketingType, setPhysicalMarketingType] = useState('');
   const [physicalMarketingBudgetAmount, setPhysicalMarketingBudgetAmount] = useState('');
   const [physicalMarketingBudgetInterval, setPhysicalMarketingBudgetInterval] = useState('Monthly');
+
+  const [allBudgetEntries, setAllBudgetEntries] = useState([]);
+  const [socialMediaBudgetEntries, setSocialMediaBudgetEntries] = useState([]);
   const [physicalMarketingBudgetEntries, setPhysicalMarketingBudgetEntries] = useState([]);
 
   const socialMediaTypes = [
@@ -23,7 +25,36 @@ export function OperationsBudgetPage() {
     'Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'
   ];
 
-  const handleAddSocialMediaEntry = () => {
+  const fetchBudgetEntries = async () => {
+    if (!activeProject) {
+      setAllBudgetEntries([]);
+      setSocialMediaBudgetEntries([]);
+      setPhysicalMarketingBudgetEntries([]);
+      return;
+    }
+    try {
+      const response = await fetch(`/api/budget-entries?projectName=${activeProject.name}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setAllBudgetEntries(data.entries);
+    } catch (error) {
+      console.error("Failed to fetch budget entries:", error);
+      alert('Failed to load budget entries. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    fetchBudgetEntries();
+  }, [activeProject]);
+
+  useEffect(() => {
+    setSocialMediaBudgetEntries(allBudgetEntries.filter(entry => socialMediaTypes.includes(entry.type)));
+    setPhysicalMarketingBudgetEntries(allBudgetEntries.filter(entry => physicalMarketingTypes.includes(entry.type)));
+  }, [allBudgetEntries, socialMediaTypes, physicalMarketingTypes]);
+
+  const handleAddSocialMediaEntry = async () => {
     if (!activeProject) {
       alert('Please select an active project first.');
       return;
@@ -32,20 +63,38 @@ export function OperationsBudgetPage() {
       alert('Please select a social media marketing type and enter a budget amount.');
       return;
     }
-    const newEntry = {
-      id: socialMediaBudgetEntries.length + 1,
+
+    const newEntryData = {
       projectName: activeProject.name,
       type: socialMediaMarketingType,
       amount: parseFloat(socialMediaBudgetAmount),
       interval: socialMediaBudgetInterval,
     };
-    setSocialMediaBudgetEntries(prevEntries => [...prevEntries, newEntry]);
-    setSocialMediaMarketingType('');
-    setSocialMediaBudgetAmount('');
-    setSocialMediaBudgetInterval('Monthly');
+
+    try {
+      const response = await fetch('/api/budget-entries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newEntryData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      alert('Social media budget entry added successfully!');
+      setSocialMediaMarketingType('');
+      setSocialMediaBudgetAmount('');
+      setSocialMediaBudgetInterval('Monthly');
+      fetchBudgetEntries(); // Re-fetch entries to update the list
+    } catch (error) {
+      console.error('Error adding social media budget entry:', error);
+      alert('Failed to add social media budget entry. Please try again.');
+    }
   };
 
-  const handleAddPhysicalMarketingEntry = () => {
+  const handleAddPhysicalMarketingEntry = async () => {
     if (!activeProject) {
       alert('Please select an active project first.');
       return;
@@ -54,17 +103,35 @@ export function OperationsBudgetPage() {
       alert('Please select a physical marketing type and enter a budget amount.');
       return;
     }
-    const newEntry = {
-      id: physicalMarketingBudgetEntries.length + 1,
+
+    const newEntryData = {
       projectName: activeProject.name,
       type: physicalMarketingType,
       amount: parseFloat(physicalMarketingBudgetAmount),
       interval: physicalMarketingBudgetInterval,
     };
-    setPhysicalMarketingBudgetEntries(prevEntries => [...prevEntries, newEntry]);
-    setPhysicalMarketingType('');
-    setPhysicalMarketingBudgetAmount('');
-    setPhysicalMarketingBudgetInterval('Monthly');
+
+    try {
+      const response = await fetch('/api/budget-entries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newEntryData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      alert('Physical marketing budget entry added successfully!');
+      setPhysicalMarketingType('');
+      setPhysicalMarketingBudgetAmount('');
+      setPhysicalMarketingBudgetInterval('Monthly');
+      fetchBudgetEntries(); // Re-fetch entries to update the list
+    } catch (error) {
+      console.error('Error adding physical marketing budget entry:', error);
+      alert('Failed to add physical marketing budget entry. Please try again.');
+    }
   };
 
   return (
