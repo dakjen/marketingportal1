@@ -65,6 +65,40 @@ function PropertyManagementPage() {
               <p><strong>Email:</strong> {contactEmail || 'N/A'}</p>
             </div>
             <form>
+              <div style={{ marginBottom: '10px' }}>
+                <label htmlFor="contactName" style={{ display: 'block', marginBottom: '5px' }}>Name:</label>
+                <input
+                  type="text"
+                  id="contactName"
+                  value={contactName}
+                  onChange={(e) => setContactName(e.target.value)}
+                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                />
+              </div>
+              <div style={{ marginBottom: '10px' }}>
+                <label htmlFor="contactPhone" style={{ display: 'block', marginBottom: '5px' }}>Phone:</label>
+                <input
+                  type="text"
+                  id="contactPhone"
+                  value={contactPhone}
+                  onChange={(e) => setContactPhone(e.target.value)}
+                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                />
+              </div>
+              <div style={{ marginBottom: '10px' }}>
+                <label htmlFor="contactEmail" style={{ display: 'block', marginBottom: '5px' }}>Email:</label>
+                <input
+                  type="email"
+                  id="contactEmail"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+                />
+              </div>
+              <button type="button" onClick={handleSaveContact} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+                Save Contact
+              </button>
+            </form>
           </div>
         <div className="operations-property-management-right-column">
           <h3>Important Links</h3>
@@ -82,6 +116,30 @@ function PropertyManagementPage() {
             )}
           </div>
           <form style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="linkName" style={{ display: 'block', marginBottom: '5px' }}>Link Name:</label>
+              <input
+                type="text"
+                id="linkName"
+                value={linkName}
+                onChange={(e) => setLinkName(e.target.value)}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="linkUrl" style={{ display: 'block', marginBottom: '5px' }}>Link URL:</label>
+              <input
+                type="text"
+                id="linkUrl"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <button type="button" onClick={handleAddLink} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+              Add Link
+            </button>
+          </form>
         </div>
       </div>
     </div>
