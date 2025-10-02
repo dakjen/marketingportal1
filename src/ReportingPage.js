@@ -227,12 +227,18 @@ function ReportingPage() {
     }
   };
 
-
+  const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
+  const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
 
   const parseBudgetInput = () => {
     const lines = budgetInputText.split('\n');
     console.log('Parsing budget input. Lines:', lines);
+    let newSocialMediaBudget = 0;
+    let newPhysicalMarketingBudget = 0;
     const newIndividualBudgets = {};
+
+    const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
+    const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
 
     lines.forEach(line => {
       const trimmedLine = line.trim();
@@ -246,6 +252,12 @@ function ReportingPage() {
 
         if (!isNaN(amount)) {
           newIndividualBudgets[category] = amount;
+
+          if (socialMediaCategories.includes(category)) {
+            newSocialMediaBudget += amount;
+          } else if (physicalMarketingCategories.includes(category)) {
+            newPhysicalMarketingBudget += amount;
+          }
         } else {
           console.log('Amount is NaN for line:', trimmedLine);
         }
@@ -254,6 +266,8 @@ function ReportingPage() {
       }
     });
 
+    setSocialMediaBudget(newSocialMediaBudget);
+    setPhysicalMarketingBudget(newPhysicalMarketingBudget);
     setIndividualBudgets(newIndividualBudgets);
   };
 
@@ -313,7 +327,23 @@ function ReportingPage() {
                   <p>No budget data available for the active project.</p>
                 )}
 
+                <div className="social-media-categories">
+                  <h4>Social Media Categories</h4>
+                  <ul>
+                    {socialMediaCategories.map(category => (
+                      <li key={category}>{category}: ${individualBudgets[category] ? individualBudgets[category].toFixed(2) : '0.00'}</li>
+                    ))}
+                  </ul>
+                </div>
 
+                <div className="physical-marketing-categories">
+                  <h4>Physical Marketing Categories</h4>
+                  <ul>
+                    {physicalMarketingCategories.map(category => (
+                      <li key={category}>{category}: ${individualBudgets[category] ? individualBudgets[category].toFixed(2) : '0.00'}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
               <div className="recent-reports-container">
                 <h3>Recently Uploaded Reports</h3>
