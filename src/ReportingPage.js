@@ -72,76 +72,54 @@ function ReportingPage() {
         return;
       }
       try {
-    const responseProjectData = await fetch(`/api/project-data?project_name=${encodeURIComponent(activeProject.name)}`);
-        if (!responseProjectData.ok) {
-          const errorData = await responseProjectData.json();
-          console.error("Failed to fetch project spend data:", responseProjectData.status, errorData);
-          throw new Error(errorData.message || `HTTP error! status: ${responseProjectData.status}`);
-        }
-        const projectData = await responseProjectData.json();
-        console.log('fetchProjectSpend: projectData.spend:', projectData.spend);
-        setProjectSpendData(projectData.spend);
-
-        const responseBudgetEntries = await fetch(`/api/budget-entries?project_name=${encodeURIComponent(activeProject.name)}`);
-        if (!responseBudgetEntries.ok) {
-          const errorData = await responseBudgetEntries.json();
-          console.error("Failed to fetch budget entries data:", responseBudgetEntries.status, errorData);
-          throw new Error(errorData.message || `HTTP error! status: ${responseBudgetEntries.status}`);
-        }
-        const budgetEntriesData = await responseBudgetEntries.json();
-        console.log('fetchProjectSpend: budgetEntriesData.entries:', budgetEntriesData.entries);
-
-        // Fetch social media uploads
-        const responseSocialMediaUploads = await fetch(`/api/socialmedia/uploads?project_name=${encodeURIComponent(activeProject.name)}`);
-        if (!responseSocialMediaUploads.ok) {
-          const errorData = await responseSocialMediaUploads.json();
-          console.error("Failed to fetch social media uploads data:", responseSocialMediaUploads.status, errorData);
-          throw new Error(errorData.message || `HTTP error! status: ${responseSocialMediaUploads.status}`);
-        }
-        const socialMediaUploadsData = await responseSocialMediaUploads.json();
-        console.log('fetchProjectSpend: socialMediaUploadsData.uploads:', socialMediaUploadsData.uploads);
-
-        // Fetch physical marketing uploads
-        const responsePhysicalMarketingUploads = await fetch(`/api/physicalmarketing/uploads?project_name=${encodeURIComponent(activeProject.name)}`);
-        if (!responsePhysicalMarketingUploads.ok) {
-          const errorData = await responsePhysicalMarketingUploads.json();
-          console.error("Failed to fetch physical marketing uploads data:", responsePhysicalMarketingUploads.status, errorData);
-          throw new Error(errorData.message || `HTTP error! status: ${responsePhysicalMarketingUploads.status}`);
-        }
-        const physicalMarketingUploadsData = await responsePhysicalMarketingUploads.json();
-        console.log('fetchProjectSpend: physicalMarketingUploadsData.uploads:', physicalMarketingUploadsData.uploads);
-
-        // Combine spend data from project-data, budget-entries, social media uploads, and physical marketing uploads
-        const combinedSpendData = [
-          ...projectData.spend,
-          ...budgetEntriesData.entries.map(entry => ({
-            date: entry.created_at, // Use created_at for budget entries
-            amount: parseFloat(entry.amount),
-            type: entry.type // Use the type from budget entry
-          })),
-          ...socialMediaUploadsData.uploads.map(upload => ({
-            date: upload.upload_date, // Use upload_date for social media uploads
-            amount: parseFloat(upload.amount || 0), // Assume amount exists, default to 0 if not
-            type: upload.type // Use the type from social media upload
-          })),
-          ...physicalMarketingUploadsData.uploads.map(upload => ({
-            date: upload.upload_date, // Use upload_date for physical marketing uploads
-            amount: parseFloat(upload.amount || 0), // Assume amount exists, default to 0 if not
-            type: upload.type // Use the type from physical marketing upload
-          }))
-        ];
-        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
+            const responseProjectData = await fetch(`/api/project-data?project_name=${encodeURIComponent(activeProject.name)}`);
+            if (!responseProjectData.ok) {
+              const errorData = await responseProjectData.json();
+              console.error("Failed to fetch project spend data:", responseProjectData.status, errorData);
+              throw new Error(errorData.message || `HTTP error! status: ${responseProjectData.status}`);
+            }
+            const projectData = await responseProjectData.json();
+            console.log('fetchProjectSpend: projectData.spend:', projectData.spend);
+    
+            // Fetch social media entries
+            const responseSocialMediaEntries = await fetch(`/api/socialmediaentries?project_name=${encodeURIComponent(activeProject.name)}`);
+            if (!responseSocialMediaEntries.ok) {
+              const errorData = await responseSocialMediaEntries.json();
+              console.error("Failed to fetch social media entries data:", responseSocialMediaEntries.status, errorData);
+              throw new Error(errorData.message || `HTTP error! status: ${responseSocialMediaEntries.status}`);
+            }
+            const socialMediaEntriesData = await responseSocialMediaEntries.json();
+            console.log('fetchProjectSpend: socialMediaEntriesData.entries:', socialMediaEntriesData.entries);
+    
+            // Fetch physical marketing entries
+            const responsePhysicalMarketingEntries = await fetch(`/api/physicalmarketingentries?project_name=${encodeURIComponent(activeProject.name)}`);
+            if (!responsePhysicalMarketingEntries.ok) {
+              const errorData = await responsePhysicalMarketingEntries.json();
+              console.error("Failed to fetch physical marketing entries data:", responsePhysicalMarketingEntries.status, errorData);
+              throw new Error(errorData.message || `HTTP error! status: ${responsePhysicalMarketingEntries.status}`);
+            }
+            const physicalMarketingEntriesData = await responsePhysicalMarketingEntries.json();
+            console.log('fetchProjectSpend: physicalMarketingEntriesData.entries:', physicalMarketingEntriesData.entries);
+    
+            // Combine spend data from project-data, social media entries, and physical marketing entries
+            const combinedSpendData = [
+              ...projectData.spend,
+              ...socialMediaEntriesData.entries.map(entry => ({
+                date: entry.date, // Use date from social media entry
+                amount: parseFloat(entry.cost),
+                type: entry.platform // Use platform as type
+              })),
+              ...physicalMarketingEntriesData.entries.map(entry => ({
+                date: entry.date, // Use date from physical marketing entry
+                amount: parseFloat(entry.cost),
+                type: entry.type // Use type from physical marketing entry
+              }))
+            ];        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
 
         // Calculate total spend for the last 30 days
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-        const last30DaysSpend = combinedSpendData.filter(item => {
-          const itemDate = new Date(item.date);
-          return itemDate >= thirtyDaysAgo;
-        }).reduce((sum, item) => sum + item.amount, 0);
-        console.log('fetchProjectSpend: last30DaysSpend:', last30DaysSpend);
-        setTotalMonthlySpend(last30DaysSpend);
+        const totalGrandSpend = combinedSpendData.reduce((sum, item) => sum + item.amount, 0);
+        console.log('fetchProjectSpend: totalGrandSpend:', totalGrandSpend);
+        setTotalMonthlySpend(totalGrandSpend);
 
       } catch (error) {
         console.error("Error in fetchProjectSpend:", error);
@@ -336,7 +314,7 @@ function ReportingPage() {
                   <button onClick={handleSubmitMonthlyReport}>Submit Report</button>
                 </div>
                 <div className="reporting-box">
-                  <h4>Total Spend (Current Month)</h4>
+                  <h4>Total Cumulative Spend</h4>
                   <p>${totalMonthlySpend.toFixed(2)}</p>
                 </div>
 
