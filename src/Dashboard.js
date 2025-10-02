@@ -247,7 +247,8 @@ const containerClassName = activeProject ? "dashboard-container" : "dashboard-co
           </div>
         </div>
       </div>
-
-
+    </div>
+  );
+}
 
 export default Dashboard;
