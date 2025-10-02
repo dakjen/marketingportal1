@@ -98,7 +98,7 @@ function MonthlyReportsPage({ uploadedFiles, handleFileUpload, handleFileDelete 
   return (
     <div className="monthly-reports-page-container">
       <div className="regular-documents-section">
-        <h2>Regularly Accessed Documents</h2>
+        <h2>Templates</h2>
         <div className="thin-box">
           {regularDocuments.length === 0 ? (
             <p>No documents uploaded yet.</p>
