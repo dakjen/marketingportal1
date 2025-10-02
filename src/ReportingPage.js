@@ -12,7 +12,7 @@ import OperationsSocialMediaPage from './OperationsSocialMediaPage';
 import OperationsPhysicalPage from './OperationsPhysicalPage';
 import OperationsWinsPage from './OperationsWinsPage';
 import OperationsPropertyManagementPage from './OperationsPropertyManagementPage';
-import { OperationsBudgetPage } from './OperationsBudgetPage'; // New import for Operations Budget Page
+import { OperationsBudgetPage, socialMediaTypes, physicalMarketingTypes } from './OperationsBudgetPage'; // New import for Operations Budget Page and types
 import ProjectSwitcher from './ProjectSwitcher'; // New import
 import { AuthContext } from './AuthContext'; // Import AuthContext
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
@@ -156,6 +156,20 @@ function ReportingPage() {
       .filter(item => item.type === 'physicalMarketing')
       .reduce((sum, item) => sum + item.amount, 0);
     setPhysicalMarketingSpent(calculatedPhysicalMarketingSpent);
+  }, [projectSpendData]);
+
+  // Calculate individual category budgets whenever projectSpendData changes
+  useEffect(() => {
+    const newIndividualBudgets = {};
+    projectSpendData.forEach(item => {
+      // Assuming item.type directly corresponds to a category or can be mapped
+      // For budget entries, the 'type' field from the API should be the category
+      const category = item.type;
+      if (category) {
+        newIndividualBudgets[category] = (newIndividualBudgets[category] || 0) + item.amount;
+      }
+    });
+    setIndividualBudgets(newIndividualBudgets);
   }, [projectSpendData]);
 
   const handleSubmitMonthlyReport = async () => {
