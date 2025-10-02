@@ -166,7 +166,14 @@ function ReportingPage() {
         spend: monthlyTotals[monthYear],
       })).sort((a, b) => new Date(a.month) - new Date(b.month));
 
-      setMonthlySpendChartData(chartData);
+      // Calculate cumulative spend
+      let cumulativeSpend = 0;
+      const cumulativeChartData = chartData.map(dataPoint => {
+        cumulativeSpend += dataPoint.spend;
+        return { ...dataPoint, cumulativeSpend: cumulativeSpend };
+      });
+
+      setMonthlySpendChartData(cumulativeChartData);
     } else {
       setMonthlySpendChartData([]);
     }
@@ -345,6 +352,7 @@ function ReportingPage() {
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="spend" fill="#c07481" name="Monthly Spend" />
+                      <Bar dataKey="cumulativeSpend" fill="#82ca9d" name="Cumulative Spend" />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
