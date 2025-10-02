@@ -23,6 +23,31 @@ function OperationsDashboardPage() {
     alert('Project details saved!');
   };
 
+  const [linkName, setLinkName] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    const savedLinks = localStorage.getItem('dashboardImportantLinks');
+    if (savedLinks) {
+      setLinks(JSON.parse(savedLinks));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('dashboardImportantLinks', JSON.stringify(links));
+  }, [links]);
+
+  const handleAddLink = () => {
+    if (linkName && linkUrl) {
+      setLinks([...links, { name: linkName, url: linkUrl }]);
+      setLinkName('');
+      setLinkUrl('');
+    } else {
+      alert('Please enter both link name and URL.');
+    }
+  };
+
   return (
     <div>
       <h2>Operations Dashboard</h2>
@@ -60,8 +85,45 @@ function OperationsDashboardPage() {
           </form>
         </div>
         <div className="operations-dashboard-right-column">
-          <h3>Right Column Content</h3>
-          <p>This is placeholder content for the right column of the Operations Dashboard.</p>
+          <h3>Important Links</h3>
+          <div className="links-list" style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
+            {links.length === 0 ? (
+              <p>No important links added yet.</p>
+            ) : (
+              <ul>
+                {links.map((link, index) => (
+                  <li key={index} style={{ marginBottom: '5px' }}>
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">{link.name}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <form style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="linkName" style={{ display: 'block', marginBottom: '5px' }}>Link Name:</label>
+              <input
+                type="text"
+                id="linkName"
+                value={linkName}
+                onChange={(e) => setLinkName(e.target.value)}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="linkUrl" style={{ display: 'block', marginBottom: '5px' }}>Link URL:</label>
+              <input
+                type="text"
+                id="linkUrl"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <button type="button" onClick={handleAddLink} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+              Add Link
+            </button>
+          </form>
         </div>
       </div>
     </div>
