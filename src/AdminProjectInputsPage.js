@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ProjectContext } from './ProjectContext';
+import { AuthContext } from './AuthContext';
 import './AdminProjectInputsPage.css';
 
 function AdminProjectInputsPage() {
   const { activeProject } = useContext(ProjectContext);
+  const { currentUser } = useContext(AuthContext);
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
   const [importantDetails, setImportantDetails] = useState('');
@@ -54,6 +56,7 @@ function AdminProjectInputsPage() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role, // Send user role for authorization
         },
         body: JSON.stringify(dataToSave),
       });
