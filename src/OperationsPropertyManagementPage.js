@@ -12,6 +12,20 @@ function PropertyManagementPage() {
     alert('Contact information saved (check console for details)!');
   };
 
+  const [linkName, setLinkName] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
+  const [links, setLinks] = useState([]);
+
+  const handleAddLink = () => {
+    if (linkName && linkUrl) {
+      setLinks([...links, { name: linkName, url: linkUrl }]);
+      setLinkName('');
+      setLinkUrl('');
+    } else {
+      alert('Please enter both link name and URL.');
+    }
+  };
+
   return (
     <div>
       <h2>Operations Property Management</h2>
@@ -55,8 +69,46 @@ function PropertyManagementPage() {
             </form>
           </div>
         <div className="operations-property-management-right-column">
-          <h3>Right Column Content</h3>
-          <p>This is placeholder content for the right column of the Operations Property Management page.</p>
+          <h3>Important Links</h3>
+          <form style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="linkName" style={{ display: 'block', marginBottom: '5px' }}>Link Name:</label>
+              <input
+                type="text"
+                id="linkName"
+                value={linkName}
+                onChange={(e) => setLinkName(e.target.value)}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="linkUrl" style={{ display: 'block', marginBottom: '5px' }}>Link URL:</label>
+              <input
+                type="text"
+                id="linkUrl"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+              />
+            </div>
+            <button type="button" onClick={handleAddLink} style={{ padding: '10px 15px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+              Add Link
+            </button>
+          </form>
+
+          <div className="links-list">
+            {links.length === 0 ? (
+              <p>No important links added yet.</p>
+            ) : (
+              <ul>
+                {links.map((link, index) => (
+                  <li key={index} style={{ marginBottom: '5px' }}>
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">{link.name}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
     </div>
