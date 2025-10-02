@@ -56,7 +56,7 @@ function PropertyManagementPage() {
     <div>
       <h2>Operations Property Management</h2>
       <div className="operations-property-management-page-container">
-          <div className="dashboard-column left-column">
+          <div className="operations-property-management-left-column">
             <h2>Point of Contact</h2>
             <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
               <h4>Current Point of Contact:</h4>
