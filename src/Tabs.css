@@ -39,7 +39,7 @@ nav {
 }
 
 .tab-item a:hover {
-  background-color: #333050; /* Slightly lighter shade for hover */
+  background-color: #c07481; /* Slightly lighter shade for hover */
   color: #fff;
 }
 
@@ -56,8 +56,8 @@ nav {
 }
 
 .tab-item a.project-management-tab:hover {
-  background-color: #5a6268; /* Darker shade for hover */
-  border-color: #5a6268;
+  background-color: #c07481; /* Darker shade for hover */
+  border-color: #c07481;
 }
 
 .tab-item a.project-management-tab.active {
