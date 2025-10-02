@@ -104,6 +104,8 @@ function ReportingPage() {
         // Combine spend data from project-data
         const combinedSpendData = [
           ...projectData.spend,
+          ...socialMediaEntriesData.entries.map(entry => ({...entry, type: 'socialMedia'})),
+          ...physicalMarketingEntriesData.entries.map(entry => ({...entry, type: 'physicalMarketing'}))
         ];        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
 
         // Calculate total spend for the last 30 days
@@ -327,23 +329,29 @@ function ReportingPage() {
                   <p>No budget data available for the active project.</p>
                 )}
 
-                <div className="social-media-categories">
-                  <h4>Social Media Categories</h4>
-                  <ul>
-                    {socialMediaCategories.map(category => (
-                      <li key={category}>{category}: ${individualBudgets[category] ? individualBudgets[category].toFixed(2) : '0.00'}</li>
-                    ))}
-                  </ul>
+                <div className="spend-container" style={{display: 'flex', justifyContent: 'space-around', marginTop: '20px'}}>
+                  <div className="spend-box">
+                    <h4>Social Media Spend</h4>
+                    <p>${socialMediaSpent.toFixed(2)}</p>
+                  </div>
+                  <div className="spend-box">
+                    <h4>Physical Marketing Spend</h4>
+                    <p>${physicalMarketingSpent.toFixed(2)}</p>
+                  </div>
                 </div>
 
-                <div className="physical-marketing-categories">
-                  <h4>Physical Marketing Categories</h4>
-                  <ul>
-                    {physicalMarketingCategories.map(category => (
-                      <li key={category}>{category}: ${individualBudgets[category] ? individualBudgets[category].toFixed(2) : '0.00'}</li>
-                    ))}
-                  </ul>
+                <div className="spend-container" style={{display: 'flex', justifyContent: 'space-around', marginTop: '20px'}}>
+                  <div className="spend-box">
+                    <h4>Social Media Spend</h4>
+                    <p>${socialMediaSpent.toFixed(2)}</p>
+                  </div>
+                  <div className="spend-box">
+                    <h4>Physical Marketing Spend</h4>
+                    <p>${physicalMarketingSpent.toFixed(2)}</p>
+                  </div>
                 </div>
+
+
               </div>
               <div className="recent-reports-container">
                 <h3>Recently Uploaded Reports</h3>
