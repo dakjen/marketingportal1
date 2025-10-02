@@ -3,13 +3,9 @@ import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import { AuthContext } from './AuthContext'; // Import AuthContext
 import './OperationsBudgetPage.css';
 
-const socialMediaTypes = [
-  'Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other',
-];
+const socialMediaTypes = [];
 
-const physicalMarketingTypes = [
-  'Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'
-];
+const physicalMarketingTypes = [];
 
 export function OperationsBudgetPage() {
   const { activeProject } = useContext(ProjectContext);
