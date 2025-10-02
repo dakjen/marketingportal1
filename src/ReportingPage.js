@@ -7,7 +7,7 @@ import MonthlyReportsPage from './MonthlyReportsPage';
 import SocialMediaReportingPage from './SocialMediaReportingPage';
 import PhysicalMarketingReportingPage from './PhysicalMarketingReportingPage';
 import GeneratedReportsPage from './GeneratedReportsPage';
-import OperationsDashboardPage from './OperationsDashboardPage';
+
 import OperationsSocialMediaPage from './OperationsSocialMediaPage';
 import OperationsPhysicalPage from './OperationsPhysicalPage';
 import OperationsWinsPage from './OperationsWinsPage';
@@ -364,7 +364,7 @@ function ReportingPage() {
           <Route path="physical-marketing" element={<PhysicalMarketingReportingPage uploads={physicalMarketingUploads} handleUpload={handlePhysicalMarketingUpload} handleDeleteUpload={handlePhysicalMarketingDelete} />} />
           {/* Placeholder for Generated Reports and Operations routes */}
           <Route path="generated-reports" element={<GeneratedReportsPage />} />
-          <Route path="operations/dashboard" element={<OperationsDashboardPage />} />
+
           <Route path="operations/social-media" element={<OperationsSocialMediaPage />} />
           <Route path="operations/physical" element={<OperationsPhysicalPage />} />
           <Route path="operations/wins" element={<OperationsWinsPage />} />
