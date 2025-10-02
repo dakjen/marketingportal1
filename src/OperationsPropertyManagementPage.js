@@ -89,10 +89,16 @@ function PropertyManagementPage() {
                   style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
                 />
               </div>
-              <button type="button" onClick={handleSaveContact} style={{ padding: '10px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+              <button type="button" onClick={handleSaveContact} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
                 Save Contact
               </button>
             </form>
+            <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #eee' }}>
+              <h4>Current Point of Contact:</h4>
+              <p><strong>Name:</strong> {contactName || 'N/A'}</p>
+              <p><strong>Phone:</strong> {contactPhone || 'N/A'}</p>
+              <p><strong>Email:</strong> {contactEmail || 'N/A'}</p>
+            </div>
           </div>
         <div className="operations-property-management-right-column">
           <h3>Important Links</h3>
@@ -117,7 +123,7 @@ function PropertyManagementPage() {
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
-            <button type="button" onClick={handleAddLink} style={{ padding: '10px 15px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            <button type="button" onClick={handleAddLink} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
               Add Link
             </button>
           </form>
