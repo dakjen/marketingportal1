@@ -329,23 +329,12 @@ function ReportingPage() {
                   <p>No budget data available for the active project.</p>
                 )}
 
-                <div className="spend-container" style={{display: 'flex', justifyContent: 'space-around', marginTop: '20px'}}>
-                  <div className="spend-box">
+                <div className="spend-container" style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: '20px'}}>
+                  <div className="spend-box" style={{width: '45%'}}>
                     <h4>Social Media Spend</h4>
                     <p>${socialMediaSpent.toFixed(2)}</p>
                   </div>
-                  <div className="spend-box">
-                    <h4>Physical Marketing Spend</h4>
-                    <p>${physicalMarketingSpent.toFixed(2)}</p>
-                  </div>
-                </div>
-
-                <div className="spend-container" style={{display: 'flex', justifyContent: 'space-around', marginTop: '20px'}}>
-                  <div className="spend-box">
-                    <h4>Social Media Spend</h4>
-                    <p>${socialMediaSpent.toFixed(2)}</p>
-                  </div>
-                  <div className="spend-box">
+                  <div className="spend-box" style={{width: '45%'}}>
                     <h4>Physical Marketing Spend</h4>
                     <p>${physicalMarketingSpent.toFixed(2)}</p>
                   </div>
