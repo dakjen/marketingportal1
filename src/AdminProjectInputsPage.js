@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { ProjectContext } from './ProjectContext';
 import './AdminProjectInputsPage.css';
 
 function AdminProjectInputsPage() {
+  const { activeProject } = useContext(ProjectContext);
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
+  const [importantDetails, setImportantDetails] = useState('');
 
   const [pmContactName, setPmContactName] = useState('');
   const [pmContactPhone, setPmContactPhone] = useState('');
@@ -14,54 +17,61 @@ function AdminProjectInputsPage() {
   const [pmLinks, setPmLinks] = useState([]);
 
   useEffect(() => {
-    const savedProjectName = localStorage.getItem('projectName');
-    const savedProjectDescription = localStorage.getItem('projectDescription');
+    if (activeProject) {
+      setProjectName(activeProject.name);
+      fetch(`/api/operations-data?project_name=${activeProject.name}`)
+        .then(res => res.json())
+        .then(data => {
+          setProjectDescription(data.project_description || '');
+          setImportantDetails(data.important_details || '');
+          setPmContactName(data.contact_name || '');
+          setPmContactPhone(data.contact_phone || '');
+          setPmContactEmail(data.contact_email || '');
+          setPmLinks(data.important_links || []);
+        })
+        .catch(err => console.error("Error fetching operations data:", err));
+    }
+  }, [activeProject]);
 
-    if (savedProjectName) {
-      setProjectName(savedProjectName);
-    }
-    if (savedProjectDescription) {
-      setProjectDescription(savedProjectDescription);
-    }
-
-    const savedPmContactName = localStorage.getItem('propertyManagementContactName');
-    const savedPmContactPhone = localStorage.getItem('propertyManagementContactPhone');
-    const savedPmContactEmail = localStorage.getItem('propertyManagementContactEmail');
-
-    if (savedPmContactName) {
-      setPmContactName(savedPmContactName);
-    }
-    if (savedPmContactPhone) {
-      setPmContactPhone(savedPmContactPhone);
-    }
-    if (savedPmContactEmail) {
-      setPmContactEmail(savedPmContactEmail);
+  const handleSave = async () => {
+    if (!activeProject) {
+      alert('Please select a project first.');
+      return;
     }
 
-    const savedPmLinks = localStorage.getItem('propertyManagementImportantLinks');
-    if (savedPmLinks) {
-      setPmLinks(JSON.parse(savedPmLinks));
-    }
-  }, []);
+    const dataToSave = {
+      project_name: activeProject.name,
+      project_description: projectDescription,
+      important_details: importantDetails,
+      contact_name: pmContactName,
+      contact_phone: pmContactPhone,
+      contact_email: pmContactEmail,
+      important_links: pmLinks,
+    };
 
-  const handleSaveProjectDetails = () => {
-    localStorage.setItem('projectName', projectName);
-    localStorage.setItem('projectDescription', projectDescription);
-    alert('Project details saved!');
+    try {
+      const response = await fetch('/api/operations-data', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSave),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save data');
+      }
+
+      alert('Data saved successfully!');
+    } catch (error) {
+      console.error('Error saving data:', error);
+      alert('Error saving data. Please try again.');
+    }
   };
 
-  const handleSavePmContact = () => {
-    localStorage.setItem('propertyManagementContactName', pmContactName);
-    localStorage.setItem('propertyManagementContactPhone', pmContactPhone);
-    localStorage.setItem('propertyManagementContactEmail', pmContactEmail);
-    alert('Property Management contact details saved!');
-  };
-
-  const handleAddPmLink = () => {
+  const handleAddLink = () => {
     if (pmLinkName && pmLinkUrl) {
-      const newLinks = [...pmLinks, { name: pmLinkName, url: pmLinkUrl }];
-      setPmLinks(newLinks);
-      localStorage.setItem('propertyManagementImportantLinks', JSON.stringify(newLinks));
+      setPmLinks([...pmLinks, { name: pmLinkName, url: pmLinkUrl }]);
       setPmLinkName('');
       setPmLinkUrl('');
     } else {
@@ -100,8 +110,24 @@ function AdminProjectInputsPage() {
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box', minHeight: '100px' }}
               />
             </div>
-            <button type="button" onClick={handleSaveProjectDetails} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            <button type="button" onClick={handleSave} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
               Save Project Details
+            </button>
+          </form>
+
+          <h3 style={{ marginTop: '20px' }}>Important Details</h3>
+          <form>
+            <div style={{ marginBottom: '10px' }}>
+              <label htmlFor="importantDetails" style={{ display: 'block', marginBottom: '5px' }}>Important Details:</label>
+              <textarea
+                id="importantDetails"
+                value={importantDetails}
+                onChange={(e) => setImportantDetails(e.target.value)}
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box', minHeight: '100px' }}
+              />
+            </div>
+            <button type="button" onClick={handleSave} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+              Save Important Details
             </button>
           </form>
         </div>
@@ -144,7 +170,7 @@ function AdminProjectInputsPage() {
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
-            <button type="button" onClick={handleSavePmContact} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            <button type="button" onClick={handleSave} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
               Save Contact
             </button>
           </form>
@@ -184,7 +210,7 @@ function AdminProjectInputsPage() {
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
-            <button type="button" onClick={handleAddPmLink} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            <button type="button" onClick={handleAddLink} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
               Add Link
             </button>
           </form>

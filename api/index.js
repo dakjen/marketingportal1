@@ -134,6 +134,18 @@ pool.connect((err, client, release) => {
         created_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS operations_data (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL UNIQUE,
+        project_description TEXT,
+        important_details TEXT,
+        contact_name TEXT,
+        contact_phone TEXT,
+        contact_email TEXT,
+        important_links JSONB
+      );
+    `);
     console.log('Entry tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating entry tables:', err.stack);
@@ -705,6 +717,62 @@ app.delete('/api/budget-entries/:id', authorizeRole(['admin']), async (req, res)
   } catch (error) {
     console.error('Error deleting budget entry:', error.stack);
     res.status(500).json({ message: 'Error deleting budget entry', error: error.message });
+  }
+});
+
+// Operations Data Endpoints
+app.get('/api/operations-data', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM operations_data WHERE project_name = $1', [project_name]);
+    if (result.rows.length === 0) {
+      // Return default empty values if no data exists
+      return res.status(200).json({
+        project_name,
+        project_description: '',
+        important_details: '',
+        contact_name: '',
+        contact_phone: '',
+        contact_email: '',
+        important_links: []
+      });
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error fetching operations data:', error.stack);
+    res.status(500).json({ message: 'Error fetching operations data', error: error.message });
+  }
+});
+
+app.put('/api/operations-data', authorizeRole(['admin']), async (req, res) => {
+  const { project_name, project_description, important_details, contact_name, contact_phone, contact_email, important_links } = req.body;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO operations_data (project_name, project_description, important_details, contact_name, contact_phone, contact_email, important_links)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (project_name) 
+       DO UPDATE SET 
+         project_description = EXCLUDED.project_description, 
+         important_details = EXCLUDED.important_details, 
+         contact_name = EXCLUDED.contact_name, 
+         contact_phone = EXCLUDED.contact_phone, 
+         contact_email = EXCLUDED.contact_email, 
+         important_links = EXCLUDED.important_links
+       RETURNING *`,
+      [project_name, project_description, important_details, contact_name, contact_phone, contact_email, JSON.stringify(important_links)]
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating operations data:', error.stack);
+    res.status(500).json({ message: 'Error updating operations data', error: error.message });
   }
 });
 
