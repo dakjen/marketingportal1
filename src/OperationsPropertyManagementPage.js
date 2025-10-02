@@ -63,4 +63,4 @@ function PropertyManagementPage() {
   );
 }
 
-export default OperationsPropertyManagementPage;
+export default PropertyManagementPage;
