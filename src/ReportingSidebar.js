@@ -23,6 +23,7 @@ function ReportingSidebar() {
         <li><NavLink to="/reporting/operations/wins">Wins</NavLink></li>
         <li><NavLink to="/reporting/operations/property-management">Property Management</NavLink></li>
         <li><NavLink to="/reporting/operations/budget">Budget</NavLink></li> {/* New Budget Link */}
+        {isInternalUser && <li><NavLink to="/reporting/operations/admin-project-inputs">Admin Project Inputs</NavLink></li>}
       </ul>
     </div>
   );

@@ -107,12 +107,7 @@ import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
                 </NavLink>
               </li>
               )}
-              {(currentUser?.role === 'admin') && (                   <li className="tab-item">
-                <NavLink to="/admin-project-inputs" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
-                  Admin Project Inputs
-                </NavLink>
-              </li>
-              )}
+
 
 
               <li className="tab-item profile-dropdown-container">
