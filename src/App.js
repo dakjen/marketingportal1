@@ -205,9 +205,7 @@ import PrivateRoute from './PrivateRoute'; // New import
                 <ReportingPage />
               </PrivateRoute>
             }
-          >
-            <Route path="admin-tools" element={<AdminProjectInputsPage />} />
-          </Route>
+          />
        </Routes>
       </div>
     </div>
