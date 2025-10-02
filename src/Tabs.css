@@ -46,7 +46,7 @@ nav {
 .tab-item a.active {
   background-color: #646464; /* Active tab background */
   border-color: #000000; /* Accent color */
-  border-bottom: 1px solid #333050; /* To cover the border-bottom of the container */
+  border-bottom: 1px solid #646464; /* To cover the border-bottom of the container */
   color: #fff;
 }
 
