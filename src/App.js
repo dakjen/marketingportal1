@@ -12,6 +12,7 @@ import ReportingPage from './ReportingPage';
      import ContactAdminPage from './ContactAdminPage';
      import IntroScreen from './IntroScreen'; // New import
      import RequestAccountPage from './RequestAccountPage'; // New import
+import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
    import { AuthProvider, AuthContext } from './AuthContext';
    import { ProjectProvider, ProjectContext } from './ProjectContext';
    import './Tabs.css';
@@ -104,6 +105,12 @@ import ReportingPage from './ReportingPage';
                 </NavLink>
               </li>
               )}
+              {(currentUser?.role === 'admin') && (                   <li className="tab-item">
+                <NavLink to="/admin-project-inputs" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
+                  Admin Project Inputs
+                </NavLink>
+              </li>
+              )}
               <li className="tab-item profile-dropdown-container">
                 {currentUser && <p className="user-display">User: {currentUser.username}</p>}
                 <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
@@ -150,15 +157,22 @@ import ReportingPage from './ReportingPage';
                )
              }
            />
-           <Route
-             path="/project-management"
-           element={
-             <PrivateRoute allowedRoles={['admin', 'admin2']}>
-               <ProjectManagementPage />
-             </PrivateRoute>
-           }
-         />
                     <Route
+                      path="/project-management"
+                      element={
+                        <PrivateRoute allowedRoles={['admin', 'admin2']}>
+                          <ProjectManagementPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                       path="/admin-project-inputs"
+                       element={
+                         <PrivateRoute allowedRoles={['admin']}>
+                           <AdminProjectInputsPage />
+                         </PrivateRoute>
+                       }
+                     />                    <Route
                       path="/social-media"
                       element={
                         <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'view-only']}>
