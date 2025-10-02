@@ -367,12 +367,12 @@ function ReportingPage() {
           <Route path="generated-reports" element={<GeneratedReportsPage />} />
           <Route path="operations/dashboard" element={<OperationsDashboardPage />} />
 
-          <Route path="operations/social-media" element={<OperationsSocialMediaPage />} />
-          <Route path="operations/physical" element={<OperationsPhysicalPage />} />
+          <Route path="operations/social-media" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><OperationsSocialMediaPage /></PrivateRoute>} />
+          <Route path="operations/physical" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><OperationsPhysicalPage /></PrivateRoute>} />
           <Route path="operations/wins" element={<OperationsWinsPage />} />
           <Route path="operations/property-management" element={<OperationsPropertyManagementPage />} />
           <Route path="operations/budget" element={<OperationsBudgetPage />} /> {/* New route for Operations Budget Page */}
-          <Route path="operations/admin-project-inputs" element={<AdminProjectInputsPage />} />
+          <Route path="operations/admin-project-inputs" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminProjectInputsPage /></PrivateRoute>} />
         </Routes>
       </div>
     </div>

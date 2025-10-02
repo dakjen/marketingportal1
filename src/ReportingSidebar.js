@@ -5,7 +5,7 @@ import './ReportingSidebar.css';
 
 function ReportingSidebar() {
   const { currentUser } = useContext(AuthContext);
-  const isInternalUser = currentUser?.role === 'admin'; // Assuming 'admin' is the internal user role
+  const isInternalUser = currentUser?.role === 'admin' || currentUser?.role === 'admin2'; // Assuming 'admin' and 'admin2' are the internal user roles
   return (
     <div className="reporting-sidebar">
       <NavLink to="/reporting"><h2>Project Reporting</h2></NavLink>
