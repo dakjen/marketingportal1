@@ -14,6 +14,7 @@ import ReportingPage from './ReportingPage';
      import RequestAccountPage from './RequestAccountPage'; // New import
 import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
 
+
    import { AuthProvider, AuthContext } from './AuthContext';
    import { ProjectProvider, ProjectContext } from './ProjectContext';
    import './Tabs.css';
@@ -113,6 +114,7 @@ import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
               </li>
               )}
 
+
               <li className="tab-item profile-dropdown-container">
                 {currentUser && <p className="user-display">User: {currentUser.username}</p>}
                 <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
@@ -175,6 +177,7 @@ import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
                          </PrivateRoute>
                        }
                      />
+
                     <Route
                       path="/social-media"
                       element={
