@@ -144,7 +144,7 @@ export function OperationsBudgetPage() {
     }
   };
 
-  const handleDeleteEntry = async (idToDelete) => {
+  const handleDeleteEntry = useCallback(async (idToDelete) => {
     if (!currentUser || currentUser.role !== 'admin') {
       alert('You do not have permission to delete budget entries.');
       return;
@@ -168,7 +168,7 @@ export function OperationsBudgetPage() {
         alert('Failed to delete budget entry. Please try again.');
       }
     }
-  };
+  }, [currentUser, refetchBudgetEntries]);
 
   const socialMediaFilteredEntries = allBudgetEntries.filter(entry => activeProject && entry.project_name === activeProject.name && socialMediaTypes.includes(entry.type))
     .sort((a, b) => {
