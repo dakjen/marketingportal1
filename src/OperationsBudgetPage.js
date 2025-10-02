@@ -75,7 +75,6 @@ export function OperationsBudgetPage() {
     };
 
     try {
-      console.log('handleAddSocialMediaEntry: Sending newEntryData:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
@@ -122,7 +121,6 @@ export function OperationsBudgetPage() {
     };
 
     try {
-      console.log('handleAddPhysicalMarketingEntry: Sending newEntryData:', newEntryData);
       const response = await fetch('/api/budget-entries', {
         method: 'POST',
         headers: {
@@ -146,14 +144,44 @@ export function OperationsBudgetPage() {
     }
   };
 
+  const handleDeleteEntry = async (idToDelete) => {
+    if (!currentUser || currentUser.role !== 'admin') {
+      alert('You do not have permission to delete budget entries.');
+      return;
+    }
+    if (window.confirm('Are you sure you want to delete this budget entry?')) {
+      try {
+        const response = await fetch(`/api/budget-entries/${idToDelete}`, {
+          method: 'DELETE',
+          headers: {
+            'X-User-Role': currentUser.role,
+          },
+        });
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        alert('Budget entry deleted successfully!');
+        refetchBudgetEntries(); // Re-fetch entries to update the list
+      } catch (error) {
+        console.error('Error deleting budget entry:', error);
+        alert('Failed to delete budget entry. Please try again.');
+      }
+    }
+  };
 
-
-
-
-
-  const socialMediaFilteredEntries = allBudgetEntries.filter(entry => activeProject && entry.project_name === activeProject.name && socialMediaTypes.includes(entry.type));
-  const physicalMarketingFilteredEntries = allBudgetEntries.filter(entry => activeProject && entry.project_name === activeProject.name && physicalMarketingTypes.includes(entry.type));
+  const socialMediaFilteredEntries = allBudgetEntries.filter(entry => activeProject && entry.project_name === activeProject.name && socialMediaTypes.includes(entry.type))
+    .sort((a, b) => {
+      if (a.month_allocation === 'month 1' && b.month_allocation !== 'month 1') return -1;
+      if (a.month_allocation !== 'month 1' && b.month_allocation === 'month 1') return 1;
+      return 0;
+    });
+  const physicalMarketingFilteredEntries = allBudgetEntries.filter(entry => activeProject && entry.project_name === activeProject.name && physicalMarketingTypes.includes(entry.type))
+    .sort((a, b) => {
+      if (a.month_allocation === 'month 1' && b.month_allocation !== 'month 1') return -1;
+      if (a.month_allocation !== 'month 1' && b.month_allocation === 'month 1') return 1;
+      return 0;
+    });
 
   return (
     <div className="operations-budget-page">
@@ -220,8 +248,11 @@ export function OperationsBudgetPage() {
             ) : (
               <ul>
                 {socialMediaFilteredEntries.map(entry => (
-                  <li key={entry.id}>
-                    {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval})
+                  <li key={entry.id} style={{ fontWeight: entry.month_allocation === 'month 1' ? 'bold' : 'normal' }}>
+                    {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval}) - {entry.month_allocation}
+                    {currentUser && currentUser.role === 'admin' && (
+                      <button onClick={() => handleDeleteEntry(entry.id)}>Delete</button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -288,8 +319,11 @@ export function OperationsBudgetPage() {
             ) : (
               <ul>
                 {physicalMarketingFilteredEntries.map(entry => (
-                  <li key={entry.id}>
-                    {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval})
+                  <li key={entry.id} style={{ fontWeight: entry.month_allocation === 'month 1' ? 'bold' : 'normal' }}>
+                    {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval}) - {entry.month_allocation}
+                    {currentUser && currentUser.role === 'admin' && (
+                      <button onClick={() => handleDeleteEntry(entry.id)}>Delete</button>
+                    )}
                   </li>
                 ))}
               </ul>
