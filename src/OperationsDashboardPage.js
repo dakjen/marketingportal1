@@ -85,7 +85,7 @@ function OperationsDashboardPage() {
           </form>
         </div>
         <div className="operations-dashboard-right-column">
-          <h3>Important Links</h3>
+          <h3>Important Resources</h3>
           <div className="links-list" style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
             {links.length === 0 ? (
               <p>No important links added yet.</p>
