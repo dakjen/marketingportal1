@@ -462,7 +462,7 @@ function ProfilePage() {
           </div>
         </div>
       )}
-      {currentUser && currentUser.role === 'admin' && (
+      {currentUser && (currentUser.role === 'admin' || currentUser.role === 'internal') && (
       <div className="password-change-section">
         <h3>Change Password</h3>
         {!isChangingPassword ? (

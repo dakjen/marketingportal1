@@ -680,6 +680,34 @@ app.post('/api/budget-entries', authorizeRole(['admin', 'internal']), async (req
   }
 });
 
+app.delete('/api/budget-entries/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM budget_entries WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Budget entry not found.' });
+    }
+    res.status(200).json({ message: 'Budget entry deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting budget entry:', error.stack);
+    res.status(500).json({ message: 'Error deleting budget entry', error: error.message });
+  }
+});
+
+app.delete('/api/budget-entries/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM budget_entries WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Budget entry not found.' });
+    }
+    res.status(200).json({ message: 'Budget entry deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting budget entry:', error.stack);
+    res.status(500).json({ message: 'Error deleting budget entry', error: error.message });
+  }
+});
+
 // Messages Endpoints
 app.get('/api/messages', authorizeRole(['admin', 'internal']), async (req, res) => {
   const { project_name } = req.query;
@@ -909,10 +937,11 @@ app.put('/api/users/:username/permissions', authorizeRole(['admin']), async (req
     res.status(500).json({ message: 'Error updating user permissions', error: error.message });
   }
 });
-app.put('/api/users/:username/password', authorizeRole(['admin']), async (req, res) => {
+app.put('/api/users/:username/password', authorizeRole(['admin', 'internal']), async (req, res) => {
   const { username } = req.params;
   const { oldPassword, newPassword } = req.body;
   const requesterRole = req.headers['x-user-role'];
+  const requesterUsername = req.headers['x-user-username'];
 
   if (!newPassword) {
     return res.status(400).json({ message: 'New password is required.' });
@@ -924,6 +953,11 @@ app.put('/api/users/:username/password', authorizeRole(['admin']), async (req, r
 
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Internal users can only change their own password
+    if (requesterRole === 'internal' && username !== requesterUsername) {
+      return res.status(403).json({ message: 'Forbidden: Internal users can only change their own password.' });
     }
 
     // If the requester is not an admin, they must provide the old password
