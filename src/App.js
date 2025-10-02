@@ -13,6 +13,7 @@ import ReportingPage from './ReportingPage';
      import IntroScreen from './IntroScreen'; // New import
      import RequestAccountPage from './RequestAccountPage'; // New import
 import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
+import PrivateRoute from './PrivateRoute'; // New import
 
 
    import { AuthProvider, AuthContext } from './AuthContext';
@@ -21,15 +22,7 @@ import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
 
    console.log('App.js: ProjectContext is here!', ProjectContext); // Debugging line
    
-   const PrivateRoute = ({ children, allowedRoles }) => {
-     const { isLoggedIn, currentUser, isLoading } = useContext(AuthContext);
-     if (isLoading) { return <div>Loading...</div>; }
-     if (!isLoggedIn) { return <Navigate to="/intro" />; } // Changed from /login to /intro
-     if (allowedRoles && !allowedRoles.includes(currentUser?.role)) { return <Navigate to="/"
-       />; }
-     return children;
-   };
-   
+
    function AppContent() {
      const { isLoggedIn, logout, currentUser } = useContext(AuthContext);
      const { projects, activeProject, selectProject } = useContext(ProjectContext);

@@ -18,6 +18,7 @@ import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
 import ProjectSwitcher from './ProjectSwitcher'; // New import
 import { AuthContext } from './AuthContext'; // Import AuthContext
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
+import PrivateRoute from '../PrivateRoute'; // New import
 
 function ReportingPage() {
   const { currentUser } = useContext(AuthContext);
