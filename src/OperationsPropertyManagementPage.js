@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './OperationsPropertyManagementPage.css';
 
 function PropertyManagementPage() {
@@ -6,15 +6,41 @@ function PropertyManagementPage() {
   const [contactPhone, setContactPhone] = useState('');
   const [contactEmail, setContactEmail] = useState('');
 
+  // Load contact info from local storage on component mount
+  useEffect(() => {
+    const savedContactName = localStorage.getItem('contactName');
+    const savedContactPhone = localStorage.getItem('contactPhone');
+    const savedContactEmail = localStorage.getItem('contactEmail');
+
+    if (savedContactName) setContactName(savedContactName);
+    if (savedContactPhone) setContactPhone(savedContactPhone);
+    if (savedContactEmail) setContactEmail(savedContactEmail);
+  }, []); // Empty dependency array means this runs once on mount
+
   const handleSaveContact = () => {
     console.log('Saving Contact:', { contactName, contactPhone, contactEmail });
-    // Here you would typically send this data to a backend API
+    localStorage.setItem('contactName', contactName);
+    localStorage.setItem('contactPhone', contactPhone);
+    localStorage.setItem('contactEmail', contactEmail);
     alert('Contact information saved (check console for details)!');
   };
 
   const [linkName, setLinkName] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
   const [links, setLinks] = useState([]);
+
+  // Load links from local storage on component mount
+  useEffect(() => {
+    const savedLinks = localStorage.getItem('importantLinks');
+    if (savedLinks) {
+      setLinks(JSON.parse(savedLinks));
+    }
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Save links to local storage whenever the links state changes
+  useEffect(() => {
+    localStorage.setItem('importantLinks', JSON.stringify(links));
+  }, [links]); // Runs whenever 'links' state changes
 
   const handleAddLink = () => {
     if (linkName && linkUrl) {
