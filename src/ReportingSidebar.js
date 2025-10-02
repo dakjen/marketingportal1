@@ -17,9 +17,9 @@ function ReportingSidebar() {
       </ul>
       <h3 className="sidebar-title">Operations</h3>
       <ul>
-        {!isInternalUser && <li><NavLink to="/reporting/operations/dashboard">Dashboard</NavLink></li>}
-        {!isInternalUser && <li><NavLink to="/reporting/operations/social-media">Social Media</NavLink></li>}
-        {!isInternalUser && <li><NavLink to="/reporting/operations/physical">Physical</NavLink></li>}
+        {isInternalUser && <li><NavLink to="/reporting/operations/dashboard">Dashboard</NavLink></li>}
+        {isInternalUser && <li><NavLink to="/reporting/operations/social-media">Social Media</NavLink></li>}
+        {isInternalUser && <li><NavLink to="/reporting/operations/physical">Physical</NavLink></li>}
         <li><NavLink to="/reporting/operations/wins">Wins</NavLink></li>
         <li><NavLink to="/reporting/operations/property-management">Property Management</NavLink></li>
         <li><NavLink to="/reporting/operations/budget">Budget</NavLink></li> {/* New Budget Link */}

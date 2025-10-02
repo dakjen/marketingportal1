@@ -91,13 +91,43 @@ function ReportingPage() {
         const budgetEntriesData = await responseBudgetEntries.json();
         console.log('fetchProjectSpend: budgetEntriesData.entries:', budgetEntriesData.entries);
 
-        // Combine spend data from project-data and budget-entries
+        // Fetch social media uploads
+        const responseSocialMediaUploads = await fetch(`/api/socialmedia/uploads?project_name=${encodeURIComponent(activeProject.name)}`);
+        if (!responseSocialMediaUploads.ok) {
+          const errorData = await responseSocialMediaUploads.json();
+          console.error("Failed to fetch social media uploads data:", responseSocialMediaUploads.status, errorData);
+          throw new Error(errorData.message || `HTTP error! status: ${responseSocialMediaUploads.status}`);
+        }
+        const socialMediaUploadsData = await responseSocialMediaUploads.json();
+        console.log('fetchProjectSpend: socialMediaUploadsData.uploads:', socialMediaUploadsData.uploads);
+
+        // Fetch physical marketing uploads
+        const responsePhysicalMarketingUploads = await fetch(`/api/physicalmarketing/uploads?project_name=${encodeURIComponent(activeProject.name)}`);
+        if (!responsePhysicalMarketingUploads.ok) {
+          const errorData = await responsePhysicalMarketingUploads.json();
+          console.error("Failed to fetch physical marketing uploads data:", responsePhysicalMarketingUploads.status, errorData);
+          throw new Error(errorData.message || `HTTP error! status: ${responsePhysicalMarketingUploads.status}`);
+        }
+        const physicalMarketingUploadsData = await responsePhysicalMarketingUploads.json();
+        console.log('fetchProjectSpend: physicalMarketingUploadsData.uploads:', physicalMarketingUploadsData.uploads);
+
+        // Combine spend data from project-data, budget-entries, social media uploads, and physical marketing uploads
         const combinedSpendData = [
           ...projectData.spend,
           ...budgetEntriesData.entries.map(entry => ({
             date: entry.created_at, // Use created_at for budget entries
             amount: parseFloat(entry.amount),
             type: entry.type // Use the type from budget entry
+          })),
+          ...socialMediaUploadsData.uploads.map(upload => ({
+            date: upload.upload_date, // Use upload_date for social media uploads
+            amount: parseFloat(upload.amount || 0), // Assume amount exists, default to 0 if not
+            type: upload.type // Use the type from social media upload
+          })),
+          ...physicalMarketingUploadsData.uploads.map(upload => ({
+            date: upload.upload_date, // Use upload_date for physical marketing uploads
+            amount: parseFloat(upload.amount || 0), // Assume amount exists, default to 0 if not
+            type: upload.type // Use the type from physical marketing upload
           }))
         ];
         console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
