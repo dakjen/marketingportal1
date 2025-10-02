@@ -101,20 +101,10 @@ function ReportingPage() {
             const physicalMarketingEntriesData = await responsePhysicalMarketingEntries.json();
             console.log('fetchProjectSpend: physicalMarketingEntriesData.entries:', physicalMarketingEntriesData.entries);
     
-            // Combine spend data from project-data, social media entries, and physical marketing entries
-            const combinedSpendData = [
-              ...projectData.spend,
-              ...socialMediaEntriesData.entries.map(entry => ({
-                date: entry.date, // Use date from social media entry
-                amount: parseFloat(entry.cost),
-                type: entry.platform // Use platform as type
-              })),
-              ...physicalMarketingEntriesData.entries.map(entry => ({
-                date: entry.date, // Use date from physical marketing entry
-                amount: parseFloat(entry.cost),
-                type: entry.type // Use type from physical marketing entry
-              }))
-            ];        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
+        // Combine spend data from project-data
+        const combinedSpendData = [
+          ...projectData.spend,
+        ];        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
 
         // Calculate total spend for the last 30 days
         const totalGrandSpend = combinedSpendData.reduce((sum, item) => sum + item.amount, 0);
@@ -300,7 +290,7 @@ function ReportingPage() {
                 </div>
                 <div className="reporting-box">
                   <h4>Submit</h4>
-                  <p>Submit monthly report to Project Lead</p>
+                  <p style={{ fontSize: '0.85em' }}>Submit monthly report to Project Lead</p>
                   <select
                     value={selectedMonthlyReport}
                     onChange={(e) => setSelectedMonthlyReport(e.target.value)}
