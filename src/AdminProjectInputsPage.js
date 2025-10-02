@@ -59,13 +59,15 @@ function AdminProjectInputsPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save data');
+        const errorData = await response.json();
+        console.error('API Error:', response.status, errorData);
+        throw new Error(errorData.message || 'Failed to save data');
       }
 
       alert('Data saved successfully!');
     } catch (error) {
       console.error('Error saving data:', error);
-      alert('Error saving data. Please try again.');
+      alert(`Error saving data: ${error.message}. Please try again.`);
     }
   };
 
