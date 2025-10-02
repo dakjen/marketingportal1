@@ -18,3 +18,77 @@
 .delete-button:hover {
   background-color: #a05461;
 }
+
+.regular-documents-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.regular-documents-section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+  color: #333;
+}
+
+.thin-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.upload-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  align-items: center;
+}
+
+.upload-controls input[type="file"] {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.upload-controls button {
+  padding: 8px 15px;
+  background-color: #646464;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.upload-controls button:hover {
+  background-color: #505050;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.file-list-item:last-child {
+  border-bottom: none;
+}
+
+.file-list-item a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.file-list-item a:hover {
+  text-decoration: underline;
+}

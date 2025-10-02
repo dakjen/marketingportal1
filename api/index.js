@@ -146,6 +146,17 @@ pool.connect((err, client, release) => {
         important_links JSONB
       );
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS regular_documents (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        file_name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        uploader_username TEXT NOT NULL,
+        upload_date TIMESTAMPTZ DEFAULT NOW(),
+        type TEXT
+      );
+    `);
     console.log('Entry tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating entry tables:', err.stack);
@@ -773,6 +784,58 @@ app.put('/api/operations-data', authorizeRole(['admin']), async (req, res) => {
   } catch (error) {
     console.error('Error updating operations data:', error.stack);
     res.status(500).json({ message: 'Error updating operations data', error: error.message });
+  }
+});
+
+// Regular Documents Endpoints
+app.get('/api/regular-documents', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT * FROM regular_documents WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
+    res.status(200).json({ documents: result.rows });
+  } catch (error) {
+    console.error('Error fetching regular documents:', error.stack);
+    res.status(500).json({ message: 'Error fetching regular documents', error: error.message });
+  }
+});
+
+app.post('/api/regular-documents', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
+  const { project_name, file_name, type } = req.body;
+  const uploader_username = req.headers['x-user-username'];
+
+  console.log(`Received file: ${req.file.originalname}, size: ${req.file.buffer.length} bytes`);
+  const file_path = `/${project_name}/regular_documents/${file_name}`; // Simulate a file path
+
+  if (!project_name || !file_name || !uploader_username || !type) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO regular_documents(project_name, file_name, file_path, uploader_username, type) VALUES($1, $2, $3, $4, $5) RETURNING *'
+      , [project_name, file_name, file_path, uploader_username, type]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error adding regular document:', error.stack);
+    res.status(500).json({ message: 'Error adding regular document', error: error.message });
+  }
+});
+
+app.delete('/api/regular-documents/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM regular_documents WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Document not found.' });
+    }
+    res.status(200).json({ message: 'Regular document deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting regular document:', error.stack);
+    res.status(500).json({ message: 'Error deleting regular document', error: error.message });
   }
 });
 
