@@ -13,15 +13,15 @@ function ReportingSidebar() {
         <li><NavLink to="/reporting/monthly-reports">Monthly Reports</NavLink></li>
         <li><NavLink to="/reporting/social-media">Social Media</NavLink></li>
         <li><NavLink to="/reporting/physical-marketing">Physical Marketing</NavLink></li>
-          <NavLink to="/reporting/operations" className="sidebar-link">
+          <Link to="/reporting/operations" className="sidebar-link">
             Operations
-          </NavLink>
-          <NavLink to="/reporting/admin-tools" className="sidebar-link">
+          </Link>
+          <Link to="/reporting/admin-tools" className="sidebar-link">
             Admin Tools
-          </NavLink>
-          <NavLink to="/reporting/generated" className="sidebar-link">
+          </Link>
+          <Link to="/reporting/generated" className="sidebar-link">
             Generated Reports
-          </NavLink>
+          </Link>
       </ul>
       <h3 className="sidebar-title">Operations</h3>
       <ul>
