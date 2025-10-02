@@ -5,9 +5,13 @@ function AdminProjectInputsPage() {
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
 
-  const [contactName, setContactName] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
+  const [pmContactName, setPmContactName] = useState('');
+  const [pmContactPhone, setPmContactPhone] = useState('');
+  const [pmContactEmail, setPmContactEmail] = useState('');
+
+  const [pmLinkName, setPmLinkName] = useState('');
+  const [pmLinkUrl, setPmLinkUrl] = useState('');
+  const [pmLinks, setPmLinks] = useState([]);
 
   useEffect(() => {
     const savedProjectName = localStorage.getItem('projectName');
@@ -20,54 +24,46 @@ function AdminProjectInputsPage() {
       setProjectDescription(savedProjectDescription);
     }
 
-    const savedContactName = localStorage.getItem('dashboardContactName');
-    const savedContactPhone = localStorage.getItem('dashboardContactPhone');
-    const savedContactEmail = localStorage.getItem('dashboardContactEmail');
+    const savedPmContactName = localStorage.getItem('propertyManagementContactName');
+    const savedPmContactPhone = localStorage.getItem('propertyManagementContactPhone');
+    const savedPmContactEmail = localStorage.getItem('propertyManagementContactEmail');
 
-    if (savedContactName) {
-      setContactName(savedContactName);
+    if (savedPmContactName) {
+      setPmContactName(savedPmContactName);
     }
-    if (savedContactPhone) {
-      setContactPhone(savedContactPhone);
+    if (savedPmContactPhone) {
+      setPmContactPhone(savedPmContactPhone);
     }
-    if (savedContactEmail) {
-      setContactEmail(savedContactEmail);
+    if (savedPmContactEmail) {
+      setPmContactEmail(savedPmContactEmail);
+    }
+
+    const savedPmLinks = localStorage.getItem('propertyManagementImportantLinks');
+    if (savedPmLinks) {
+      setPmLinks(JSON.parse(savedPmLinks));
     }
   }, []);
 
-  const handleSave = () => {
+  const handleSaveProjectDetails = () => {
     localStorage.setItem('projectName', projectName);
     localStorage.setItem('projectDescription', projectDescription);
     alert('Project details saved!');
   };
 
-  const handleSaveContact = () => {
-    localStorage.setItem('dashboardContactName', contactName);
-    localStorage.setItem('dashboardContactPhone', contactPhone);
-    localStorage.setItem('dashboardContactEmail', contactEmail);
-    alert('Contact details saved!');
+  const handleSavePmContact = () => {
+    localStorage.setItem('propertyManagementContactName', pmContactName);
+    localStorage.setItem('propertyManagementContactPhone', pmContactPhone);
+    localStorage.setItem('propertyManagementContactEmail', pmContactEmail);
+    alert('Property Management contact details saved!');
   };
 
-  const [linkName, setLinkName] = useState('');
-  const [linkUrl, setLinkUrl] = useState('');
-  const [links, setLinks] = useState([]);
-
-  useEffect(() => {
-    const savedLinks = localStorage.getItem('dashboardImportantLinks');
-    if (savedLinks) {
-      setLinks(JSON.parse(savedLinks));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('dashboardImportantLinks', JSON.stringify(links));
-  }, [links]);
-
-  const handleAddLink = () => {
-    if (linkName && linkUrl) {
-      setLinks([...links, { name: linkName, url: linkUrl }]);
-      setLinkName('');
-      setLinkUrl('');
+  const handleAddPmLink = () => {
+    if (pmLinkName && pmLinkUrl) {
+      const newLinks = [...pmLinks, { name: pmLinkName, url: pmLinkUrl }];
+      setPmLinks(newLinks);
+      localStorage.setItem('propertyManagementImportantLinks', JSON.stringify(newLinks));
+      setPmLinkName('');
+      setPmLinkUrl('');
     } else {
       alert('Please enter both link name and URL.');
     }
@@ -78,9 +74,9 @@ function AdminProjectInputsPage() {
       <h2>Admin Project Inputs</h2>
       <div className="admin-project-inputs-page-container">
         <div className="admin-project-inputs-left-column">
-          <h3>Current Project Details</h3>
+          <h3>Operations Dashboard</h3>
           <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
-            <h4>Current Details:</h4>
+            <h4>Current Project Details:</h4>
             <p><strong>Project Name:</strong> {projectName || 'N/A'}</p>
             <p><strong>Description:</strong> {projectDescription || 'N/A'}</p>
           </div>
@@ -104,61 +100,62 @@ function AdminProjectInputsPage() {
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box', minHeight: '100px' }}
               />
             </div>
-            <button type="button" onClick={handleSave} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
-              Save Details
+            <button type="button" onClick={handleSaveProjectDetails} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+              Save Project Details
             </button>
           </form>
         </div>
         <div className="admin-project-inputs-right-column">
-          <h3>Contact Information</h3>
+          <h3>Property Management</h3>
           <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
-            <h4>Current Contact:</h4>
-            <p><strong>Name:</strong> {contactName || 'N/A'}</p>
-            <p><strong>Phone:</strong> {contactPhone || 'N/A'}</p>
-            <p><strong>Email:</strong> {contactEmail || 'N/A'}</p>
+            <h4>Current Point of Contact:</h4>
+            <p><strong>Name:</strong> {pmContactName || 'N/A'}</p>
+            <p><strong>Phone:</strong> {pmContactPhone || 'N/A'}</p>
+            <p><strong>Email:</strong> {pmContactEmail || 'N/A'}</p>
           </div>
           <form>
             <div style={{ marginBottom: '10px' }}>
-              <label htmlFor="contactName" style={{ display: 'block', marginBottom: '5px' }}>Name:</label>
+              <label htmlFor="pmContactName" style={{ display: 'block', marginBottom: '5px' }}>Name:</label>
               <input
                 type="text"
-                id="contactName"
-                value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
+                id="pmContactName"
+                value={pmContactName}
+                onChange={(e) => setPmContactName(e.target.value)}
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
             <div style={{ marginBottom: '10px' }}>
-              <label htmlFor="contactPhone" style={{ display: 'block', marginBottom: '5px' }}>Phone:</label>
+              <label htmlFor="pmContactPhone" style={{ display: 'block', marginBottom: '5px' }}>Phone:</label>
               <input
                 type="text"
-                id="contactPhone"
-                value={contactPhone}
-                onChange={(e) => setContactPhone(e.target.value)}
+                id="pmContactPhone"
+                value={pmContactPhone}
+                onChange={(e) => setPmContactPhone(e.target.value)}
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
             <div style={{ marginBottom: '10px' }}>
-              <label htmlFor="contactEmail" style={{ display: 'block', marginBottom: '5px' }}>Email:</label>
+              <label htmlFor="pmContactEmail" style={{ display: 'block', marginBottom: '5px' }}>Email:</label>
               <input
                 type="email"
-                id="contactEmail"
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
+                id="pmContactEmail"
+                value={pmContactEmail}
+                onChange={(e) => setPmContactEmail(e.target.value)}
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
-            <button type="button" onClick={handleSaveContact} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            <button type="button" onClick={handleSavePmContact} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
               Save Contact
             </button>
           </form>
-          <h3 style={{ marginTop: '20px' }}>Important Resources</h3>
+
+          <h3 style={{ marginTop: '20px' }}>Important Links</h3>
           <div className="links-list" style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
-            {links.length === 0 ? (
+            {pmLinks.length === 0 ? (
               <p>No important links added yet.</p>
             ) : (
               <ul>
-                {links.map((link, index) => (
+                {pmLinks.map((link, index) => (
                   <li key={index} style={{ marginBottom: '5px' }}>
                     <a href={link.url} target="_blank" rel="noopener noreferrer">{link.name}</a>
                   </li>
@@ -168,26 +165,26 @@ function AdminProjectInputsPage() {
           </div>
           <form style={{ marginBottom: '20px' }}>
             <div style={{ marginBottom: '10px' }}>
-              <label htmlFor="linkName" style={{ display: 'block', marginBottom: '5px' }}>Link Name:</label>
+              <label htmlFor="pmLinkName" style={{ display: 'block', marginBottom: '5px' }}>Link Name:</label>
               <input
                 type="text"
-                id="linkName"
-                value={linkName}
-                onChange={(e) => setLinkName(e.target.value)}
+                id="pmLinkName"
+                value={pmLinkName}
+                onChange={(e) => setPmLinkName(e.target.value)}
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
             <div style={{ marginBottom: '10px' }}>
-              <label htmlFor="linkUrl" style={{ display: 'block', marginBottom: '5px' }}>Link URL:</label>
+              <label htmlFor="pmLinkUrl" style={{ display: 'block', marginBottom: '5px' }}>Link URL:</label>
               <input
                 type="text"
-                id="linkUrl"
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
+                id="pmLinkUrl"
+                value={pmLinkUrl}
+                onChange={(e) => setPmLinkUrl(e.target.value)}
                 style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
               />
             </div>
-            <button type="button" onClick={handleAddLink} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            <button type="button" onClick={handleAddPmLink} style={{ padding: '10px 15px', backgroundColor: '#646464', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
               Add Link
             </button>
           </form>

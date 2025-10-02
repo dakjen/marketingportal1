@@ -13,6 +13,7 @@ import ReportingPage from './ReportingPage';
      import IntroScreen from './IntroScreen'; // New import
      import RequestAccountPage from './RequestAccountPage'; // New import
 import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
+import OperationsPropertyManagementPage from './OperationsPropertyManagementPage'; // New import
    import { AuthProvider, AuthContext } from './AuthContext';
    import { ProjectProvider, ProjectContext } from './ProjectContext';
    import './Tabs.css';
@@ -111,6 +112,12 @@ import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
                 </NavLink>
               </li>
               )}
+              {(currentUser?.role === 'admin') && (                   <li className="tab-item">
+                <NavLink to="/property-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
+                  Property Management
+                </NavLink>
+              </li>
+              )}
               <li className="tab-item profile-dropdown-container">
                 {currentUser && <p className="user-display">User: {currentUser.username}</p>}
                 <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
@@ -165,14 +172,22 @@ import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
                         </PrivateRoute>
                       }
                     />
-                    <Route
+                     <Route
                        path="/admin-project-inputs"
                        element={
                          <PrivateRoute allowedRoles={['admin']}>
                            <AdminProjectInputsPage />
                          </PrivateRoute>
                        }
-                     />                    <Route
+                     />
+                     <Route
+                        path="/property-management"
+                        element={
+                          <PrivateRoute allowedRoles={['admin']}>
+                            <OperationsPropertyManagementPage />
+                          </PrivateRoute>
+                        }
+                      />                    <Route
                       path="/social-media"
                       element={
                         <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'view-only']}>
