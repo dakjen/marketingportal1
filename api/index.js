@@ -670,7 +670,7 @@ app.post('/api/budget-entries', authorizeRole(['admin', 'internal']), async (req
   }
   try {
     const result = await pool.query(
-      'INSERT INTO budget_entries(project_name, type, amount, interval, month_allocation) VALUES($1, $2, $3, $4, $5) RETURNING *'
+      'INSERT INTO budget_entries(project_name, type, amount, interval, month_allocation) VALUES($1::text, $2::text, $3::numeric, $4::text, $5::text) RETURNING *'
       , [project_name, type, amount, interval, month_allocation]
     );
     res.status(201).json(result.rows[0]);
