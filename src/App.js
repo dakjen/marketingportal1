@@ -157,47 +157,6 @@ import PrivateRoute from './PrivateRoute'; // New import
                         </PrivateRoute>
                       }
                     />
-                     <Route
-                       path="/admin-project-inputs"
-                       element={
-                         <PrivateRoute allowedRoles={['admin']}>
-                           <AdminProjectInputsPage />
-                         </PrivateRoute>
-                       }
-                     />
-
-                    <Route
-                      path="/social-media"
-                      element={
-                        <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'view-only']}>
-                          {activeProject ? <SocialMediaEntries /> : <p>Please select a project to view social media entries.</p>}
-                        </PrivateRoute>
-                      }
-         />
-         <Route
-           path="/physical-marketing"
-           element={
-             <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
-               {activeProject ? <PhysicalMarketingEntries /> : <p>Please select a project to view physical marketing entries.</p>}
-             </PrivateRoute>
-           }
-         />
-         <Route
-           path="/profile"
-           element={
-             <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external']}>
-               <ProfilePage />
-             </PrivateRoute>
-           }
-         />
-         <Route
-            path="/messages"
-            element={
-              <PrivateRoute allowedRoles={['admin', 'internal']}>
-                <MessagesPage />
-              </PrivateRoute>
-            }
-          />
          <Route
             path="/reporting/*"
             element={
@@ -205,7 +164,9 @@ import PrivateRoute from './PrivateRoute'; // New import
                 <ReportingPage />
               </PrivateRoute>
             }
-          />
+          >
+            <Route path="admin-project-inputs" element={<AdminProjectInputsPage />} />
+          </Route>
        </Routes>
       </div>
     </div>
