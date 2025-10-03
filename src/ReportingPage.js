@@ -330,10 +330,10 @@ function ReportingPage() {
                 <h3>Budget</h3>
                 {monthlySpendChartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
-                    <BarChart layout="vertical" data={monthlySpendChartData}>
+                    <BarChart data={monthlySpendChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" dataKey="spend" />
-                      <YAxis type="category" dataKey="month" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="spend" fill="#c07481" name="Monthly Spend" />
