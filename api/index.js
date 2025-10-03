@@ -794,7 +794,7 @@ app.get('/api/regular-documents', async (req, res) => {
     return res.status(400).json({ message: 'Project name is required.' });
   }
   try {
-    const result = await pool.query('SELECT * FROM regular_documents WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
+    const result = await pool.query('SELECT id, project_name, file_name, file_path, uploader_username, upload_date, type FROM regular_documents WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
     res.status(200).json({ documents: result.rows });
   } catch (error) {
     console.error('Error fetching regular documents:', error.stack);
@@ -802,9 +802,43 @@ app.get('/api/regular-documents', async (req, res) => {
   }
 });
 
+app.get('/api/regular-documents/download', async (req, res) => {
+  const { file_path } = req.query;
+
+  if (!file_path) {
+    return res.status(400).send('File path is required.');
+  }
+
+  try {
+    // Retrieve the document metadata and file data from the database
+    const result = await pool.query('SELECT file_name, file_data, type FROM regular_documents WHERE file_path = $1', [file_path]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).send('File not found.');
+    }
+
+    const document = result.rows[0];
+
+    // Set appropriate headers for file download
+    res.setHeader('Content-Type', document.type || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${document.file_name}"`);
+
+    // Send the file data
+    res.send(document.file_data);
+
+  } catch (error) {
+    console.error('Error downloading regular document:', error.stack);
+    res.status(500).send('Error downloading file.');
+  }
+});
+
 app.post('/api/regular-documents', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
   const { project_name, file_name, type } = req.body;
   const uploader_username = req.headers['x-user-username'];
+
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded.' });
+  }
 
   console.log(`Received file: ${req.file.originalname}, size: ${req.file.buffer.length} bytes`);
   const file_path = `/${project_name}/regular_documents/${file_name}`; // Simulate a file path
@@ -815,8 +849,8 @@ app.post('/api/regular-documents', authorizeRole(['admin', 'internal']), upload.
 
   try {
     const result = await pool.query(
-      'INSERT INTO regular_documents(project_name, file_name, file_path, uploader_username, type) VALUES($1, $2, $3, $4, $5) RETURNING *'
-      , [project_name, file_name, file_path, uploader_username, type]
+      'INSERT INTO regular_documents(project_name, file_name, file_path, uploader_username, type, file_data) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
+      , [project_name, file_name, file_path, uploader_username, type, req.file.buffer]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
