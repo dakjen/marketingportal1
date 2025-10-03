@@ -150,6 +150,30 @@ import PrivateRoute from './PrivateRoute'; // New import
                )
              }
            />
+           <Route
+             path="/social-media"
+             element={
+               <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
+                 <SocialMediaEntries />
+               </PrivateRoute>
+             }
+           />
+           <Route
+             path="/physical-marketing"
+             element={
+               <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
+                 <PhysicalMarketingEntries />
+               </PrivateRoute>
+             }
+           />
+           <Route
+             path="/messages"
+             element={
+               <PrivateRoute allowedRoles={['admin', 'internal']}>
+                 <MessagesPage />
+               </PrivateRoute>
+             }
+           />
                     <Route
                       path="/project-management"
                       element={
