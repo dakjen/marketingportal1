@@ -113,9 +113,17 @@ function ReportingPage() {
         ];        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
 
         // Calculate total spend for the last 30 days
-        const totalGrandSpend = combinedSpendData.reduce((sum, item) => sum + item.amount, 0);
+        const totalGrandSpend = combinedSpendData.reduce((sum, item) => {
+          const amount = parseFloat(item.amount);
+          if (isNaN(amount)) {
+            console.warn('Non-numeric amount found:', item.amount, 'for item:', item);
+            return sum; // Skip non-numeric amounts
+          }
+          return sum + amount;
+        }, 0);
         console.log('fetchProjectSpend: totalGrandSpend:', totalGrandSpend);
         setTotalMonthlySpend(totalGrandSpend);
+        setProjectSpendData(combinedSpendData); // Ensure projectSpendData is set
 
       } catch (error) {
         console.error("Error in fetchProjectSpend:", error);
