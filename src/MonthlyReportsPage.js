@@ -119,10 +119,8 @@ function MonthlyReportsPage({ uploadedFiles, handleFileUpload, handleFileDelete 
 
           {canUpload && (
             <div className="upload-controls">
-              <input
-                type="file"
-                onChange={(e) => setNewDocumentFile(e.target.files[0])}
-              />
+            <input type="file" onChange={handleFileChange} />
+            <button onClick={handleUpload} disabled={!selectedFile}>Upload Document</button>
               <button onClick={handleRegularDocumentUpload} disabled={!newDocumentFile}>
                 Upload Document
               </button>
