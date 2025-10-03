@@ -27,6 +27,7 @@ function ReportingSidebar() {
       <h3 className="sidebar-title">Admin Tools</h3>
       <ul>
         {isInternalUser && <li><NavLink to="/reporting/admin-project-inputs">Admin Project Inputs</NavLink></li>}
+        {isInternalUser && <li><NavLink to="/reporting/admin-operations-dashboard">Operations Dashboard</NavLink></li>}
       </ul>
     </div>
   );

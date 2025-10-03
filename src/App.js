@@ -13,6 +13,7 @@ import ReportingPage from './ReportingPage';
      import IntroScreen from './IntroScreen'; // New import
      import RequestAccountPage from './RequestAccountPage'; // New import
 import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
+import AdminOperationsDashboardPage from './AdminOperationsDashboardPage'; // New import
 import PrivateRoute from './PrivateRoute'; // New import
 
 
@@ -166,6 +167,7 @@ import PrivateRoute from './PrivateRoute'; // New import
             }
           >
             <Route path="admin-project-inputs" element={<AdminProjectInputsPage />} />
+            <Route path="admin-operations-dashboard" element={<AdminOperationsDashboardPage />} />
           </Route>
        </Routes>
       </div>
