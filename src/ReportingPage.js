@@ -108,8 +108,6 @@ function ReportingPage() {
         // Combine spend data from project-data
         const combinedSpendData = [
           ...projectData.spend,
-          ...socialMediaEntriesData.entries.map(entry => ({...entry, amount: parseFloat(entry.cost), type: 'socialMedia'})),
-          ...physicalMarketingEntriesData.entries.map(entry => ({...entry, amount: parseFloat(entry.cost), type: 'physicalMarketing'}))
         ];        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
 
         // Calculate total spend for the last 30 days
