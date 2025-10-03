@@ -318,6 +318,7 @@ function AdminOperationsDashboardPage() {
         </div>
       </div>
     </div>
+  );
 }
 
 export default AdminOperationsDashboardPage;
