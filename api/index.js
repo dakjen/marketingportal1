@@ -560,7 +560,9 @@ app.get('/api/socialmediaentries', async (req, res) => {
   }
 
   try {
+    console.log(`Fetching social media entries for project: ${project_name}`);
     const result = await pool.query('SELECT * FROM social_media_entries WHERE project_name = $1 ORDER BY date DESC', [project_name]);
+    console.log(`Found ${result.rowCount} social media entries.`);
     res.status(200).json({ entries: result.rows });
   } catch (error) {
     console.error('Error fetching social media entries:', error.stack);
@@ -636,7 +638,9 @@ app.get('/api/physicalmarketingentries', async (req, res) => {
   }
 
   try {
+    console.log(`Fetching physical marketing entries for project: ${project_name}`);
     const result = await pool.query('SELECT * FROM physical_marketing_entries WHERE project_name = $1 ORDER BY date DESC', [project_name]);
+    console.log(`Found ${result.rowCount} physical marketing entries.`);
     res.status(200).json({ entries: result.rows });
   } catch (error) {
     console.error('Error fetching physical marketing entries:', error.stack);
