@@ -154,7 +154,32 @@ pool.connect((err, client, release) => {
         file_path TEXT NOT NULL,
         uploader_username TEXT NOT NULL,
         upload_date TIMESTAMPTZ DEFAULT NOW(),
-        type TEXT
+        type TEXT,
+        file_data BYTEA
+      );
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS quotes_documents (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        file_name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        uploader_username TEXT NOT NULL,
+        upload_date TIMESTAMPTZ DEFAULT NOW(),
+        type TEXT,
+        file_data BYTEA
+      );
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS important_files_documents (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        file_name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        uploader_username TEXT NOT NULL,
+        upload_date TIMESTAMPTZ DEFAULT NOW(),
+        type TEXT,
+        file_data BYTEA
       );
     `);
     console.log('Entry tables checked/created successfully.');
@@ -870,6 +895,249 @@ app.delete('/api/regular-documents/:id', authorizeRole(['admin']), async (req, r
   } catch (error) {
     console.error('Error deleting regular document:', error.stack);
     res.status(500).json({ message: 'Error deleting regular document', error: error.message });
+  }
+});
+
+// Quotes Documents Endpoints
+app.get('/api/quotes-documents', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT id, project_name, file_name, file_path, uploader_username, upload_date, type FROM quotes_documents WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
+    res.status(200).json({ documents: result.rows });
+  } catch (error) {
+    console.error('Error fetching quotes documents:', error.stack);
+    res.status(500).json({ message: 'Error fetching quotes documents', error: error.message });
+  }
+});
+
+app.get('/api/quotes-documents/download', async (req, res) => {
+  const { file_path } = req.query;
+
+  if (!file_path) {
+    return res.status(400).send('File path is required.');
+  }
+
+  try {
+    const result = await pool.query('SELECT file_name, file_data, type FROM quotes_documents WHERE file_path = $1', [file_path]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).send('File not found.');
+    }
+
+    const document = result.rows[0];
+
+    res.setHeader('Content-Type', document.type || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `inline; filename="${document.file_name}"`);
+    res.send(document.file_data);
+
+  } catch (error) {
+    console.error('Error downloading quote document:', error.stack);
+    res.status(500).send('Error downloading file.');
+  }
+});
+
+app.post('/api/quotes-documents', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
+  const { project_name, file_name, type } = req.body;
+  const uploader_username = req.headers['x-user-username'];
+
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded.' });
+  }
+
+  const file_path = `/${project_name}/quotes_documents/${file_name}`; // Simulate a file path
+
+  if (!project_name || !file_name || !uploader_username || !type) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO quotes_documents(project_name, file_name, file_path, uploader_username, type, file_data) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
+      , [project_name, file_name, file_path, uploader_username, type, req.file.buffer]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error adding quote document:', error.stack);
+    res.status(500).json({ message: 'Error adding quote document', error: error.message });
+  }
+});
+
+app.delete('/api/quotes-documents/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM quotes_documents WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Document not found.' });
+    }
+    res.status(200).json({ message: 'Quote document deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting quote document:', error.stack);
+    res.status(500).json({ message: 'Error deleting quote document', error: error.message });
+  }
+});
+
+// Important Files Documents Endpoints
+app.get('/api/important-files-documents', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT id, project_name, file_name, file_path, uploader_username, upload_date, type FROM important_files_documents WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
+    res.status(200).json({ documents: result.rows });
+  } catch (error) {
+    console.error('Error fetching important files documents:', error.stack);
+    res.status(500).json({ message: 'Error fetching important files documents', error: error.message });
+  }
+});
+
+app.get('/api/important-files-documents/download', async (req, res) => {
+  const { file_path } = req.query;
+
+  if (!file_path) {
+    return res.status(400).send('File path is required.');
+  }
+
+  try {
+    const result = await pool.query('SELECT file_name, file_data, type FROM important_files_documents WHERE file_path = $1', [file_path]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).send('File not found.');
+    }
+
+    const document = result.rows[0];
+
+    res.setHeader('Content-Type', document.type || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `inline; filename="${document.file_name}"`);
+    res.send(document.file_data);
+
+  } catch (error) {
+    console.error('Error downloading important file:', error.stack);
+    res.status(500).send('Error downloading file.');
+  }
+});
+
+app.post('/api/important-files-documents', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
+  const { project_name, file_name, type } = req.body;
+  const uploader_username = req.headers['x-user-username'];
+
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded.' });
+  }
+
+  const file_path = `/${project_name}/important_files_documents/${file_name}`; // Simulate a file path
+
+  if (!project_name || !file_name || !uploader_username || !type) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO important_files_documents(project_name, file_name, file_path, uploader_username, type, file_data) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
+      , [project_name, file_name, file_path, uploader_username, type, req.file.buffer]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error adding important file:', error.stack);
+    res.status(500).json({ message: 'Error adding important file', error: error.message });
+  }
+});
+
+app.delete('/api/important-files-documents/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM important_files_documents WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Document not found.' });
+    }
+    res.status(200).json({ message: 'Important file deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting important file:', error.stack);
+    res.status(500).json({ message: 'Error deleting important file', error: error.message });
+  }
+});
+
+// Important Files Documents Endpoints
+app.get('/api/important-files-documents', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT id, project_name, file_name, file_path, uploader_username, upload_date, type FROM important_files_documents WHERE project_name = $1 ORDER BY upload_date DESC', [project_name]);
+    res.status(200).json({ documents: result.rows });
+  } catch (error) {
+    console.error('Error fetching important files documents:', error.stack);
+    res.status(500).json({ message: 'Error fetching important files documents', error: error.message });
+  }
+});
+
+app.get('/api/important-files-documents/download', async (req, res) => {
+  const { file_path } = req.query;
+
+  if (!file_path) {
+    return res.status(400).send('File path is required.');
+  }
+
+  try {
+    const result = await pool.query('SELECT file_name, file_data, type FROM important_files_documents WHERE file_path = $1', [file_path]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).send('File not found.');
+    }
+
+    const document = result.rows[0];
+
+    res.setHeader('Content-Type', document.type || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `inline; filename="${document.file_name}"`);
+    res.send(document.file_data);
+
+  } catch (error) {
+    console.error('Error downloading important file:', error.stack);
+    res.status(500).send('Error downloading file.');
+  }
+});
+
+app.post('/api/important-files-documents', authorizeRole(['admin', 'internal']), upload.single('file'), async (req, res) => {
+  const { project_name, file_name, type } = req.body;
+  const uploader_username = req.headers['x-user-username'];
+
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded.' });
+  }
+
+  const file_path = `/${project_name}/important_files_documents/${file_name}`; // Simulate a file path
+
+  if (!project_name || !file_name || !uploader_username || !type) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO important_files_documents(project_name, file_name, file_path, uploader_username, type, file_data) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
+      , [project_name, file_name, file_path, uploader_username, type, req.file.buffer]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error adding important file:', error.stack);
+    res.status(500).json({ message: 'Error adding important file', error: error.message });
+  }
+});
+
+app.delete('/api/important-files-documents/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM important_files_documents WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Document not found.' });
+    }
+    res.status(200).json({ message: 'Important file deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting important file:', error.stack);
+    res.status(500).json({ message: 'Error deleting important file', error: error.message });
   }
 });
 
