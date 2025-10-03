@@ -6,7 +6,79 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   max-width: 1200px; /* Limit overall width */
-  margin: 0 auto; /* Center the container */
+  margin: 20px auto; /* Center the container and add top margin */
+}
+
+.important-links-section-top {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Space between this section and the two-column layout */
+}
+
+.important-links-section-top h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.important-links-section-top .link-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.important-links-section-top .link-item a {
+  flex-grow: 1;
+  margin-right: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.important-links-section-top .link-item a:hover {
+  text-decoration: underline;
+}
+
+.important-links-section-top .link-item button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.important-links-section-top .link-item button:hover {
+  background-color: #c82333;
+}
+
+.important-links-section-top .add-link-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.important-links-section-top .add-link-form input {
+  flex: 1;
+}
+
+.important-links-section-top .add-link-form button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.important-links-section-top .add-link-form button:hover {
+  background-color: #218838;
 }
 
 .operations-dashboard-left-column,

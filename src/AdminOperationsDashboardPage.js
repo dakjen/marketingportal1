@@ -237,6 +237,33 @@ function AdminOperationsDashboardPage() {
   return (
     <div>
       <h2>Admin Operations Dashboard</h2>
+
+      <div className="important-links-section-top">
+        <h3>Important Links</h3>
+        {importantLinks.map((link, index) => (
+          <div key={index} className="link-item">
+            <a href={link.url} target="_blank" rel="noopener noreferrer">{link.name}</a>
+            <button onClick={() => handleRemoveLink(index)}>Remove</button>
+          </div>
+        ))}
+        <div className="add-link-form">
+          <input
+            type="text"
+            placeholder="Link Name"
+            value={newLinkName}
+            onChange={(e) => setNewLinkName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Link URL"
+            value={newLinkUrl}
+            onChange={(e) => setNewLinkUrl(e.target.value)}
+          />
+          <button onClick={handleAddLink}>Add Link</button>
+        </div>
+        <button onClick={handleSaveImportantLinks}>Save Important Links</button>
+      </div>
+
       <div className="operations-dashboard-page-container">
         <div className="operations-dashboard-left-column">
           <h3>Quotes</h3>
@@ -281,36 +308,9 @@ function AdminOperationsDashboardPage() {
               </ul>
             )}
           </div>
-
-          <div className="important-links-section">
-            <h3>Important Links</h3>
-            {importantLinks.map((link, index) => (
-              <div key={index} className="link-item">
-                <a href={link.url} target="_blank" rel="noopener noreferrer">{link.name}</a>
-                <button onClick={() => handleRemoveLink(index)}>Remove</button>
-              </div>
-            ))}
-            <div className="add-link-form">
-              <input
-                type="text"
-                placeholder="Link Name"
-                value={newLinkName}
-                onChange={(e) => setNewLinkName(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Link URL"
-                value={newLinkUrl}
-                onChange={(e) => setNewLinkUrl(e.target.value)}
-              />
-              <button onClick={handleAddLink}>Add Link</button>
-            </div>
-            <button onClick={handleSaveImportantLinks}>Save Important Links</button>
-          </div>
         </div>
       </div>
     </div>
-  );
 }
 
 export default AdminOperationsDashboardPage;
