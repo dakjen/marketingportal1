@@ -34,6 +34,7 @@ function MonthlyReportsPage({ uploadedFiles, handleFileUpload, handleFileDelete 
     formData.append('file', newDocumentFile);
     formData.append('project_name', activeProject.name);
     formData.append('file_name', newDocumentFile.name);
+    formData.append('type', newDocumentFile.type);
     console.log('Uploading regular document:', { newDocumentFile, activeProject });
     console.log('FormData:', formData);
     try {
