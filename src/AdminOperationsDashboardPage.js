@@ -213,6 +213,13 @@ function AdminOperationsDashboardPage() {
       }
 
       alert('Important links saved successfully!');
+      // Re-fetch operations data to update importantLinks state
+      fetch(`/api/operations-data?project_name=${activeProject.name}`)
+        .then(res => res.json())
+        .then(data => {
+          setImportantLinks(data.important_links || []);
+        })
+        .catch(err => console.error("Error re-fetching operations data after link save:", err));
     } catch (error) {
       console.error('Error saving important links:', error);
       alert(`Error saving important links: ${error.message}. Please try again.`);
