@@ -141,19 +141,24 @@ function ReportingPage() {
         return acc;
       }, {});
 
-      const chartData = Object.keys(monthlyTotals).map(monthYear => ({
+      let chartData = Object.keys(monthlyTotals).map(monthYear => ({
         month: monthYear,
         spend: monthlyTotals[monthYear],
-      })).sort((a, b) => new Date(a.month) - new Date(b.month));
-
-      // Calculate cumulative spend
-      let cumulativeSpend = 0;
-      const cumulativeChartData = chartData.map(dataPoint => {
-        cumulativeSpend += dataPoint.spend;
-        return { ...dataPoint, cumulativeSpend: cumulativeSpend };
+      })).sort((a, b) => {
+        const [aYear, aMonth] = a.month.split('-').map(Number);
+        const [bYear, bMonth] = b.month.split('-').map(Number);
+        return new Date(aYear, aMonth - 1) - new Date(bYear, bMonth - 1);
       });
 
-      setMonthlySpendChartData(cumulativeChartData);
+      // Filter to last 6 months
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      chartData = chartData.filter(dataPoint => {
+        const [year, month] = dataPoint.month.split('-').map(Number);
+        return new Date(year, month - 1) >= sixMonthsAgo;
+      });
+
+      setMonthlySpendChartData(chartData);
     } else {
       setMonthlySpendChartData([]);
     }
@@ -325,14 +330,13 @@ function ReportingPage() {
                 <h3>Budget</h3>
                 {monthlySpendChartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={monthlySpendChartData}>
+                    <BarChart layout="vertical" data={monthlySpendChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
+                      <XAxis type="number" dataKey="spend" />
+                      <YAxis type="category" dataKey="month" />
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="spend" fill="#c07481" name="Monthly Spend" />
-                      <Bar dataKey="cumulativeSpend" fill="#82ca9d" name="Cumulative Spend" />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
