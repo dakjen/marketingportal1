@@ -24,7 +24,7 @@ function AdminOperationsDashboardPage() {
   return (
     <div>
       <h2>Admin Operations Dashboard</h2>
-      <div className="operations-dashboard-page-container" style={{ display: 'flex', gap: '20px' }}>
+      <div className="operations-dashboard-page-container">
         <div className="operations-dashboard-left-column">
           <h3>Current Project Details</h3>
           <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>

@@ -9,6 +9,8 @@
   padding: 20px;
   margin-left: 20px; /* Space between sidebar and main content */
   overflow-y: auto; /* Add scrollbar for vertical overflow */
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack children vertically within this flex container */
 }
 
 .reporting-boxes-container {
