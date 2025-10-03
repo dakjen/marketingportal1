@@ -374,6 +374,7 @@ function ReportingPage() {
           <Route path="operations/property-management" element={<OperationsPropertyManagementPage />} />
           <Route path="operations/budget" element={<OperationsBudgetPage />} /> {/* New route for Operations Budget Page */}
           <Route path="operations/admin-project-inputs" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminProjectInputsPage /></PrivateRoute>} />
+          <Route path="admin-operations-dashboard" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminOperationsDashboardPage /></PrivateRoute>} />
         </Routes>
       </div>
     </div>
