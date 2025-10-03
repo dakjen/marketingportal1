@@ -19,19 +19,17 @@ function AdminProjectInputsPage() {
   const [pmLinks, setPmLinks] = useState([]);
 
   useEffect(() => {
-    console.log('AdminProjectInputsPage: activeProject', activeProject);
     if (activeProject) {
       setProjectName(activeProject.name);
       fetch(`/api/operations-data?project_name=${activeProject.name}`)
         .then(res => res.json())
         .then(data => {
-          console.log('AdminProjectInputsPage: fetched operations data', data);
           setProjectDescription(data.project_description || '');
           setImportantDetails(data.important_details || '');
-          setContactName(data.contact_name || '');
-          setContactPhone(data.contact_phone || '');
-          setContactEmail(data.contact_email || '');
-          setImportantLinks(data.important_links || []);
+          setPmContactName(data.contact_name || '');
+          setPmContactPhone(data.contact_phone || '');
+          setPmContactEmail(data.contact_email || '');
+          setPmLinks(data.important_links || []);
         })
         .catch(err => console.error("Error fetching operations data:", err));
     }
