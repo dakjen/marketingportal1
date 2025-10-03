@@ -106,7 +106,7 @@ function MonthlyReportsPage({ uploadedFiles, handleFileUpload, handleFileDelete 
             <ul className="file-list">
               {regularDocuments.map((doc) => (
                 <li key={doc.id} className="file-list-item">
-                  <a href={doc.file_path} target="_blank" rel="noopener noreferrer">{doc.file_name}</a>
+                  <a href={`/api/regular-documents/download?file_path=${encodeURIComponent(doc.file_path)}`} target="_blank" rel="noopener noreferrer">{doc.file_name}</a>
                   {canUpload && (
                     <button onClick={() => handleRegularDocumentDelete(doc.id)} className="delete-button">
                       Delete
