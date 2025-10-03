@@ -19,3 +19,79 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.quote-upload-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quote-upload-section input[type="file"] {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.quote-upload-section button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.quote-upload-section button:hover {
+  background-color: #0056b3;
+}
+
+.uploaded-quotes-list {
+  margin-top: 20px;
+}
+
+.uploaded-quotes-list h4 {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.uploaded-quotes-list .file-list {
+  list-style: none;
+  padding: 0;
+}
+
+.uploaded-quotes-list .file-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.uploaded-quotes-list .file-list-item:last-child {
+  border-bottom: none;
+}
+
+.uploaded-quotes-list .file-list-item a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.uploaded-quotes-list .file-list-item a:hover {
+  text-decoration: underline;
+}
+
+.uploaded-quotes-list .file-list-item button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.uploaded-quotes-list .file-list-item button:hover {
+  background-color: #c82333;
+}
