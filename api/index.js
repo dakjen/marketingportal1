@@ -821,7 +821,7 @@ app.get('/api/regular-documents/download', async (req, res) => {
 
     // Set appropriate headers for file download
     res.setHeader('Content-Type', document.type || 'application/octet-stream');
-    res.setHeader('Content-Disposition', `attachment; filename="${document.file_name}"`);
+    res.setHeader('Content-Disposition', `inline; filename="${document.file_name}"`);
 
     // Send the file data
     res.send(document.file_data);
