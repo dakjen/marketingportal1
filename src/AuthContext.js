@@ -11,7 +11,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+      const parsedUser = JSON.parse(savedUser);
+      console.log('AuthContext: Loading currentUser from localStorage:', parsedUser);
+      setCurrentUser(parsedUser);
       setIsLoggedIn(true);
     }
     setIsLoading(false);

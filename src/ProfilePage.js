@@ -4,6 +4,7 @@ import './ProfilePage.css';
 
 function ProfilePage() {
   const { currentUser, updateCurrentUser, changePassword, logout } = useContext(AuthContext);
+  console.log('ProfilePage: currentUser on render:', currentUser);
   const [changeOldPassword, setChangeOldPassword] = useState('');
   const [changeNewPassword, setChangeNewPassword] = useState('');
   const [changeConfirmNewPassword, setChangeConfirmNewPassword] = useState('');
