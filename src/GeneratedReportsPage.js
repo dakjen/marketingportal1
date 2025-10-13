@@ -22,6 +22,11 @@ function GeneratedReportsPage() {
   const [physicalMarketingReportOutput, setPhysicalMarketingReportOutput] = useState('');
   const [physicalMarketingReportName, setPhysicalMarketingReportName] = useState('');
 
+  const [adminReportStartDate, setAdminReportStartDate] = useState('');
+  const [adminReportEndDate, setAdminReportEndDate] = useState('');
+  const [adminReportOutput, setAdminReportOutput] = useState('');
+  const [adminReportName, setAdminReportName] = useState('');
+
   const [generatedReports, setGeneratedReports] = useState([]);
 
   const fetchGeneratedReports = async () => {
@@ -73,6 +78,12 @@ function GeneratedReportsPage() {
         startDate = physicalMarketingReportStartDate;
         endDate = physicalMarketingReportEndDate;
         setOutput = setPhysicalMarketingReportOutput;
+        break;
+      case 'admin':
+        prompt = "please ustilize the entries from social media and physical marketing to generate a report of: money spent, organizations worked with, total in each category, and total in each subcategory, as well as a short narrative at gthe very top describing all of the types of marketing hit and an approximate reach for each entry, as well as total reach per category.";
+        startDate = adminReportStartDate;
+        endDate = adminReportEndDate;
+        setOutput = setAdminReportOutput;
         break;
       default:
         return;
@@ -263,6 +274,36 @@ function GeneratedReportsPage() {
             )}
           </div>
         </div>
+
+        {currentUser && (currentUser.role === 'admin' || currentUser.role === 'admin2') && (
+          <div className="report-section">
+            <h3>Admin Report</h3>
+            <div className="report-controls">
+              <label>Start Date:
+                <input type="date" value={adminReportStartDate} onChange={(e) => setAdminReportStartDate(e.target.value)} />
+              </label>
+              <label>End Date:
+                <input type="date" value={adminReportEndDate} onChange={(e) => setAdminReportEndDate(e.target.value)} />
+              </label>
+              <button onClick={() => handleGenerateReport('admin')}>Generate Admin Report</button>
+            </div>
+            <div className="report-output">
+              <h4>Report Output:</h4>
+              <p>{adminReportOutput}</p>
+              {adminReportOutput && adminReportOutput !== 'Generating report...' && adminReportOutput !== 'Error generating report.' && (
+                <div className="save-report-controls">
+                  <input
+                    type="text"
+                    placeholder="Report Name"
+                    value={adminReportName}
+                    onChange={(e) => setAdminReportName(e.target.value)}
+                  />
+                  <button onClick={() => handleSaveReport(adminReportOutput, 'admin', adminReportName)}>Save as PDF</button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="generated-reports-list-section">
@@ -279,6 +320,7 @@ function GeneratedReportsPage() {
               { type: 'general', title: 'General Reports' },
               { type: 'socialMedia', title: 'Social Media Reports' },
               { type: 'physicalMarketing', title: 'Physical Marketing Reports' },
+              { type: 'admin', title: 'Admin Reports' },
             ];
 
             return reportCategories.map(category => (
