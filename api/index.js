@@ -410,8 +410,7 @@ app.delete('/api/physicalmarketing/uploads/:id', authorizeRole(['admin']), async
 
 // API endpoint for AI report generation
 app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (req, res) => {
-  const { reportType, startDate, endDate, project_name } = req.body;
-  const userPrompt = "Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.";
+  const { reportType, startDate, endDate, project_name, prompt } = req.body;
 
   if (!reportType || !project_name) {
     return res.status(400).json({ message: 'Missing required fields: reportType, project_name.' });
@@ -419,14 +418,14 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
 
   let dataForAI = [];
   try {
-    if (reportType === 'socialMedia' || reportType === 'general') {
+    if (reportType === 'socialMedia' || reportType === 'general' || reportType === 'admin') {
       const socialResult = await pool.query(
         'SELECT * FROM social_media_entries WHERE project_name = $1 AND date BETWEEN $2 AND $3 ORDER BY date DESC',
         [project_name, startDate, endDate]
       );
       dataForAI = dataForAI.concat(socialResult.rows);
     }
-    if (reportType === 'physicalMarketing' || reportType === 'general') {
+    if (reportType === 'physicalMarketing' || reportType === 'general' || reportType === 'admin') {
       const physicalResult = await pool.query(
         'SELECT * FROM physical_marketing_entries WHERE project_name = $1 AND date BETWEEN $2 AND $3 ORDER BY date DESC',
         [project_name, startDate, endDate]
@@ -438,7 +437,7 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
       return res.status(404).json({ message: 'No data found for the selected criteria.' });
     }
 
-    const fullPrompt = `Generate a ${reportType} report for project ${project_name} from ${startDate} to ${endDate}. Analyze the following data and respond to the user's prompt: "${userPrompt}".\n\nData: ${JSON.stringify(dataForAI)}`;
+    const fullPrompt = `Generate a ${reportType} report for project ${project_name} from ${startDate} to ${endDate}. Analyze the following data and respond to the user's prompt: "${prompt}".\n\nData: ${JSON.stringify(dataForAI)}`;
 
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;

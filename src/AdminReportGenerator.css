@@ -8,3 +8,19 @@
   max-width: 1200px;
   margin: 0 auto; /* Center the container */
 }
+
+.report-generator-section {
+  width: 100%;
+}
+
+.report-output p {
+  min-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  white-space: pre-wrap; /* This will respect newlines and wrap text */
+}
+
+.save-report-controls input {
+  width: 300px;
+}
