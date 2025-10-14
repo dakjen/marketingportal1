@@ -439,6 +439,8 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
 
     const fullPrompt = `Generate a ${reportType} report for project ${project_name} from ${startDate} to ${endDate}. Analyze the following data and respond to the user's prompt: "${prompt}".\n\nData: ${JSON.stringify(dataForAI)}`;
 
+    console.log('Full prompt:', fullPrompt);
+
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
     const text = response.text();
