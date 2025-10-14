@@ -196,7 +196,7 @@ const upload = multer({ storage });
 
 // Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest"});
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash"});
 
 // Basic test endpoint
 app.get('/api/test', (req, res) => {
@@ -438,8 +438,6 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
     }
 
     const fullPrompt = `Generate a ${reportType} report for project ${project_name} from ${startDate} to ${endDate}. Analyze the following data and respond to the user's prompt: "${prompt}".\n\nData: ${JSON.stringify(dataForAI)}`;
-
-    console.log('Full prompt:', fullPrompt);
 
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
@@ -1451,6 +1449,12 @@ app.delete('/api/users/:username', authorizeRole(['admin']), async (req, res) =>
     res.status(200).json({ message: `User ${username} deleted successfully.` });
   } catch (error) {
     console.error('Error deleting user:', error.stack);
+    res.status(500).json({ message: 'Error deleting user', error: error.message });
+  }
+});
+
+// Vercel serverless function entry point
+module.exports = app;
     res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 });
