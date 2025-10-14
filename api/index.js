@@ -44,7 +44,7 @@ const pool = new Pool({
     console.log('Database connected successfully at:', result.rows[0].now);
     client.release();
   } catch (err) {
-    console.error('Error connecting to the database:', err.stack);
+    console.error('Error connecting to the database:', err);
   }
 })();
 
@@ -205,6 +205,7 @@ app.get('/api/test', (req, res) => {
 
 // Basic projects endpoint (demonstrates fetching from DB)
 app.get('/api/projects', async (req, res) => {
+  console.log('GET /api/projects hit');
   try {
     const result = await pool.query('SELECT id, name, is_archived FROM projects ORDER BY name');
     res.status(200).json({ projects: result.rows });
