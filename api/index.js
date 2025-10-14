@@ -196,7 +196,7 @@ const upload = multer({ storage });
 
 // Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest"});
 
 // Basic test endpoint
 app.get('/api/test', (req, res) => {
@@ -439,14 +439,16 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
 
     const fullPrompt = `Generate a ${reportType} report for project ${project_name} from ${startDate} to ${endDate}. Analyze the following data and respond to the user's prompt: "${prompt}".\n\nData: ${JSON.stringify(dataForAI)}`;
 
+    console.log('Full prompt:', fullPrompt);
+
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
     const text = response.text();
     res.status(200).json({ report: text });
 
   } catch (error) {
-    console.error('Error generating AI report:', error.stack);
-    res.status(500).json({ message: 'Error generating AI report', error: error.message });
+    console.error('Error generating AI report:', error);
+    res.status(500).json({ message: 'Error generating AI report', error: error });
   }
 });
 
