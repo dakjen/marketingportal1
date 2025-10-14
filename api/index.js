@@ -1455,3 +1455,5 @@ app.delete('/api/users/:username', authorizeRole(['admin']), async (req, res) =>
     res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 });
+
+module.exports = app;
