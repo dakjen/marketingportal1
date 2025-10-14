@@ -35,18 +35,18 @@ const pool = new Pool({
 });
 
 // Test database connection
-pool.connect((err, client, release) => {
-  if (err) {
-    return console.error('Error acquiring client', err.stack);
-  }
-  client.query('SELECT NOW()', (err, result) => {
-    release();
-    if (err) {
-      return console.error('Error executing query', err.stack);
-    }
+(async () => {
+  try {
+    const url = new URL(process.env.POSTGRES_URL);
+    console.log('Connecting to database host:', url.host);
+    const client = await pool.connect();
+    const result = await client.query('SELECT NOW()');
     console.log('Database connected successfully at:', result.rows[0].now);
-  });
-});
+    client.release();
+  } catch (err) {
+    console.error('Error connecting to the database:', err.stack);
+  }
+})();
 
 // Create tables if they don't exist
 (async () => {
@@ -1454,12 +1454,3 @@ app.delete('/api/users/:username', authorizeRole(['admin']), async (req, res) =>
     res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 });
-
-// Vercel serverless function entry point
-module.exports = app;
-    res.status(500).json({ message: 'Error deleting user', error: error.message });
-  }
-});
-
-// Vercel serverless function entry point
-module.exports = app;
