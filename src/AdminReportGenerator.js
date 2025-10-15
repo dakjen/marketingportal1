@@ -139,8 +139,7 @@ function AdminReportGenerator() {
                   value={reportName}
                   onChange={(e) => setReportName(e.target.value)}
                 />
-                <button onClick={handleSaveReport}>Save as PDF</button>
-                <button onClick={handleSaveAsWord}>Save as Word</button>
+                <button onClick={handleSaveAsWord}>Save as Doc</button>
               </div>
             )}
           </div>
