@@ -407,7 +407,7 @@ function ReportingPage() {
           <Route path="operations/budget" element={<OperationsBudgetPage />} /> {/* New route for Operations Budget Page */}
           <Route path="admin-project-inputs" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminProjectInputsPage /></PrivateRoute>} />
           <Route path="admin-operations-dashboard" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminOperationsDashboardPage /></PrivateRoute>} />
-          <Route path="admin-report-generator" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminReportGenerator fetchWordReports={fetchWordReports} /></PrivateRoute>} />
+          <Route path="admin-report-generator" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminReportGenerator fetchWordReports={fetchWordReports} wordReports={wordReports} /></PrivateRoute>} />
         </Routes>
       </div>
     </div>

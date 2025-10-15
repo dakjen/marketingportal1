@@ -504,7 +504,7 @@ app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal
     const text = response.text();
     console.log('Raw AI output:', text);
 
-    const paragraphs = text.split('\n').map(p => {
+    const paragraphs = text.split(/\r?\n/).map(p => {
       if (p.startsWith('# ')) {
         return new docx.Paragraph({ text: p.substring(2), heading: docx.HeadingLevel.HEADING_1 });
       } else if (p.startsWith('## ')) {
