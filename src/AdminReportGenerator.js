@@ -18,7 +18,7 @@ function AdminReportGenerator() {
       return;
     }
 
-    const prompt = "please ustilize the entries from social media and physical marketing to generate a report of: money spent, organizations worked with, total in each category, and total in each subcategory, as well as a short narrative at gthe very top describing all of the types of marketing hit and an approximate reach for each entry, as well as total reach per category.";
+    const prompt = "please ustilize the entries from social media and physical marketing to generate a report of: money spent, organizations worked with, total in each category, and total in each subcategory, as well as a short narrative at gthe very top describing all of the types of marketing hit and an approximate reach for each entry, as well as total reach per category. the structure of this report should be title, summary, then a \"short summary\" section where you summarize the total reach, and total items added within the time frame, do not include costs, just the extimated total reach, then put the rest of the items named above:";
 
     setReportOutput('Generating report...');
 

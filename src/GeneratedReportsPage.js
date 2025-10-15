@@ -356,17 +356,16 @@ function GeneratedReportsPage() {
               </thead>
               <tbody>
                 {wordReports.map((report) => (
-                  <tr key={report.id}>
-                    <td>{report.report_name}</td>
-                    <td>{report.uploader_username}</td>
-                    <td>{new Date(report.generation_date).toLocaleDateString()}</td>
-                    <td>
-                      <button onClick={() => handleViewWordReport(report.id)}>View</button>
-                      {currentUser && currentUser.role !== 'internal' && currentUser.role !== 'view-only' && (
-                        <button onClick={() => handleDeleteReport(report.id)}>Delete</button>
-                      )}
-                    </td>
-                  </tr>
+                      <tr key={report.id}>
+                        <td><a href={`/api/word-reports/${report.id}/view`} target="_blank" rel="noopener noreferrer">{report.report_name}</a></td>
+                        <td>{report.uploader_username}</td>
+                        <td>{new Date(report.generation_date).toLocaleDateString()}</td>
+                        <td>
+                          {currentUser && currentUser.role !== 'internal' && currentUser.role !== 'view-only' && (
+                            <button onClick={() => handleDeleteReport(report.id)}>Delete</button>
+                          )}
+                        </td>
+                      </tr>
                 ))}
               </tbody>
             </table>
