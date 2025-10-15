@@ -230,6 +230,7 @@ app.get('/api/projects', async (req, res) => {
 // API endpoint for project data (general project info - this might be redundant or need clarification)
 app.get('/api/project-data', async (req, res) => {
   const { project_name } = req.query;
+  console.log('GET /api/project-data hit with project_name:', project_name);
   if (!project_name) {
     return res.status(400).json({ message: 'Project name is required.' });
   }
@@ -239,12 +240,14 @@ app.get('/api/project-data', async (req, res) => {
       'SELECT date, cost FROM social_media_entries WHERE project_name = $1 ORDER BY date ASC',
       [project_name]
     );
+    console.log('Successfully fetched social media spend:', socialMediaSpendResult.rows);
 
     // Fetch physical marketing spend
     const physicalMarketingSpendResult = await pool.query(
       'SELECT date, cost FROM physical_marketing_entries WHERE project_name = $1 ORDER BY date ASC',
       [project_name]
     );
+    console.log('Successfully fetched physical marketing spend:', physicalMarketingSpendResult.rows);
 
     // Combine and format spend data
     const combinedSpend = [
