@@ -664,11 +664,13 @@ app.delete('/api/generated-reports/:id', authorizeRole(['admin']), async (req, r
 // API endpoint to list saved Word reports
 app.get('/api/word-reports', async (req, res) => {
   const { project_name } = req.query;
+  console.log('GET /api/word-reports hit with project_name:', project_name);
   if (!project_name) {
     return res.status(400).json({ message: 'Project name is required.' });
   }
   try {
     const result = await pool.query('SELECT id, project_name, report_name, uploader_username, generation_date FROM word_reports WHERE project_name = $1 ORDER BY generation_date DESC', [project_name]);
+    console.log('Successfully fetched word reports:', result.rows);
     res.status(200).json({ reports: result.rows });
   } catch (error) {
     console.error('Error fetching word reports:', error.stack);

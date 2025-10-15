@@ -68,7 +68,7 @@ function ReportingPage() {
     setPhysicalMarketingUploads(prevUploads => prevUploads.filter(upload => upload.id !== idToDelete));
   };
 
-  const fetchWordReports = async () => {
+  const fetchWordReports = useCallback(async () => {
     if (!activeProject) {
       setWordReports([]);
       return;
@@ -84,7 +84,7 @@ function ReportingPage() {
       console.error("Failed to fetch word reports:", error);
       alert('Failed to load word reports. Please try again.');
     }
-  };
+  }, [activeProject]);
 
   // Fetch project spend data
   useEffect(() => {
