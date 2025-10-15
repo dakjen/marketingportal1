@@ -40,6 +40,7 @@ function ReportingPage() {
   const [socialMediaSpent, setSocialMediaSpent] = useState(0); // New state for social media spent
   const [physicalMarketingSpent, setPhysicalMarketingSpent] = useState(0); // New state for physical marketing spent
   const [totalMonthlySpend, setTotalMonthlySpend] = useState(0); // New state for total monthly spend
+  const [wordReports, setWordReports] = useState([]);
 
   const handleFileUpload = (file) => {
     setUploadedFiles(prevFiles => [...prevFiles, file]);
@@ -130,6 +131,7 @@ function ReportingPage() {
       }
     };
     fetchProjectSpend();
+    fetchWordReports();
   }, [activeProject]);
 
   // Process project spend data for chart
@@ -377,7 +379,7 @@ function ReportingPage() {
           <Route path="social-media" element={<SocialMediaReportingPage uploads={socialMediaUploads} handleUpload={handleSocialMediaUpload} handleDeleteUpload={handleSocialMediaDelete} />} />
           <Route path="physical-marketing" element={<PhysicalMarketingReportingPage uploads={physicalMarketingUploads} handleUpload={handlePhysicalMarketingUpload} handleDeleteUpload={handlePhysicalMarketingDelete} />} />
           {/* Placeholder for Generated Reports and Operations routes */}
-          <Route path="generated-reports" element={<GeneratedReportsPage />} />
+          <Route path="generated-reports" element={<GeneratedReportsPage wordReports={wordReports} fetchWordReports={fetchWordReports} />} />
           <Route path="operations/dashboard" element={<OperationsDashboardPage />} />
 
           <Route path="operations/social-media" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><OperationsSocialMediaPage /></PrivateRoute>} />
@@ -387,7 +389,7 @@ function ReportingPage() {
           <Route path="operations/budget" element={<OperationsBudgetPage />} /> {/* New route for Operations Budget Page */}
           <Route path="admin-project-inputs" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminProjectInputsPage /></PrivateRoute>} />
           <Route path="admin-operations-dashboard" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminOperationsDashboardPage /></PrivateRoute>} />
-          <Route path="admin-report-generator" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminReportGenerator /></PrivateRoute>} />
+          <Route path="admin-report-generator" element={<PrivateRoute allowedRoles={['admin', 'admin2']}><AdminReportGenerator fetchWordReports={fetchWordReports} /></PrivateRoute>} />
         </Routes>
       </div>
     </div>

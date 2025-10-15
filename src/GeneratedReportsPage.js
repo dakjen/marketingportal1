@@ -3,7 +3,7 @@ import { AuthContext } from './AuthContext';
 import { ProjectContext } from './ProjectContext';
 import './GeneratedReportsPage.css';
 
-function GeneratedReportsPage() {
+function GeneratedReportsPage({ wordReports, fetchWordReports }) {
   const { currentUser } = useContext(AuthContext);
   const { activeProject } = useContext(ProjectContext);
 
@@ -23,7 +23,6 @@ function GeneratedReportsPage() {
   const [physicalMarketingReportName, setPhysicalMarketingReportName] = useState('');
 
   const [generatedReports, setGeneratedReports] = useState([]);
-  const [wordReports, setWordReports] = useState([]);
 
   const fetchGeneratedReports = async () => {
     if (!activeProject) {
@@ -43,27 +42,8 @@ function GeneratedReportsPage() {
     }
   };
 
-  const fetchWordReports = async () => {
-    if (!activeProject) {
-      setWordReports([]);
-      return;
-    }
-    try {
-      const response = await fetch(`/api/word-reports?project_name=${activeProject.name}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setWordReports(data.reports);
-    } catch (error) {
-      console.error("Failed to fetch word reports:", error);
-      alert('Failed to load word reports. Please try again.');
-    }
-  };
-
   useEffect(() => {
     fetchGeneratedReports();
-    fetchWordReports();
   }, [activeProject]);
 
   const handleGenerateReport = async (reportType) => {

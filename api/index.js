@@ -465,6 +465,72 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
   }
 });
 
+app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { reportType, startDate, endDate, project_name, prompt, reportName } = req.body;
+  const uploader_username = req.headers['x-user-username'];
+
+  if (!reportType || !project_name || !reportName) {
+    return res.status(400).json({ message: 'Missing required fields: reportType, project_name, reportName.' });
+  }
+
+  let dataForAI = [];
+  try {
+    if (reportType === 'socialMedia' || reportType === 'general' || reportType === 'admin') {
+      const socialResult = await pool.query(
+        'SELECT * FROM social_media_entries WHERE project_name = $1 AND date BETWEEN $2 AND $3 ORDER BY date DESC',
+        [project_name, startDate, endDate]
+      );
+      dataForAI = dataForAI.concat(socialResult.rows);
+    }
+    if (reportType === 'physicalMarketing' || reportType === 'general' || reportType === 'admin') {
+      const physicalResult = await pool.query(
+        'SELECT * FROM physical_marketing_entries WHERE project_name = $1 AND date BETWEEN $2 AND $3 ORDER BY date DESC',
+        [project_name, startDate, endDate]
+      );
+      dataForAI = dataForAI.concat(physicalResult.rows);
+    }
+
+    if (dataForAI.length === 0) {
+      return res.status(404).json({ message: 'No data found for the selected criteria.' });
+    }
+
+    const fullPrompt = `Generate a ${reportType} report for project ${project_name} from ${startDate} to ${endDate}. Analyze the following data and respond to the user's prompt: "${prompt}".\n\nData: ${JSON.stringify(dataForAI)}`;
+
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = response.text();
+
+    const doc = new docx.Document({
+      sections: [{
+        properties: {},
+        children: [
+          new docx.Paragraph({
+            children: [
+              new docx.TextRun(text),
+            ],
+          }),
+        ],
+      }],
+    });
+
+    const buffer = await docx.Packer.toBuffer(doc);
+    const file_path = `/${project_name}/word_reports/${reportName}.docx`;
+
+    await pool.query(
+      'INSERT INTO word_reports(project_name, report_name, file_path, uploader_username, file_data) VALUES($1, $2, $3, $4, $5) RETURNING *'
+      , [project_name, reportName, file_path, uploader_username, buffer]
+    );
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    res.setHeader('Content-Disposition', `attachment; filename="${reportName}.docx"`);
+    res.send(buffer);
+
+  } catch (error) {
+    console.error('Error generating and saving Word report:', error);
+    res.status(500).json({ message: 'Error generating and saving Word report', error: error });
+  }
+});
+
 // API endpoint to save generated reports as PDF
 app.post('/api/save-report-as-word', authorizeRole(['admin', 'internal']), async (req, res) => {
   const { reportContent, reportName, project_name } = req.body;
