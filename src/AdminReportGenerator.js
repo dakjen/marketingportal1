@@ -80,6 +80,39 @@ function AdminReportGenerator() {
     }
   };
 
+  const handleSaveAsWord = async () => {
+    if (!activeProject) {
+      alert('Please select a project first.');
+      return;
+    }
+    if (!reportName) {
+      alert('Please enter a name for the report.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/save-report-as-word', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Username': currentUser.username,
+          'X-User-Role': currentUser.role,
+        },
+        body: JSON.stringify({ reportContent: reportOutput, reportName, project_name: activeProject.name }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to save report as Word');
+      }
+
+      alert('Report saved successfully as Word document!');
+    } catch (error) {
+      console.error('Error saving report as Word:', error);
+      alert(error.message || 'Failed to save report as Word. Please try again.');
+    }
+  };
+
   return (
     <div className="admin-report-generator-page-container">
       <div className="report-generator-section">
@@ -107,6 +140,7 @@ function AdminReportGenerator() {
                   onChange={(e) => setReportName(e.target.value)}
                 />
                 <button onClick={handleSaveReport}>Save as PDF</button>
+                <button onClick={handleSaveAsWord}>Save as Word</button>
               </div>
             )}
           </div>

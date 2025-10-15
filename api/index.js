@@ -6,6 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const PDFDocument = require('pdfkit');
+const docx = require('docx');
 
 const app = express();
 app.use(express.json());
@@ -179,6 +180,17 @@ const pool = new Pool({
         uploader_username TEXT NOT NULL,
         upload_date TIMESTAMPTZ DEFAULT NOW(),
         type TEXT,
+        file_data BYTEA
+      );
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS word_reports (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        report_name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        uploader_username TEXT NOT NULL,
+        generation_date TIMESTAMPTZ DEFAULT NOW(),
         file_data BYTEA
       );
     `);
@@ -454,6 +466,43 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
 });
 
 // API endpoint to save generated reports as PDF
+app.post('/api/save-report-as-word', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { reportContent, reportName, project_name } = req.body;
+  const uploader_username = req.headers['x-user-username'];
+
+  if (!reportContent || !reportName || !project_name || !uploader_username) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const doc = new docx.Document({
+      sections: [{
+        properties: {},
+        children: [
+          new docx.Paragraph({
+            children: [
+              new docx.TextRun(reportContent),
+            ],
+          }),
+        ],
+      }],
+    });
+
+    const buffer = await docx.Packer.toBuffer(doc);
+    const file_path = `/${project_name}/word_reports/${reportName}.docx`;
+
+    const result = await pool.query(
+      'INSERT INTO word_reports(project_name, report_name, file_path, uploader_username, file_data) VALUES($1, $2, $3, $4, $5) RETURNING *'
+      , [project_name, reportName, file_path, uploader_username, buffer]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error generating Word document or saving report:', error.stack);
+    res.status(500).json({ message: 'Error generating Word document or saving report', error: error.message });
+  }
+});
+
+// API endpoint to save generated reports as PDF
 app.post('/api/save-report', authorizeRole(['admin', 'internal']), async (req, res) => {
   const { reportContent, reportName, reportType, project_name } = req.body;
   const uploader_username = req.headers['x-user-username'];
@@ -543,6 +592,40 @@ app.delete('/api/generated-reports/:id', authorizeRole(['admin']), async (req, r
   } catch (error) {
     console.error('Error deleting generated report:', error.stack);
     res.status(500).json({ message: 'Error deleting generated report', error: error.message });
+  }
+});
+
+// API endpoint to list saved Word reports
+app.get('/api/word-reports', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT id, project_name, report_name, uploader_username, generation_date FROM word_reports WHERE project_name = $1 ORDER BY generation_date DESC', [project_name]);
+    res.status(200).json({ reports: result.rows });
+  } catch (error) {
+    console.error('Error fetching word reports:', error.stack);
+    res.status(500).json({ message: 'Error fetching word reports', error: error.message });
+  }
+});
+
+// API endpoint to view a saved Word report
+app.get('/api/word-reports/:id/view', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT file_name, file_data FROM word_reports WHERE id = $1', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Report not found.' });
+    }
+    const report = result.rows[0];
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    res.setHeader('Content-Disposition', `inline; filename="${report.file_name}"`);
+    res.send(report.file_data);
+
+  } catch (error) {
+    console.error('Error viewing Word report:', error.stack);
+    res.status(500).json({ message: 'Error viewing Word report', error: error.message });
   }
 });
 
