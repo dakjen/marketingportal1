@@ -1,4 +1,6 @@
 .generated-reports-page-container {
+  display: flex;
+  gap: 20px;
   padding: 20px;
   background-color: #ffffff;
   border-radius: 8px;
@@ -6,7 +8,7 @@
 }
 
 .report-generator-section {
-  flex: 1;
+  flex: 2;
   min-width: 0; /* Allow flex item to shrink */
   overflow-x: auto; /* Add horizontal scroll if content overflows */
 }
