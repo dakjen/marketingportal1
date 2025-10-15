@@ -46,54 +46,23 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
     fetchGeneratedReports();
   }, [activeProject]);
 
-  const handleGenerateReport = async (reportType) => {
+  const handleGenerateWordReport = async (reportType, startDate, endDate, reportName) => {
     if (!activeProject) {
       alert('Please select a project first.');
       return;
     }
 
-    let startDate, endDate, setOutput;
-    let prompt = ""; // Initialize prompt here
-
-    switch (reportType) {
-      case 'general':
-        prompt = "Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.";
-        startDate = generalReportStartDate;
-        endDate = generalReportEndDate;
-        setOutput = setGeneralReportOutput;
-        break;
-      case 'socialMedia':
-        // Social media reports don't have a prompt dropdown, so prompt is not used here
-        startDate = socialMediaReportStartDate;
-        endDate = socialMediaReportEndDate;
-        setOutput = setSocialMediaReportOutput;
-        break;
-      case 'physicalMarketing':
-        prompt = "Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.";
-        startDate = physicalMarketingReportStartDate;
-        endDate = physicalMarketingReportEndDate;
-        setOutput = setPhysicalMarketingReportOutput;
-        break;
-      default:
-        return;
-    }
-
-    if (!prompt) {
-      alert('Please enter a prompt.');
-      return;
-    }
-
-    setOutput('Generating report...');
+    let prompt = "Summarize analytics data gathered within these dates and present analytics data for all platforms and categories included within that date range. Please highlight any wins or significant changes in data.";
 
     try {
-      const response = await fetch('/api/generate-report', {
+      const response = await fetch('/api/generate-and-save-word-report', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-User-Username': currentUser.username,
           'X-User-Role': currentUser.role,
         },
-        body: JSON.stringify({ reportType, startDate, endDate, prompt, project_name: activeProject.name }),
+        body: JSON.stringify({ reportType, startDate, endDate, prompt, project_name: activeProject.name, reportName: reportName || 'Generated Report' }),
       });
 
       if (!response.ok) {
@@ -101,46 +70,19 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
         throw new Error(errorData.message || 'Failed to generate report');
       }
 
-      const data = await response.json();
-      setOutput(data.report);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${reportName || 'Generated Report'}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      fetchWordReports();
     } catch (error) {
       console.error('Error generating AI report:', error);
       alert(error.message || 'Failed to generate report. Please try again.');
-      setOutput('Error generating report.');
-    }
-  };
-
-  const handleSaveReport = async (reportContent, reportType, reportName) => {
-    if (!activeProject) {
-      alert('Please select a project first.');
-      return;
-    }
-    if (!reportName) {
-      alert('Please enter a name for the report.');
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/save-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-Username': currentUser.username,
-          'X-User-Role': currentUser.role,
-        },
-        body: JSON.stringify({ reportContent, reportName, reportType, project_name: activeProject.name }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to save report');
-      }
-
-      alert('Report saved successfully!');
-      fetchGeneratedReports(); // Re-fetch reports to update the list
-    } catch (error) {
-      console.error('Error saving report:', error);
-      alert(error.message || 'Failed to save report. Please try again.');
     }
   };
 
@@ -192,22 +134,10 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
             <label>End Date:
               <input type="date" value={generalReportEndDate} onChange={(e) => setGeneralReportEndDate(e.target.value)} />
             </label>
-            <button onClick={() => handleGenerateReport('general')}>Generate General Report</button>
-          </div>
-          <div className="report-output">
-            <h4>Report Output:</h4>
-            <p>{generalReportOutput}</p>
-            {generalReportOutput && generalReportOutput !== 'Generating report...' && generalReportOutput !== 'Error generating report.' && (
-              <div className="save-report-controls">
-                <input
-                  type="text"
-                  placeholder="Report Name"
-                  value={generalReportName}
-                  onChange={(e) => setGeneralReportName(e.target.value)}
-                />
-                <button onClick={() => handleSaveReport(generalReportOutput, 'general', generalReportName)}>Save as PDF</button>
-              </div>
-            )}
+            <label>Report Name:
+              <input type="text" value={generalReportName} onChange={(e) => setGeneralReportName(e.target.value)} />
+            </label>
+            <button onClick={() => handleGenerateWordReport('general', generalReportStartDate, generalReportEndDate, generalReportName)}>Generate General Report</button>
           </div>
         </div>
 
@@ -220,23 +150,10 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
             <label>End Date:
               <input type="date" value={socialMediaReportEndDate} onChange={(e) => setSocialMediaReportEndDate(e.target.value)} />
             </label>
-
-            <button onClick={() => handleGenerateReport('socialMedia')}>Generate Social Media Report</button>
-          </div>
-          <div className="report-output">
-            <h4>Report Output:</h4>
-            <p>{socialMediaReportOutput}</p>
-            {socialMediaReportOutput && socialMediaReportOutput !== 'Generating report...' && socialMediaReportOutput !== 'Error generating report.' && (
-              <div className="save-report-controls">
-                <input
-                  type="text"
-                  placeholder="Report Name"
-                  value={socialMediaReportName}
-                  onChange={(e) => setSocialMediaReportName(e.target.value)}
-                />
-                <button onClick={() => handleSaveReport(socialMediaReportOutput, 'socialMedia', socialMediaReportName)}>Save as PDF</button>
-              </div>
-            )}
+            <label>Report Name:
+              <input type="text" value={socialMediaReportName} onChange={(e) => setSocialMediaReportName(e.target.value)} />
+            </label>
+            <button onClick={() => handleGenerateWordReport('socialMedia', socialMediaReportStartDate, socialMediaReportEndDate, socialMediaReportName)}>Generate Social Media Report</button>
           </div>
         </div>
 
@@ -249,22 +166,10 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
             <label>End Date:
               <input type="date" value={physicalMarketingReportEndDate} onChange={(e) => setPhysicalMarketingReportEndDate(e.target.value)} />
             </label>
-            <button onClick={() => handleGenerateReport('physicalMarketing')}>Generate Physical Marketing Report</button>
-          </div>
-          <div className="report-output">
-            <h4>Report Output:</h4>
-            <p>{physicalMarketingReportOutput}</p>
-            {physicalMarketingReportOutput && physicalMarketingReportOutput !== 'Generating report...' && physicalMarketingReportOutput !== 'Error generating report.' && (
-              <div className="save-report-controls">
-                <input
-                  type="text"
-                  placeholder="Report Name"
-                  value={physicalMarketingReportName}
-                  onChange={(e) => setPhysicalMarketingReportName(e.target.value)}
-                />
-                <button onClick={() => handleSaveReport(physicalMarketingReportOutput, 'physicalMarketing', physicalMarketingReportName)}>Save as PDF</button>
-              </div>
-            )}
+            <label>Report Name:
+              <input type="text" value={physicalMarketingReportName} onChange={(e) => setPhysicalMarketingReportName(e.target.value)} />
+            </label>
+            <button onClick={() => handleGenerateWordReport('physicalMarketing', physicalMarketingReportStartDate, physicalMarketingReportEndDate, physicalMarketingReportName)}>Generate Physical Marketing Report</button>
           </div>
         </div>
       </div>
@@ -323,8 +228,6 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
         )}
 
         {wordReports.length > 0 && (
-          <div className="report-category-section">
-            <h4>Word Reports</h4>
             <table>
               <thead>
                 <tr>
@@ -335,7 +238,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
                 </tr>
               </thead>
               <tbody>
-                {wordReports.map((report) => (
+                {wordReports.filter(report => report.report_type !== 'admin').map((report) => (
                       <tr key={report.id}>
                         <td><a href={`/api/word-reports/${report.id}/view`} target="_blank" rel="noopener noreferrer">{report.report_name}</a></td>
                         <td>{report.uploader_username}</td>

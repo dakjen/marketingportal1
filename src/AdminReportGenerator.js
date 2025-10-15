@@ -87,7 +87,7 @@ function AdminReportGenerator({ fetchWordReports, wordReports }) {
                 </tr>
               </thead>
               <tbody>
-                {wordReports.map((report) => (
+                {wordReports.filter(report => report.report_type === 'admin').map((report) => (
                   <tr key={report.id}>
                     <td><a href={`/api/word-reports/${report.id}/view`} target="_blank" rel="noopener noreferrer">{report.report_name}</a></td>
                     <td>{report.uploader_username}</td>

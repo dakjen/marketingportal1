@@ -188,6 +188,7 @@ const pool = new Pool({
         id SERIAL PRIMARY KEY,
         project_name TEXT NOT NULL,
         report_name TEXT NOT NULL,
+        report_type TEXT NOT NULL,
         file_path TEXT NOT NULL,
         uploader_username TEXT NOT NULL,
         generation_date TIMESTAMPTZ DEFAULT NOW(),
@@ -542,8 +543,8 @@ app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal
     const file_path = `/${project_name}/word_reports/${reportName}.docx`;
 
     await pool.query(
-      'INSERT INTO word_reports(project_name, report_name, file_path, uploader_username, file_data) VALUES($1, $2, $3, $4, $5) RETURNING *'
-      , [project_name, reportName, file_path, uploader_username, buffer]
+      'INSERT INTO word_reports(project_name, report_name, report_type, file_path, uploader_username, file_data) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
+      , [project_name, reportName, reportType, file_path, uploader_username, buffer]
     );
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
@@ -694,7 +695,7 @@ app.get('/api/word-reports', async (req, res) => {
     return res.status(400).json({ message: 'Project name is required.' });
   }
   try {
-    const result = await pool.query('SELECT id, project_name, report_name, uploader_username, generation_date FROM word_reports WHERE project_name = $1 ORDER BY generation_date DESC', [project_name]);
+    const result = await pool.query('SELECT id, project_name, report_name, uploader_username, generation_date, report_type FROM word_reports WHERE project_name = $1 ORDER BY generation_date DESC', [project_name]);
     console.log('Successfully fetched word reports:', result.rows);
     res.status(200).json({ reports: result.rows });
   } catch (error) {
