@@ -228,6 +228,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
         )}
 
         {wordReports.length > 0 && (
+          <>
             <table>
               <thead>
                 <tr>
@@ -252,7 +253,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
                 ))}
               </tbody>
             </table>
-          </div>
+          </>
         )}
       </div>
     </div>
