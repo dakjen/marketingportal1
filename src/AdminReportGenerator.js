@@ -11,6 +11,7 @@ function AdminReportGenerator({ fetchWordReports }) {
   const [endDate, setEndDate] = useState('');
   const [reportOutput, setReportOutput] = useState('');
   const [reportName, setReportName] = useState('');
+  const [summary, setSummary] = useState('');
 
   const handleGenerateReport = async () => {
     if (!activeProject) {
@@ -18,7 +19,7 @@ function AdminReportGenerator({ fetchWordReports }) {
       return;
     }
 
-    const prompt = "please ustilize the entries from social media and physical marketing to generate a report of: money spent, organizations worked with, total in each category, and total in each subcategory, as well as a short narrative at gthe very top describing all of the types of marketing hit and an approximate reach for each entry, as well as total reach per category. the structure of this report should be title, summary, then a \"short summary\" section where you summarize the total reach, and total items added within the time frame, do not include costs, just the extimated total reach, then put the rest of the items named above: format it simply with bullets and narratives, like a plain word doc, no formatting indicators";
+    const prompt = `please ustilize the entries from social media and physical marketing to generate a report of: money spent, organizations worked with, total in each category, and total in each subcategory, as well as a short narrative at gthe very top describing all of the types of marketing hit and an approximate reach for each entry, as well as total reach per category. the structure of this report should be title, summary, then a "short summary" section where you summarize the total reach, and total items added within the time frame, do not include costs, just the extimated total reach, then put the rest of the items named above: format it simply with bullets and narratives, like a plain word doc, no formatting indicators. Here is a summary of what has happened in within the dates: ${summary}. After the data, please provide 1-2 paragraphs of analysis on the performance compared to industry standards and to other affordable housing projects.`;
 
     try {
       const response = await fetch('/api/generate-and-save-word-report', {
@@ -28,7 +29,7 @@ function AdminReportGenerator({ fetchWordReports }) {
           'X-User-Username': currentUser.username,
           'X-User-Role': currentUser.role,
         },
-        body: JSON.stringify({ reportType: 'admin', startDate, endDate, prompt, project_name: activeProject.name, reportName: reportName || 'Generated Report' }),
+        body: JSON.stringify({ reportType: 'admin', startDate, endDate, prompt, project_name: activeProject.name, reportName: reportName || 'Generated Report', summary }),
       });
 
       if (!response.ok) {
@@ -67,6 +68,9 @@ function AdminReportGenerator({ fetchWordReports }) {
             </label>
             <label>Report Name:
               <input type="text" value={reportName} onChange={(e) => setReportName(e.target.value)} />
+            </label>
+            <label>Summary:
+              <textarea value={summary} onChange={(e) => setSummary(e.target.value)} />
             </label>
             <button onClick={handleGenerateReport}>Generate and Download Report</button>
           </div>

@@ -469,7 +469,7 @@ app.post('/api/generate-report', authorizeRole(['admin', 'internal']), async (re
 });
 
 app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal']), async (req, res) => {
-  const { reportType, startDate, endDate, project_name, prompt, reportName } = req.body;
+  const { reportType, startDate, endDate, project_name, prompt, reportName, summary } = req.body;
   const uploader_username = req.headers['x-user-username'];
 
   if (!reportType || !project_name || !reportName) {
@@ -502,17 +502,39 @@ app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
     const text = response.text();
+    console.log('Raw AI output:', text);
+
+    const paragraphs = text.split('\n').map(p => {
+      if (p.startsWith('# ')) {
+        return new docx.Paragraph({ text: p.substring(2), heading: docx.HeadingLevel.HEADING_1 });
+      } else if (p.startsWith('## ')) {
+        return new docx.Paragraph({ text: p.substring(3), heading: docx.HeadingLevel.HEADING_2 });
+      } else if (p.startsWith('* ')) {
+        const level = (p.match(/^\s*\*/) || [''])[0].length - 1;
+        return new docx.Paragraph({ text: p.replace(/^\s*\* /, ''), bullet: { level } });
+      } else {
+        const runs = [];
+        let lastIndex = 0;
+        const regex = /\*\*(.*?)\*\*/g;
+        let match;
+        while ((match = regex.exec(p)) !== null) {
+          if (match.index > lastIndex) {
+            runs.push(new docx.TextRun(p.substring(lastIndex, match.index)));
+          }
+          runs.push(new docx.TextRun({ text: match[1], bold: true }));
+          lastIndex = regex.lastIndex;
+        }
+        if (lastIndex < p.length) {
+          runs.push(new docx.TextRun(p.substring(lastIndex)));
+        }
+        return new docx.Paragraph({ children: runs });
+      }
+    });
 
     const doc = new docx.Document({
       sections: [{
         properties: {},
-        children: [
-          new docx.Paragraph({
-            children: [
-              new docx.TextRun(text),
-            ],
-          }),
-        ],
+        children: paragraphs,
       }],
     });
 
