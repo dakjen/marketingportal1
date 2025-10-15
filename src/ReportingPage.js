@@ -68,6 +68,24 @@ function ReportingPage() {
     setPhysicalMarketingUploads(prevUploads => prevUploads.filter(upload => upload.id !== idToDelete));
   };
 
+  const fetchWordReports = async () => {
+    if (!activeProject) {
+      setWordReports([]);
+      return;
+    }
+    try {
+      const response = await fetch(`/api/word-reports?project_name=${activeProject.name}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setWordReports(data.reports);
+    } catch (error) {
+      console.error("Failed to fetch word reports:", error);
+      alert('Failed to load word reports. Please try again.');
+    }
+  };
+
   // Fetch project spend data
   useEffect(() => {
     const fetchProjectSpend = async () => {
@@ -132,7 +150,7 @@ function ReportingPage() {
     };
     fetchProjectSpend();
     fetchWordReports();
-  }, [activeProject]);
+  }, [activeProject, fetchWordReports]);
 
   // Process project spend data for chart
   useEffect(() => {
