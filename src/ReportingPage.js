@@ -86,6 +86,8 @@ function ReportingPage() {
     }
   }, [activeProject]);
 
+  console.log('wordReports state:', wordReports);
+
   // Fetch project spend data
   useEffect(() => {
     const fetchProjectSpend = async () => {

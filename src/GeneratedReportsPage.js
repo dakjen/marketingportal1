@@ -113,6 +113,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
       }
 
       alert('Report deleted successfully!');
+      console.log('Calling fetchWordReports after delete.');
       fetchWordReports(); // Re-fetch reports to update the list
     } catch (error) {
       console.error('Error deleting report:', error);
