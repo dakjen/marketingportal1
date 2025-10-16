@@ -195,8 +195,9 @@ const pool = new Pool({
         file_data BYTEA
       );
     `);
-    await pool.query(`ALTER TABLE word_reports ADD COLUMN IF NOT EXISTS report_type TEXT;`);
+    await pool.query(`ALTER TABLE word_reports ADD COLUMN IF NOT EXISTS report_type TEXT DEFAULT 'general';`);
     await pool.query(`ALTER TABLE word_reports ADD COLUMN IF NOT EXISTS file_name TEXT;`);
+    console.log('Database schema updated successfully.');
     console.log('Entry tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating entry tables:', err.stack);
@@ -514,7 +515,22 @@ app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal
         return new docx.Paragraph({ text: p.substring(3), heading: docx.HeadingLevel.HEADING_2 });
       } else if (p.startsWith('* ')) {
         const level = (p.match(/^\s*\*/) || [''])[0].length - 1;
-        return new docx.Paragraph({ text: p.replace(/^\s*\* /, ''), bullet: { level } });
+        const text = p.replace(/^\s*\* /, '');
+        const runs = [];
+        let lastIndex = 0;
+        const regex = /\*\*(.*?)\*\*/g;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+          if (match.index > lastIndex) {
+            runs.push(new docx.TextRun(text.substring(lastIndex, match.index)));
+          }
+          runs.push(new docx.TextRun({ text: match[1], bold: true }));
+          lastIndex = regex.lastIndex;
+        }
+        if (lastIndex < text.length) {
+          runs.push(new docx.TextRun(text.substring(lastIndex)));
+        }
+        return new docx.Paragraph({ children: runs, bullet: { level } });
       } else {
         const runs = [];
         let lastIndex = 0;
