@@ -94,12 +94,12 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
     window.open(`/api/word-reports/${reportId}/view`, '_blank');
   };
 
-  const handleDeleteReport = async (reportId) => {
+  const handleDeleteWordReport = async (reportId) => {
     if (!window.confirm('Are you sure you want to delete this report?')) {
       return;
     }
     try {
-      const response = await fetch(`/api/generated-reports/${reportId}`, {
+      const response = await fetch(`/api/word-reports/${reportId}`, {
         method: 'DELETE',
         headers: {
           'X-User-Username': currentUser.username,
@@ -113,7 +113,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
       }
 
       alert('Report deleted successfully!');
-      fetchGeneratedReports(); // Re-fetch reports to update the list
+      fetchWordReports(); // Re-fetch reports to update the list
     } catch (error) {
       console.error('Error deleting report:', error);
       alert(error.message || 'Failed to delete report. Please try again.');
@@ -243,12 +243,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
                       <tr key={report.id}>
                         <td><a href={`/api/word-reports/${report.id}/view`} target="_blank" rel="noopener noreferrer">{report.report_name}</a></td>
                         <td>{report.uploader_username}</td>
-                        <td>{new Date(report.generation_date).toLocaleDateString()}</td>
-                        <td>
-                          {currentUser && currentUser.role !== 'internal' && currentUser.role !== 'view-only' && (
-                            <button onClick={() => handleDeleteReport(report.id)}>Delete</button>
-                          )}
-                        </td>
+                            <button onClick={() => handleDeleteWordReport(report.id)}>Delete</button>
                       </tr>
                 ))}
               </tbody>

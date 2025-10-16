@@ -705,6 +705,20 @@ app.delete('/api/generated-reports/:id', authorizeRole(['admin']), async (req, r
   }
 });
 
+app.delete('/api/word-reports/:id', authorizeRole(['admin']), async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM word_reports WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Report not found.' });
+    }
+    res.status(200).json({ message: 'Word report deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting word report:', error.stack);
+    res.status(500).json({ message: 'Error deleting word report', error: error.message });
+  }
+});
+
 // API endpoint to list saved Word reports
 app.get('/api/word-reports', async (req, res) => {
   const { project_name } = req.query;
