@@ -513,7 +513,7 @@ app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal
         return new docx.Paragraph({ text: p.substring(2), heading: docx.HeadingLevel.HEADING_1 });
       } else if (p.startsWith('## ')) {
         return new docx.Paragraph({ text: p.substring(3), heading: docx.HeadingLevel.HEADING_2 });
-      } else if (p.startsWith('* ')) {
+      } else if (p.startsWith('* ') || p.startsWith('● ')) {
         const level = (p.match(/^\s*\*/) || [''])[0].length - 1;
         const text = p.replace(/^\s*\* /, '');
         const runs = [];
