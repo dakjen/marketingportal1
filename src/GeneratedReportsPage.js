@@ -212,7 +212,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
                           <td>
                             <button onClick={() => handleViewReport(report.id)}>View</button>
                             {currentUser && currentUser.role !== 'internal' && currentUser.role !== 'view-only' && (
-                              <button onClick={() => handleDeleteReport(report.id)}>Delete</button>
+                              <button onClick={() => handleDeleteWordReport(report.id)}>Delete</button>
                             )}
                           </td>
                         </tr>
