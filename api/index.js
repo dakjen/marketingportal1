@@ -196,6 +196,7 @@ const pool = new Pool({
       );
     `);
     await pool.query(`ALTER TABLE word_reports ADD COLUMN IF NOT EXISTS report_type TEXT;`);
+    await pool.query(`ALTER TABLE word_reports ADD COLUMN IF NOT EXISTS file_name TEXT;`);
     console.log('Entry tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating entry tables:', err.stack);
