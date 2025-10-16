@@ -12,6 +12,7 @@ function OperationsWinsPage() {
   const [winCategory, setWinCategory] = useState('');
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
+  const [wins, setWins] = useState([]);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -27,8 +28,28 @@ function OperationsWinsPage() {
         alert('Failed to load users. Please try again.');
       }
     };
+
+    const fetchWins = async () => {
+      if (!activeProject) {
+        setWins([]);
+        return;
+      }
+      try {
+        const response = await fetch(`/api/wins?project_name=${activeProject.name}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setWins(data.wins);
+      } catch (error) {
+        console.error("Failed to fetch wins:", error);
+        alert('Failed to load wins. Please try again.');
+      }
+    };
+
     fetchAllUsers();
-  }, []);
+    fetchWins();
+  }, [activeProject]);
 
   useEffect(() => {
     if (activeProject && allUsers.length > 0) {
@@ -50,22 +71,45 @@ function OperationsWinsPage() {
     }
   }, [activeProject, allUsers]); // Re-run when activeProject or allUsers change
 
-  const handleWinSubmit = (event) => {
+  const handleWinSubmit = async (event) => {
     event.preventDefault();
-    // Here you would typically send this data to your backend API
-    console.log({
-      selectedUser,
-      winDescription,
-      winDate,
-      winCategory,
-      projectName: activeProject ? activeProject.name : 'N/A',
-    });
-    alert('Win submitted! Check console for data.');
-    // Clear form
-    setSelectedUser('');
-    setWinDescription('');
-    setWinDate('');
-    setWinCategory('');
+    if (!activeProject) {
+      alert('Please select an active project first.');
+      return;
+    }
+    try {
+      const response = await fetch('/api/wins', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Username': currentUser.username,
+          'X-User-Role': currentUser.role,
+        },
+        body: JSON.stringify({
+          projectName: activeProject.name,
+          selectedUser,
+          winDescription,
+          winDate,
+          winCategory,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit win');
+      }
+
+      alert('Win submitted successfully!');
+      fetchWins(); // Re-fetch wins to update the list
+      // Clear form
+      setSelectedUser('');
+      setWinDescription('');
+      setWinDate('');
+      setWinCategory('');
+    } catch (error) {
+      console.error('Error submitting win:', error);
+      alert(error.message || 'Failed to submit win. Please try again.');
+    }
   };
 
   return (
@@ -133,7 +177,17 @@ function OperationsWinsPage() {
         </div>
         <div className="operations-wins-right-column">
           <h3>Recent Wins</h3>
-          <p>This is where the list of recent wins will be displayed.</p>
+          {wins.length > 0 ? (
+            <ul>
+              {wins.map(win => (
+                <li key={win.id}>
+                  <strong>{win.win_description}</strong> by {win.user_name} on {new Date(win.win_date).toLocaleDateString()} ({win.win_category})
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No wins submitted yet for this project.</p>
+          )}
         </div>
       </div>
     </div>

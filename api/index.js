@@ -195,6 +195,17 @@ const pool = new Pool({
         file_data BYTEA
       );
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS wins (
+        id SERIAL PRIMARY KEY,
+        project_name TEXT NOT NULL,
+        user_name TEXT NOT NULL,
+        win_description TEXT NOT NULL,
+        win_date DATE NOT NULL,
+        win_category TEXT NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
     await pool.query(`ALTER TABLE word_reports ADD COLUMN IF NOT EXISTS report_type TEXT DEFAULT 'general';`);
     await pool.query(`ALTER TABLE word_reports ADD COLUMN IF NOT EXISTS file_name TEXT;`);
     console.log('Database schema updated successfully.');
@@ -716,6 +727,39 @@ app.delete('/api/word-reports/:id', authorizeRole(['admin']), async (req, res) =
   } catch (error) {
     console.error('Error deleting word report:', error.stack);
     res.status(500).json({ message: 'Error deleting word report', error: error.message });
+  }
+});
+
+// API endpoint to submit a new win
+app.post('/api/wins', authorizeRole(['admin', 'internal']), async (req, res) => {
+  const { projectName, selectedUser, winDescription, winDate, winCategory } = req.body;
+  if (!projectName || !selectedUser || !winDescription || !winDate || !winCategory) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+  try {
+    const result = await pool.query(
+      'INSERT INTO wins(project_name, user_name, win_description, win_date, win_category) VALUES($1, $2, $3, $4, $5) RETURNING *'
+      , [projectName, selectedUser, winDescription, winDate, winCategory]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error submitting win:', error.stack);
+    res.status(500).json({ message: 'Error submitting win', error: error.message });
+  }
+});
+
+// API endpoint to fetch wins
+app.get('/api/wins', async (req, res) => {
+  const { project_name } = req.query;
+  if (!project_name) {
+    return res.status(400).json({ message: 'Project name is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT * FROM wins WHERE project_name = $1 ORDER BY created_at DESC', [project_name]);
+    res.status(200).json({ wins: result.rows });
+  } catch (error) {
+    console.error('Error fetching wins:', error.stack);
+    res.status(500).json({ message: 'Error fetching wins', error: error.message });
   }
 });
 
