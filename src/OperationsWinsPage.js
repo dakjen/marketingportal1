@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from './AuthContext';
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import './OperationsWinsPage.css';
@@ -13,6 +13,24 @@ function OperationsWinsPage() {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
   const [wins, setWins] = useState([]);
+
+  const fetchWins = useCallback(async () => {
+    if (!activeProject) {
+      setWins([]);
+      return;
+    }
+    try {
+      const response = await fetch(`/api/wins?project_name=${activeProject.name}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setWins(data.wins);
+    } catch (error) {
+      console.error("Failed to fetch wins:", error);
+      alert('Failed to load wins. Please try again.');
+    }
+  }, [activeProject]);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -29,47 +47,9 @@ function OperationsWinsPage() {
       }
     };
 
-    const fetchWins = async () => {
-      if (!activeProject) {
-        setWins([]);
-        return;
-      }
-      try {
-        const response = await fetch(`/api/wins?project_name=${activeProject.name}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setWins(data.wins);
-      } catch (error) {
-        console.error("Failed to fetch wins:", error);
-        alert('Failed to load wins. Please try again.');
-      }
-    };
-
     fetchAllUsers();
     fetchWins();
-  }, [activeProject, fetchWins]);
-
-  useEffect(() => {
-    if (activeProject && allUsers.length > 0) {
-      const usersForProject = allUsers.filter(user => {
-        // Only include admin, admin2, or internal users
-        if (user.role !== 'admin' && user.role !== 'admin2' && user.role !== 'internal') {
-          return false;
-        }
-        // Admins can see all projects, so they should always be in the list
-        if (user.role === 'admin' || user.role === 'admin2') {
-          return true;
-        }
-        // Otherwise, check if the user is allowed for the active project
-        return user.allowedProjects && user.allowedProjects.includes(activeProject.name);
-      });
-      setFilteredUsers(usersForProject);
-    } else if (!activeProject) {
-      setFilteredUsers([]); // Clear users if no project is active
-    }
-  }, [activeProject, allUsers]); // Re-run when activeProject or allUsers change
+  }, [fetchWins]);
 
   const handleWinSubmit = async (event) => {
     event.preventDefault();
