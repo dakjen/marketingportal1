@@ -49,7 +49,7 @@ function OperationsWinsPage() {
 
     fetchAllUsers();
     fetchWins();
-  }, [activeProject]);
+  }, [activeProject, fetchWins]);
 
   useEffect(() => {
     if (activeProject && allUsers.length > 0) {
