@@ -98,6 +98,7 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
     if (!window.confirm('Are you sure you want to delete this report?')) {
       return;
     }
+    console.log('Attempting to delete report with ID:', reportId);
     try {
       const response = await fetch(`/api/word-reports/${reportId}`, {
         method: 'DELETE',
@@ -113,8 +114,9 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
       }
 
       alert('Report deleted successfully!');
-      console.log('Calling fetchWordReports after delete.');
+      console.log('wordReports before fetch:', wordReports);
       fetchWordReports(); // Re-fetch reports to update the list
+      console.log('wordReports after fetch (should be updated soon):', wordReports);
     } catch (error) {
       console.error('Error deleting report:', error);
       alert(error.message || 'Failed to delete report. Please try again.');
