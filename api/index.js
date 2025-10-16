@@ -520,29 +520,35 @@ app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal
     console.log('Raw AI output:', text);
 
     const paragraphs = text.split(/\r?\n/).map(p => {
+      console.log('Processing paragraph:', p);
       if (p.startsWith('# ')) {
+        console.log('Detected Heading 1:', p.substring(2));
         return new docx.Paragraph({ text: p.substring(2), heading: docx.HeadingLevel.HEADING_1 });
       } else if (p.startsWith('## ')) {
+        console.log('Detected Heading 2:', p.substring(3));
         return new docx.Paragraph({ text: p.substring(3), heading: docx.HeadingLevel.HEADING_2 });
       } else if (p.startsWith('* ') || p.startsWith('● ')) {
-        const level = (p.match(/^\s*\*/) || [''])[0].length - 1;
-        const text = p.replace(/^\s*\* /, '');
+        const level = (p.match(/^\s*(\*|●)/) || [''])[0].length - 1; // Adjust level calculation
+        const bulletText = p.replace(/^\s*(\*|●) /, '');
+        console.log('Detected Bullet Point:', bulletText, 'Level:', level);
         const runs = [];
         let lastIndex = 0;
         const regex = /\*\*(.*?)\*\*/g;
         let match;
-        while ((match = regex.exec(text)) !== null) {
+        while ((match = regex.exec(bulletText)) !== null) {
           if (match.index > lastIndex) {
-            runs.push(new docx.TextRun(text.substring(lastIndex, match.index)));
+            runs.push(new docx.TextRun(bulletText.substring(lastIndex, match.index)));
           }
           runs.push(new docx.TextRun({ text: match[1], bold: true }));
           lastIndex = regex.lastIndex;
         }
-        if (lastIndex < text.length) {
-          runs.push(new docx.TextRun(text.substring(lastIndex)));
+        if (lastIndex < bulletText.length) {
+          runs.push(new docx.TextRun(bulletText.substring(lastIndex)));
         }
+        console.log('Bullet Runs:', runs);
         return new docx.Paragraph({ children: runs, bullet: { level } });
       } else {
+        console.log('Detected Regular Paragraph:', p);
         const runs = [];
         let lastIndex = 0;
         const regex = /\*\*(.*?)\*\*/g;
@@ -557,6 +563,7 @@ app.post('/api/generate-and-save-word-report', authorizeRole(['admin', 'internal
         if (lastIndex < p.length) {
           runs.push(new docx.TextRun(p.substring(lastIndex)));
         }
+        console.log('Paragraph Runs:', runs);
         return new docx.Paragraph({ children: runs });
       }
     });
