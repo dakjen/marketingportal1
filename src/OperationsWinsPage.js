@@ -49,7 +49,7 @@ function OperationsWinsPage() {
 
     fetchAllUsers();
     fetchWins();
-  }, [fetchWins]);
+  }, [activeProject, fetchWins]);
 
   const handleWinSubmit = async (event) => {
     event.preventDefault();
