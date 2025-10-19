@@ -45,7 +45,9 @@ const pool = new Pool({
     console.log('Database connected successfully at:', result.rows[0].now);
     client.release();
   } catch (err) {
-    console.error('Error connecting to the database:', err);
+    console.error('CRITICAL ERROR: Failed to connect to the database. Please check POSTGRES_URL and network connectivity:', err);
+    // Exit the process or take other appropriate action if database connection is critical
+    process.exit(1); // This will cause the Vercel deployment to fail if the database connection is critical
   }
 })();
 
