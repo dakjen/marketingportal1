@@ -4,6 +4,7 @@ import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import './OperationsWinsPage.css';
 
 function OperationsWinsPage() {
+  console.error('--- OperationsWinsPage: Component Rendered ---');
   const { currentUser } = useContext(AuthContext);
   const { activeProject } = useContext(ProjectContext); // Access activeProject
   const [selectedUser, setSelectedUser] = useState('');
