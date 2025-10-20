@@ -14,42 +14,26 @@ function OperationsWinsPage() {
   const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
   const [wins, setWins] = useState([]);
 
-  const fetchWins = useCallback(async () => {
-    if (!activeProject) {
-      setWins([]);
-      return;
-    }
+  useEffect(() => {
+    fetchAllUsers();
+    fetchWins();
+  }, [activeProject, fetchAllUsers, fetchWins]);
+
+  const fetchAllUsers = useCallback(async () => {
+    console.error('--- fetchAllUsers: Starting fetch ---');
     try {
-      const response = await fetch(`/api/wins?project_name=${activeProject.name}`);
+      const response = await fetch('/api/users');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setWins(data.wins);
+      console.error('--- fetchAllUsers: Fetched users ---', data.users);
+      setAllUsers(data.users);
     } catch (error) {
-      console.error("Failed to fetch wins:", error);
-      alert('Failed to load wins. Please try again.');
+      console.error("--- fetchAllUsers: Failed to fetch users ---", error);
+      alert('Failed to load users. Please try again.');
     }
-  }, [activeProject]);
-
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        const response = await fetch('/api/users');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setAllUsers(data.users);
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
-        alert('Failed to load users. Please try again.');
-      }
-    };
-
-    fetchAllUsers();
-    fetchWins();
-  }, [activeProject, fetchWins]);
+  }, []);
 
   const handleWinSubmit = async (event) => {
     event.preventDefault();
