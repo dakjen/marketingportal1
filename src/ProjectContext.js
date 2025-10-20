@@ -36,6 +36,7 @@ export const ProjectProvider = ({ children, reloadUser }) => {
 
   // Save activeProject to localStorage (still local)
   useEffect(() => {
+    console.error('--- ProjectContext: activeProject changed ---', activeProject);
     localStorage.setItem('activeProject', JSON.stringify(activeProject));
   }, [activeProject]);
   
