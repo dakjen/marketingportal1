@@ -14,8 +14,6 @@ function OperationsWinsPage() {
   const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
   const [wins, setWins] = useState([]);
 
-  const [wins, setWins] = useState([]);
-
   const fetchWins = useCallback(async () => {
     if (!activeProject) {
       setWins([]);
