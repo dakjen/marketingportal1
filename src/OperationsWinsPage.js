@@ -3,7 +3,7 @@ import { AuthContext } from './AuthContext';
 import { ProjectContext } from './ProjectContext'; // Import ProjectContext
 import './OperationsWinsPage.css';
 
-function OperationsWinsPage() {
+const OperationsWinsPage = React.memo(() => {
   console.error('--- OperationsWinsPage: Component Rendered ---');
   const { currentUser } = useContext(AuthContext);
   const { activeProject } = useContext(ProjectContext); // Access activeProject
@@ -154,6 +154,6 @@ function OperationsWinsPage() {
       </div>
     </div>
   );
-}
+});
 
 export default OperationsWinsPage;
