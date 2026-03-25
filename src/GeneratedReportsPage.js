@@ -317,4 +317,4 @@ function GeneratedReportsPage() {
   );
 }
 
-export default GeneratedReportsPage;rtsPage;
+export default GeneratedReportsPage;
