@@ -116,7 +116,7 @@ import React, { useContext, useState, useEffect } from 'react';
                    )}
                  </div>
                </div>
-               <div className="main-content">
+               <div className="pm-main-content">
                  <div className="project-creation-section">
                    <h3>Create New Project</h3>
                    <form onSubmit={handleAddProject} className="add-project-form">

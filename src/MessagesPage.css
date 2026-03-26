@@ -1,5 +1,7 @@
 .messages-container {
   padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .messages-header {
@@ -9,13 +11,27 @@
   margin-bottom: 20px;
 }
 
+.messages-header h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+}
+
 .start-message-button {
-  padding: 10px 15px;
-  background-color: #444444;
+  padding: 8px 16px;
+  background-color: #c07481;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 7px;
   cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.start-message-button:hover {
+  background-color: #a85f6e;
 }
 
 .project-selection {
@@ -24,27 +40,35 @@
 
 .archive-requests {
   margin-bottom: 20px;
-  background-color: #646464;
+  background-color: #faf9f7;
+  border: 1.5px solid #e8e3dc;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
 .messages-body {
   display: flex;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1.5px solid #e8e3dc;
+  border-radius: 10px;
   background-color: white;
+  overflow: hidden;
 }
 
 .conversations-sidebar {
-  width: 200px;
-  border-right: 1px solid #ccc;
-  padding: 15px;
+  width: 210px;
+  border-right: 1.5px solid #e8e3dc;
+  padding: 14px;
+  background: #faf9f7;
 }
 
 .conversations-sidebar h3 {
   margin-top: 0;
-  color: #c07481;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #aaa;
+  margin-bottom: 10px;
 }
 
 .conversations-sidebar ul {
@@ -54,14 +78,23 @@
 }
 
 .conversations-sidebar li {
-  padding: 10px;
+  padding: 8px 10px;
   cursor: pointer;
+  color: #555;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.conversations-sidebar li:hover {
+  background: #f0ede8;
   color: #c07481;
 }
 
 .conversations-sidebar li.active {
-  background-color: #f0f0f0;
-  font-weight: bold;
+  background: #fdf0f2;
+  color: #c07481;
+  font-weight: 600;
 }
 
 .notification-bubble {
@@ -70,12 +103,12 @@
   border-radius: 50%;
   padding: 2px 6px;
   font-size: 10px;
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
 .conversation-view {
   flex-grow: 1;
-  padding: 15px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
 }
@@ -83,7 +116,7 @@
 .message-list {
   flex-grow: 1;
   overflow-y: auto;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .message {
@@ -92,12 +125,12 @@
 
 .message.sent {
   text-align: right;
-  color: #000000;
+  color: #333;
 }
 
 .message.received {
   text-align: left;
-  color: #444444;
+  color: #555;
 }
 
 .message-input {
@@ -107,9 +140,18 @@
 .message-input textarea {
   flex-grow: 1;
   margin-right: 10px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 8px 12px;
+  border: 1.5px solid #e0dbd4;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  background: #faf9f7;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.message-input textarea:focus {
+  border-color: #c07481;
+  background: #fff;
 }
 
 .new-message-modal {
@@ -118,15 +160,18 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background-color: white;
-  padding: 20px;
-  border-radius: 5px;
+  padding: 24px;
+  border-radius: 12px;
   width: 400px;
+  border: 1.5px solid #e8e3dc;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
 }

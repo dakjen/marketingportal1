@@ -46,8 +46,8 @@
 }
 
 .workflow-tab-btn.active {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
+  color: #c07481;
+  border-bottom-color: #c07481;
 }
 
 /* ─── Section header ─────────────────────────────────────────────────────── */
@@ -83,7 +83,7 @@
 
 .workflow-add-btn {
   padding: 6px 14px;
-  background: #2563eb;
+  background: #c07481;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -94,7 +94,7 @@
 }
 
 .workflow-add-btn:hover {
-  background: #1d4ed8;
+  background: #a85f6e;
 }
 
 .workflow-save-btn {
@@ -132,9 +132,9 @@
 
 .workflow-edit-btn {
   padding: 4px 10px;
-  background: #f1f5f9;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
+  background: #fdf0f2;
+  color: #c07481;
+  border: 1px solid #f0c4cb;
   border-radius: 5px;
   font-size: 0.8rem;
   cursor: pointer;
@@ -143,7 +143,7 @@
 }
 
 .workflow-edit-btn:hover {
-  background: #dbeafe;
+  background: #fce4e8;
 }
 
 .workflow-delete-btn {
@@ -298,7 +298,7 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: #2563eb;
+  background: #c07481;
   border-radius: 99px;
   transition: width 0.3s ease;
 }
@@ -400,8 +400,8 @@
 }
 
 .budget-type-badge.social {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: #fdf0f2;
+  color: #c07481;
 }
 
 .budget-type-badge.physical {

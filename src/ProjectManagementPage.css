@@ -1,33 +1,57 @@
 .project-management-container {
   max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  margin: 28px auto;
+  padding: 28px;
+}
+
+.project-management-container h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 24px;
+}
+
+.project-management-container h3 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #aaa;
+  margin: 0 0 12px;
+}
+
+.project-management-container h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 12px;
 }
 
 .project-management-layout {
   display: flex;
-  gap: 30px;
+  gap: 24px;
+  align-items: flex-start;
 }
 
 .permissions-sidebar {
   flex: 1;
+  min-width: 0;
 }
 
-.main-content {
+.pm-main-content {
   flex: 2;
+  min-width: 0;
 }
 
 .user-permissions-section,
 .project-creation-section,
 .project-selection-section,
 .project-list-section {
-  background-color: #f8f9fa;
+  background-color: #fff;
+  border: 1.5px solid #e8e3dc;
   padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
 }
 
 .add-project-form {
@@ -37,94 +61,145 @@
 
 .add-project-form input {
   flex-grow: 1;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 9px 12px;
+  border: 1.5px solid #e0dbd4;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  background: #faf9f7;
+  outline: none;
+  transition: border-color 0.15s;
 }
 
-.add-project-form button, {
-  width: auto;
+.add-project-form input:focus {
+  border-color: #c07481;
+  background: #fff;
 }
 
-.project-selection-section button,
-.permissions-checklist button { /* Added permissions button */
-  padding: 8px 15px;
+.add-project-form button {
+  padding: 9px 18px;
+  background-color: #c07481;
+  color: white;
   border: none;
-  border-radius: 4px;
-  background-color: #007bff;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.add-project-form button:hover {
+  background-color: #a85f6e;
+}
+
+.permissions-checklist button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 7px;
+  background-color: #c07481;
   color: white;
   cursor: pointer;
-  transition: background-color 0.2s;
-  width: 100%; /* Make buttons full-width */
-  margin-top: 10px;
+  transition: background 0.15s;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-.add-project-form button:hover,
-.project-selection-section button:hover,
 .permissions-checklist button:hover {
-  background-color: #0056b3;
+  background-color: #a85f6e;
 }
 
-.project-selection-section select,
-.user-selection select {
-  width: 100%; /* Make select dropdowns full-width */
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
+.user-selection select,
+.project-selection-section select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #e0dbd4;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  background: #faf9f7;
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+
+.user-selection select:focus,
+.project-selection-section select:focus {
+  border-color: #c07481;
+}
+
+.user-selection label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 
 .project-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .project-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid #f0ede8;
+  border-radius: 7px;
+  margin-bottom: 8px;
+  background: #faf9f7;
+  font-size: 0.9rem;
+  color: #333;
 }
-
-
 
 .permissions-checklist .permission-item {
-  display: block;
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+  color: #444;
 }
 
-.permissions-checklist label {
-  margin-left: 5px;
+.permissions-checklist input[type="checkbox"] {
+  accent-color: #c07481;
 }
 
-.archive-button, .unarchive-button {
-  background-color: #000000;
-  color: white;
-  border: none;
-  padding: 5px 10px;
+.archive-button,
+.unarchive-button {
+  background-color: #f5f2ee;
+  color: #555;
+  border: 1px solid #e0dbd4;
+  padding: 4px 10px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.archive-button:hover,
+.unarchive-button:hover {
+  background-color: #ede8e0;
 }
 
 .project-list .delete-button-less-prominent {
   background-color: transparent;
-  color: #444444;
-  border: 1px solid #444444;
-  padding: 5px 10px;
+  color: #c0404f;
+  border: 1px solid #fcc;
+  padding: 4px 10px;
+  border-radius: 5px;
   cursor: pointer;
-  margin-left: 10px;
-}
-
-.project-list .archive-button:hover {
-  background-color: #d8c49c;
-}
-
-.project-list .unarchive-button:hover {
-  background-color: #d8c49c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-left: 6px;
+  transition: background 0.15s;
 }
 
 .project-list .delete-button-less-prominent:hover {
-  background-color: #c82333;
-  color: white;
+  background-color: #fee;
 }
