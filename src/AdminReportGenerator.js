@@ -9,7 +9,6 @@ function AdminReportGenerator({ fetchWordReports, wordReports }) {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [reportOutput, setReportOutput] = useState('');
   const [reportName, setReportName] = useState('');
   const [summary, setSummary] = useState('');
 

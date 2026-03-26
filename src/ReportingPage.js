@@ -13,7 +13,7 @@ import OperationsSocialMediaPage from './OperationsSocialMediaPage';
 import OperationsPhysicalPage from './OperationsPhysicalPage';
 import OperationsWinsPage from './OperationsWinsPage';
 import OperationsPropertyManagementPage from './OperationsPropertyManagementPage';
-import { OperationsBudgetPage, socialMediaTypes, physicalMarketingTypes } from './OperationsBudgetPage'; // New import for Operations Budget Page and types
+import { OperationsBudgetPage } from './OperationsBudgetPage';
 import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
 import AdminOperationsDashboardPage from './AdminOperationsDashboardPage'; // New import
 import AdminReportGenerator from './AdminReportGenerator'; // New import
@@ -32,11 +32,16 @@ function ReportingPage() {
   const [projectSpendData, setProjectSpendData] = useState([]);
   const [monthlySpendChartData, setMonthlySpendChartData] = useState([]);
   const [selectedMonthlyReport, setSelectedMonthlyReport] = useState(''); // New state for selected report
-  const [socialMediaBudget, setSocialMediaBudget] = useState(0); // New state for social media budget
-  const [physicalMarketingBudget, setPhysicalMarketingBudget] = useState(0); // New state for physical marketing budget
-  const [budgetInputText, setBudgetInputText] = useState(''); // New state for budget input text
-  const [individualBudgets, setIndividualBudgets] = useState({}); // New state for individual category budgets
-  const [totalSpent, setTotalSpent] = useState(0); // New state for total spent
+  // eslint-disable-next-line no-unused-vars
+  const [socialMediaBudget, setSocialMediaBudget] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [physicalMarketingBudget, setPhysicalMarketingBudget] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [budgetInputText, setBudgetInputText] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [individualBudgets, setIndividualBudgets] = useState({});
+  // eslint-disable-next-line no-unused-vars
+  const [totalSpent, setTotalSpent] = useState(0);
   const [socialMediaSpent, setSocialMediaSpent] = useState(0); // New state for social media spent
   const [physicalMarketingSpent, setPhysicalMarketingSpent] = useState(0); // New state for physical marketing spent
   const [totalMonthlySpend, setTotalMonthlySpend] = useState(0); // New state for total monthly spend
@@ -267,9 +272,7 @@ function ReportingPage() {
     }
   };
 
-  const socialMediaCategories = ['Facebook', 'Instagram', 'Google Ads', 'LinkedIn', 'Bluesky', 'Other'];
-  const physicalMarketingCategories = ['Billboards', 'Podcasts', 'Radio Ads', 'Newspaper', 'Jobsite banners', 'Printed collateral'];
-
+  // eslint-disable-next-line no-unused-vars
   const parseBudgetInput = () => {
     const lines = budgetInputText.split('\n');
     console.log('Parsing budget input. Lines:', lines);

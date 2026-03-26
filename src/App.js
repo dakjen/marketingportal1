@@ -8,7 +8,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import MessagesPage from './MessagesPage';
 import ReportingPage from './ReportingPage';
      import LoginPage from './LoginPage';
-     import ProfilePage from './ProfilePage';
      import ContactAdminPage from './ContactAdminPage';
      import IntroScreen from './IntroScreen'; // New import
      import RequestAccountPage from './RequestAccountPage'; // New import

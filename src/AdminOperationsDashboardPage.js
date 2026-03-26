@@ -6,8 +6,11 @@ import './AdminOperationsDashboardPage.css';
 function AdminOperationsDashboardPage() {
   const { activeProject } = useContext(ProjectContext);
   const { currentUser } = useContext(AuthContext); // Get currentUser from AuthContext
+  // eslint-disable-next-line no-unused-vars
   const [projectName, setProjectName] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [projectDescription, setProjectDescription] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [importantDetails, setImportantDetails] = useState('');
   const [selectedQuoteFile, setSelectedQuoteFile] = useState(null);
   const [uploadedQuotes, setUploadedQuotes] = useState([]);

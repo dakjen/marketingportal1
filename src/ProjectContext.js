@@ -103,7 +103,7 @@ export const ProjectProvider = ({ children, reloadUser }) => {
             alert('Failed to delete project. Please try again.');
           }
         }
-      }, [activeProject, currentUser, allProjects]);
+      }, [activeProject, currentUser]);
   const archiveProject = useCallback((projectName) => {
     setAllProjects(prevAllProjects =>
       prevAllProjects.map(p =>
@@ -145,7 +145,7 @@ export const ProjectProvider = ({ children, reloadUser }) => {
       deleteProject,
       archiveProject,
       unarchiveProject
-    }), [allProjects, activeProject, currentUser]);
+    }), [allProjects, activeProject, currentUser, addProject, selectProject, deleteProject, archiveProject, unarchiveProject]);
 
     return (
       <ProjectContext.Provider value={contextValue}>

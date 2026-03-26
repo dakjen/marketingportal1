@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from './AuthContext';
 import { ProjectContext } from './ProjectContext';
 import './GeneratedReportsPage.css';
@@ -9,22 +9,19 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
 
   const [generalReportStartDate, setGeneralReportStartDate] = useState('');
   const [generalReportEndDate, setGeneralReportEndDate] = useState('');
-  const [generalReportOutput, setGeneralReportOutput] = useState('');
   const [generalReportName, setGeneralReportName] = useState('');
 
   const [socialMediaReportStartDate, setSocialMediaReportStartDate] = useState('');
   const [socialMediaReportEndDate, setSocialMediaReportEndDate] = useState('');
-  const [socialMediaReportOutput, setSocialMediaReportOutput] = useState('');
   const [socialMediaReportName, setSocialMediaReportName] = useState('');
 
   const [physicalMarketingReportStartDate, setPhysicalMarketingReportStartDate] = useState('');
   const [physicalMarketingReportEndDate, setPhysicalMarketingReportEndDate] = useState('');
-  const [physicalMarketingReportOutput, setPhysicalMarketingReportOutput] = useState('');
   const [physicalMarketingReportName, setPhysicalMarketingReportName] = useState('');
 
   const [generatedReports, setGeneratedReports] = useState([]);
 
-  const fetchGeneratedReports = async () => {
+  const fetchGeneratedReports = useCallback(async () => {
     if (!activeProject) {
       setGeneratedReports([]);
       return;
@@ -40,11 +37,11 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
       console.error("Failed to fetch generated reports:", error);
       alert('Failed to load generated reports. Please try again.');
     }
-  };
+  }, [activeProject]);
 
   useEffect(() => {
     fetchGeneratedReports();
-  }, [activeProject]);
+  }, [fetchGeneratedReports]);
 
   const handleGenerateWordReport = async (reportType, startDate, endDate, reportName) => {
     if (!activeProject) {
@@ -88,10 +85,6 @@ function GeneratedReportsPage({ wordReports, fetchWordReports }) {
 
   const handleViewReport = (reportId) => {
     window.open(`/api/generated-reports/${reportId}/view`, '_blank');
-  };
-
-  const handleViewWordReport = (reportId) => {
-    window.open(`/api/word-reports/${reportId}/view`, '_blank');
   };
 
   const handleDeleteWordReport = async (reportId) => {
