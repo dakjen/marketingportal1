@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
+import EntriesPage from './EntriesPage';
 import SocialMediaEntries from './SocialMediaEntries';
 import PhysicalMarketingEntries from './PhysicalMarketingEntries';
 import ProjectManagementPage from './ProjectManagementPage';
@@ -68,15 +69,8 @@ function AppContent() {
               </li>
               {canEditEntries(currentUser?.role) && (
                 <li className="tab-item">
-                  <NavLink to="/social-media" className={({ isActive }) => (isActive ? 'active' : '')}>
-                    Social media entries
-                  </NavLink>
-                </li>
-              )}
-              {canEditEntries(currentUser?.role) && (
-                <li className="tab-item">
-                  <NavLink to="/physical-marketing" className={({ isActive }) => (isActive ? 'active' : '')}>
-                    Physical marketing entries
+                  <NavLink to="/entries" className={({ isActive }) => (isActive ? 'active' : '')}>
+                    Entries
                   </NavLink>
                 </li>
               )}
@@ -155,6 +149,14 @@ function AppContent() {
             element={
               <PrivateRoute allowedRoles={['admin', 'admin2']}>
                 <ProjectManagementPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/entries"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
+                <EntriesPage />
               </PrivateRoute>
             }
           />

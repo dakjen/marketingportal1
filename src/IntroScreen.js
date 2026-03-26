@@ -4,9 +4,14 @@ import './IntroScreen.css';
 const DjCreativeLogo = require('./assets/djcreative-logo.png');
 const HoughHero = require('./assets/4928004112513198779.jpg');
 const HoughAngle2 = require('./assets/5352902128820436453.jpg');
+// eslint-disable-next-line no-unused-vars
 const HoughAngle3 = require('./assets/6129611180776508136.jpg');
-const FamilyPhoto = require('./assets/national-cancer-institute-VJVsEnR_vNE-unsplash.jpg');
+const BuildingPhoto = require('./assets/chuttersnap-kxlnb2dRfm4-unsplash.jpg');
 const KeysPhoto = require('./assets/jakub-zerdzicki-Vg96IZTFubo-unsplash.jpg');
+const FounderPhoto = require('./assets/founderphoto.png');
+const ModelUnit1 = require('./assets/DSC00745.jpg');
+const ModelUnit2 = require('./assets/DSC00752.jpg');
+const ModelUnit3 = require('./assets/DSCF6286.jpg');
 const ColorfulHousing = require('./assets/roger-starnes-sr-fIq3FoU8e8U-unsplash.jpg');
 
 function IntroScreen() {
@@ -82,7 +87,7 @@ function IntroScreen() {
             </div>
           </div>
           <div className="landing-about-photo">
-            <img src={FamilyPhoto} alt="Residents at home" />
+            <img src={BuildingPhoto} alt="Affordable housing development" />
           </div>
         </div>
       </section>
@@ -247,10 +252,8 @@ function IntroScreen() {
           <h2 className="landing-section-title">Case Study: 9410 Hough Avenue, Cleveland, OH</h2>
           <p className="landing-case-desc">116-unit mixed-income affordable housing development. Full Boat package — 6-month lease-up campaign, application support, and model unit staging.</p>
 
-          <div className="landing-case-photos">
+          <div className="landing-case-photos landing-case-photos--single">
             <img src={HoughHero} alt="9410 Hough Avenue - street view" />
-            <img src={HoughAngle2} alt="9410 Hough Avenue - parking lot view" />
-            <img src={HoughAngle3} alt="9410 Hough Avenue - front view" />
           </div>
 
           <div className="landing-case-stats">
@@ -270,6 +273,13 @@ function IntroScreen() {
               <div className="landing-case-stat-num">&gt;20%</div>
               <div className="landing-case-stat-lbl">Reapplication Rate via Applicant Follow-Up</div>
             </div>
+          </div>
+
+          <h3 className="landing-model-unit-title">Model Unit — Staged by DJC</h3>
+          <div className="landing-case-photos">
+            <img src={ModelUnit1} alt="Model unit living room" />
+            <img src={ModelUnit2} alt="Model unit bedroom" />
+            <img src={ModelUnit3} alt="Model unit detail" />
           </div>
 
           <div className="landing-case-body">
@@ -325,8 +335,11 @@ function IntroScreen() {
       <section className="landing-section landing-section--dark">
         <div className="landing-container">
           <p className="landing-section-eyebrow landing-section-eyebrow--light">Meet the Founder</p>
-          <h2 className="landing-section-title landing-section-title--light">Dakotah Jennifer — Founder &amp; Project Lead</h2>
-          <p className="landing-founder-intro">Most marketing agencies learn affordable housing from the outside. Dakotah learned it from the inside.</p>
+          <div className="landing-founder-split">
+            <img src={FounderPhoto} alt="Dakotah Jennifer" className="landing-founder-photo" />
+            <div>
+              <h2 className="landing-section-title landing-section-title--light">Dakotah Jennifer — Founder &amp; Project Lead</h2>
+              <p className="landing-founder-intro">Most marketing agencies learn affordable housing from the outside. Dakotah learned it from the inside.</p>
           <p className="landing-founder-body">With over five years of experience embedded in the real estate development industry, Dakotah Jennifer brings a perspective that is genuinely rare in the marketing world: she understands not just how to generate leads, but why lease-up campaigns succeed or fail at a structural level. She has worked alongside developers, property managers, and community organizations — giving her fluency in the language, incentives, and pressure points that define the affordable housing development process.</p>
           <h3 className="landing-founder-why-title">What Makes Dakotah Uniquely Positioned for This Work</h3>
           <ul className="landing-check-list landing-check-list--pink landing-founder-list">
@@ -337,6 +350,8 @@ function IntroScreen() {
             <li>Creative marketing instincts paired with development-sector discipline — campaigns that are not only compelling but strategically aligned with project timelines, compliance requirements, and leasing goals.</li>
             <li>Founder-led accountability: Dakotah is not a sales contact handing off work to a junior team. She is the strategist, the project lead, and the person who picks up the phone.</li>
           </ul>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -596,9 +596,27 @@
   transform: scale(1.02);
 }
 
+.landing-case-photos--single {
+  grid-template-columns: 1fr;
+  max-height: 360px;
+}
+
+.landing-case-photos--single img {
+  height: 360px;
+}
+
 @media (max-width: 700px) {
   .landing-case-photos { grid-template-columns: 1fr; }
   .landing-case-photos img { height: 200px; }
+}
+
+.landing-model-unit-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c07481;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 40px 0 16px;
 }
 
 .landing-case-desc {
@@ -708,6 +726,27 @@
 }
 
 /* ─── Founder ───────────────────────────────────────────────── */
+.landing-founder-split {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.landing-founder-photo {
+  width: 220px;
+  height: 280px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 10px;
+  border: 3px solid #c07481;
+}
+
+@media (max-width: 700px) {
+  .landing-founder-split { grid-template-columns: 1fr; }
+  .landing-founder-photo { width: 100%; height: 260px; }
+}
+
 .landing-founder-intro {
   font-size: 1.1rem;
   font-weight: 600;

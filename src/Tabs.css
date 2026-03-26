@@ -1,6 +1,12 @@
+/* ── Portal Nav ──────────────────────────────────────────── */
 nav {
-  position: relative;
-  padding-top: 30px; /* Make space for the status display */
+  background: #fff;
+  border-bottom: 2px solid #e8e3dc;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
 }
 
 .tabs-container {
@@ -8,111 +14,131 @@ nav {
   list-style: none;
   padding: 0;
   margin: 0;
-  border-bottom: 1px solid #555; /* Accent color */
-  position: relative; /* For absolute positioning of dropdown */
-  align-items: flex-end; /* Align tabs to the bottom */
+  align-items: stretch;
+  gap: 2px;
+  min-height: 54px;
 }
 
 .user-display {
-  color: #333;
+  color: #666;
   margin: 0;
-  padding: 0 10px;
-  font-size: 14px;
+  padding: 0 8px;
+  font-size: 0.8rem;
   align-self: center;
+  white-space: nowrap;
 }
 
 .tab-item {
-  margin-right: 5px;
+  display: flex;
+  align-items: stretch;
 }
 
 .tab-item a {
-  display: block;
-  padding: 10px 15px;
-  background-color: #000000; /* Accent color */
-  border: 1px solid #000000; /* Accent color */
-  border-bottom: none;
-  border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
   text-decoration: none;
-  color: #fff; /* White text for readability */
-  font-weight: bold;
+  color: #555;
+  font-weight: 600;
+  font-size: 0.82rem;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
 }
 
 .tab-item a:hover {
-  background-color: #c07481; /* Slightly lighter shade for hover */
-  color: #fff;
+  color: #c07481;
+  border-bottom-color: #e8c4cb;
+  background: transparent;
 }
 
 .tab-item a.active {
-  background-color: #646464; /* Active tab background */
-  border-color: #000000; /* Accent color */
-  border-bottom: 1px solid #646464; /* To cover the border-bottom of the container */
-  color: #fff;
+  color: #c07481;
+  border-bottom-color: #c07481;
+  background: transparent;
 }
 
+/* Project Management — distinct accent */
 .tab-item a.project-management-tab {
-  background-color: #6c757d; /* A distinct color, e.g., a shade of gray */
-  border-color: #6c757d;
-}
-
-.tab-item a.project-management-tab:hover {
-  background-color: #c07481; /* Darker shade for hover */
-  border-color: #c07481;
+  color: #444;
+  border-left: 1px solid #eee;
+  padding-left: 18px;
 }
 
 .tab-item a.project-management-tab.active {
-  background-color: #5a6268; /* Active state for project management tab */
-  border-color: #5a6268;
-  border-bottom: 1px solid #5a6268;
+  color: #c07481;
+  border-bottom-color: #c07481;
 }
 
+.tab-item a.project-management-tab:hover {
+  color: #c07481;
+  background: transparent;
+  border-bottom-color: #e8c4cb;
+}
+
+/* Profile / user area */
 .profile-dropdown-container {
-  margin-left: auto; /* Pushes it to the right */
+  margin-left: auto;
   position: relative;
   display: flex;
   align-items: center;
-  padding: 0 15px;
+  gap: 8px;
+  padding: 0 8px;
 }
 
 .profile-icon {
   cursor: pointer;
-  font-size: 1.5em;
+  font-size: 1.3rem;
   color: #c07481;
-  padding: 10px 0;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+
+.profile-icon:hover {
+  background: #fdf0f2;
 }
 
 .profile-icon i {
-  color: #c07481; /* Explicitly set color for Font Awesome icon */
+  color: #c07481;
 }
 
 .dropdown-menu {
   position: absolute;
-  top: 100%; /* Position below the icon */
+  top: calc(100% + 6px);
   right: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  min-width: 150px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #fff;
+  border: 1px solid #e8e3dc;
+  border-radius: 8px;
+  min-width: 160px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   z-index: 1000;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .dropdown-item {
-  padding: 10px 15px;
+  padding: 10px 16px;
   text-decoration: none;
-  color: #000000;
-  background-color: transparent;
+  color: #333;
+  background: transparent;
   border: none;
   text-align: left;
   cursor: pointer;
   width: 100%;
   box-sizing: border-box;
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .dropdown-item:hover {
-  background-color: #f0f0f0;
+  background: #fdf0f2;
+  color: #c07481;
 }
 
 .main-content {
@@ -120,10 +146,15 @@ nav {
 }
 
 .unread-count {
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 12px;
-  margin-left: 5px;
+  background: #c07481;
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.app-login-status-display {
+  display: none;
 }

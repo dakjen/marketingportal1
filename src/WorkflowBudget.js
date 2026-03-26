@@ -42,6 +42,7 @@ function WorkflowBudget({ projectName }) {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchBudget();
   }, [projectName]);

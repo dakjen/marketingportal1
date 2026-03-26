@@ -1,20 +1,223 @@
-/* Dashboard.css */.dashboard-container{padding:20px;font-family:-apple-system,BlinkMacSystemFont,
-     'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue'
-     ,sans-serif;background-color:#ffffff;}.dashboard-header{display:flex;justify-content:space-between;
-     align-items:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #aeaeae;}
-     .dashboard-title{font-size:2em;color:#000000;}.dashboard-header select{padding:8px 12px;border:1px
-     solid #aeaeae;border-radius:4px;font-size:1em;background-color:white;}.project-title{font-size:1.5em
-     ;color:#444444;margin-bottom:20px;}.total-spend-box{background-color:#aeaeae;padding:40px 20px;
-     border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.05);margin-bottom:20px;text-align:center;color:
-     #000000;}.total-spend-box h3{margin:0 0 10px 0;font-size:1.2em;color:#000000;}.total-spend-box p{
-     margin:0;font-size:2em;font-weight:bold;color:#000000;}.dashboard-metrics{display:flex;
-     justify-content:space-between;gap:20px;}.metric-column{flex:1;background-color:#f8f9fa;padding:20px;
-     border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.05);}.metric-column h4{font-size:1.3em;color:
-     #000000;margin-bottom:20px;text-align:center;border-bottom:1px solid #aeaeae;padding-bottom:10px;}
-     .metric-box{padding:35px 15px;border-radius:6px;margin-bottom:15px;text-align:center;}.metric-box h4
-     {margin:0 0 10px 0;font-size:1em;color:white;border-bottom:none;padding-bottom:0;}.metric-box p{
-     margin:0;font-size:1.5em;font-weight:600;color:white;}.column-total-spend-box{background-color:
-     #c07481;}.monthly-spend-box{background-color:#000000;}.two-metric-boxes{display:flex;gap:15px;}
-     .two-metric-boxes .metric-box{flex:1;background-color:#444444;}.two-metric-boxes .metric-box p{color
-     :white;}.dashboard-disabled{filter:grayscale(100%);opacity:0.6;pointer-events:none;}
-     .dashboard-disabled .dashboard-header select{pointer-events:auto;}
+/* ── Dashboard ───────────────────────────────────────────── */
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 28px 48px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Top bar */
+.dashboard-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.dashboard-greeting {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 4px;
+}
+
+.dashboard-project-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+.dashboard-project-select {
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: #fff;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.dashboard-project-select:focus {
+  outline: none;
+  border-color: #c07481;
+}
+
+/* Quick nav cards */
+.dashboard-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.dashboard-nav-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid #e8e3dc;
+  border-radius: 12px;
+  padding: 22px 20px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.dashboard-nav-card:hover {
+  border-color: #c07481;
+  box-shadow: 0 4px 16px rgba(192, 116, 129, 0.15);
+  transform: translateY(-2px);
+}
+
+.dashboard-nav-icon {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+}
+
+.dashboard-nav-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.2;
+}
+
+.dashboard-nav-desc {
+  font-size: 0.78rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+/* Lower split */
+.dashboard-lower {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 760px) {
+  .dashboard-lower { grid-template-columns: 1fr; }
+  .dashboard-nav-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.dashboard-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-tasks-link {
+  font-size: 0.78rem;
+  color: #c07481;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.dashboard-tasks-link:hover { text-decoration: underline; }
+
+/* Spend */
+.dashboard-spend-section,
+.dashboard-tasks-section {
+  background: #fff;
+  border: 1.5px solid #e8e3dc;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.dashboard-spend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.dashboard-spend-card {
+  background: #f8f6f3;
+  border-radius: 8px;
+  padding: 18px 16px;
+  text-align: center;
+}
+
+.dashboard-spend-card--total {
+  background: #c07481;
+  grid-column: span 2;
+}
+
+.dashboard-spend-card--total .dashboard-spend-num,
+.dashboard-spend-card--total .dashboard-spend-lbl {
+  color: #fff;
+}
+
+.dashboard-spend-num {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.1;
+}
+
+.dashboard-spend-lbl {
+  font-size: 0.75rem;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Tasks */
+.dashboard-task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-task-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  background: #f8f6f3;
+  border-radius: 8px;
+  border-left: 3px solid #c07481;
+}
+
+.dashboard-task-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #c07481;
+}
+
+.dashboard-task-label {
+  font-size: 0.88rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.dashboard-empty {
+  font-size: 0.88rem;
+  color: #999;
+  font-style: italic;
+}
+
+.dashboard-empty--success {
+  color: #5a9a6f;
+  font-style: normal;
+  font-weight: 600;
+}

@@ -1,250 +1,204 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
-import './Dashboard.css'; // Import the CSS file
+import { canEditEntries, canManageProjects, canViewMessages, canViewReporting } from './roles';
+import './Dashboard.css';
+
+const NAV_CARDS = (role) => [
+  canEditEntries(role) && {
+    label: 'Log Entries',
+    icon: '✏️',
+    desc: 'Add social media or physical marketing entries',
+    path: '/social-media',
+  },
+  canViewReporting(role) && {
+    label: 'Reporting',
+    icon: '📊',
+    desc: 'Campaign analytics, reports, and budget overview',
+    path: '/reporting',
+  },
+  canViewMessages(role) && {
+    label: 'Messages',
+    icon: '💬',
+    desc: 'Team communications and project updates',
+    path: '/messages',
+  },
+  {
+    label: 'Workflow',
+    icon: '✅',
+    desc: 'Campaign checklist, listings, and team assignments',
+    path: '/workflow',
+  },
+  canManageProjects(role) && {
+    label: 'Project Management',
+    icon: '🏗️',
+    desc: 'Manage projects, users, and project settings',
+    path: '/project-management',
+  },
+].filter(Boolean);
 
 function Dashboard({ projects, activeProject, selectProject }) {
   const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const displayProjects = currentUser && currentUser.role === 'external'
     ? projects.filter(project => currentUser.allowedProjects.includes(project.name))
     : projects;
+
+  const [totalSocialSpend, setTotalSocialSpend] = useState(0);
   const [totalPhysicalSpend, setTotalPhysicalSpend] = useState(0);
+  const [currentMonthSocialSpend, setCurrentMonthSocialSpend] = useState(0);
   const [currentMonthPhysicalSpend, setCurrentMonthPhysicalSpend] = useState(0);
-  const [firstMonthPhysicalSpend, setFirstMonthPhysicalSpend] = useState(0);
-  const [averageMonthlyPhysicalSpend, setAverageMonthlyPhysicalSpend] = useState(0);
-
-  const [totalSocialMediaSpend, setTotalSocialMediaSpend] = useState(0);
-  const [currentMonthSocialMediaSpend, setCurrentMonthSocialMediaSpend] = useState(0);
-  const [firstMonthSocialMediaSpend, setFirstMonthSocialMediaSpend] = useState(0);
-  const [averageMonthlySocialMediaSpend, setAverageMonthlySocialMediaSpend] = useState(0);
-
-  const [totalSpend, setTotalSpend] = useState(0);
+  const [pendingTasks, setPendingTasks] = useState([]);
 
   useEffect(() => {
-    const fetchEntryData = async () => {
-      if (!activeProject || !currentUser) {
-        setTotalPhysicalSpend(0);
-        setCurrentMonthPhysicalSpend(0);
-        setFirstMonthPhysicalSpend(0);
-        setAverageMonthlyPhysicalSpend(0);
-        setTotalSocialMediaSpend(0);
-        setCurrentMonthSocialMediaSpend(0);
-        setFirstMonthSocialMediaSpend(0);
-        setAverageMonthlySocialMediaSpend(0);
-        setTotalSpend(0);
-        return;
-      }
+    if (!activeProject || !currentUser) {
+      setTotalSocialSpend(0);
+      setTotalPhysicalSpend(0);
+      setCurrentMonthSocialSpend(0);
+      setCurrentMonthPhysicalSpend(0);
+      return;
+    }
 
-      const headers = {
-        'X-User-Role': currentUser.role,
-        'X-User-Allowed-Projects': JSON.stringify(currentUser.allowedProjects || []),
-      };
-
-      try {
-        // Fetch Physical Marketing Entries
-        const physicalResponse = await fetch(`/api/physicalmarketingentries?project_name=${activeProject.name}`, { headers });
-        if (!physicalResponse.ok) {
-          throw new Error(`HTTP error! status: ${physicalResponse.status}`);
-        }
-        const physicalData = await physicalResponse.json();
-        const unarchivedPhysicalEntries = physicalData.entries.filter(entry => !entry.is_archived);
-        const parsedPhysicalEntries = unarchivedPhysicalEntries;
-
-        const calculatedTotalPhysicalSpend = parsedPhysicalEntries.reduce((sum, entry) => {
-          const cost = parseFloat(entry.cost);
-          return isNaN(cost) ? sum : sum + cost;
-        }, 0);
-        setTotalPhysicalSpend(calculatedTotalPhysicalSpend);
-
-        // Calculate Current Month Physical Spend
-        const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
-        const calculatedCurrentMonthSpend = parsedPhysicalEntries.reduce((sum, entry) => {
-          const entryDate = new Date(entry.date);
-          if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
-            const cost = parseFloat(entry.cost);
-            return isNaN(cost) ? sum : sum + cost;
-          }
-          return sum;
-        }, 0);
-        setCurrentMonthPhysicalSpend(calculatedCurrentMonthSpend);
-
-        // Calculate First Month Physical Spend and Average Monthly Spend
-        if (parsedPhysicalEntries.length > 0) {
-          const sortedEntries = [...parsedPhysicalEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
-          const firstEntryDate = new Date(sortedEntries[0].date);
-          const firstMonth = firstEntryDate.getMonth();
-          const firstYear = firstEntryDate.getFullYear();
-
-          const calculatedFirstMonthSpend = sortedEntries.reduce((sum, entry) => {
-            const entryDate = new Date(entry.date);
-            if (entryDate.getMonth() === firstMonth && entryDate.getFullYear() === firstYear) {
-              const cost = parseFloat(entry.cost);
-              return isNaN(cost) ? sum : sum + cost;
-            }
-            return sum;
-          }, 0);
-          setFirstMonthPhysicalSpend(calculatedFirstMonthSpend);
-
-          // Calculate Average Monthly Spend
-          const monthlySpends = {};
-          sortedEntries.forEach(entry => {
-            const entryDate = new Date(entry.date);
-            const monthYear = `${entryDate.getMonth()}-${entryDate.getFullYear()}`;
-            const cost = parseFloat(entry.cost);
-            if (!isNaN(cost)) {
-              monthlySpends[monthYear] = (monthlySpends[monthYear] || 0) + cost;
-            }
-          });
-
-          const numberOfMonths = Object.keys(monthlySpends).length;
-          const totalSpendForAllMonths = Object.values(monthlySpends).reduce((sum, spend) => sum + spend, 0);
-          setAverageMonthlyPhysicalSpend(numberOfMonths > 0 ? totalSpendForAllMonths / numberOfMonths : 0);
-        } else {
-          setFirstMonthPhysicalSpend(0);
-          setAverageMonthlyPhysicalSpend(0);
-        }
-
-        // Fetch Social Media Entries
-        const socialResponse = await fetch(`/api/socialmediaentries?project_name=${activeProject.name}`, { headers });
-        if (!socialResponse.ok) {
-          throw new Error(`HTTP error! status: ${socialResponse.status}`);
-        }
-        const socialData = await socialResponse.json();
-        const parsedSocialMediaEntries = socialData.entries;
-
-        const calculatedTotalSocialMediaSpend = parsedSocialMediaEntries.reduce((sum, entry) => {
-          const cost = parseFloat(entry.cost);
-          return isNaN(cost) ? sum : sum + cost;
-        }, 0);
-        setTotalSocialMediaSpend(calculatedTotalSocialMediaSpend);
-
-        // Calculate Current Month Social Media Spend
-        const calculatedCurrentMonthSpendSocial = parsedSocialMediaEntries.reduce((sum, entry) => {
-          const entryDate = new Date(entry.date);
-          if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
-            const cost = parseFloat(entry.cost);
-            return isNaN(cost) ? sum : sum + cost;
-          }
-          return sum;
-        }, 0);
-        setCurrentMonthSocialMediaSpend(calculatedCurrentMonthSpendSocial);
-
-        // Calculate First Month Social Media Spend and Average Monthly Spend
-        if (parsedSocialMediaEntries.length > 0) {
-          const sortedEntries = [...parsedSocialMediaEntries].sort((a, b) => new Date(a.date) - new Date(b.date));
-          const firstEntryDate = new Date(sortedEntries[0].date);
-          const firstMonth = firstEntryDate.getMonth();
-          const firstYear = firstEntryDate.getFullYear();
-
-          const calculatedFirstMonthSpendSocial = sortedEntries.reduce((sum, entry) => {
-            const entryDate = new Date(entry.date);
-            if (entryDate.getMonth() === firstMonth && entryDate.getFullYear() === firstYear) {
-              const cost = parseFloat(entry.cost);
-              return isNaN(cost) ? sum : sum + cost;
-            }
-            return sum;
-          }, 0);
-          setFirstMonthSocialMediaSpend(calculatedFirstMonthSpendSocial);
-
-          // Calculate Average Monthly Spend
-          const monthlySpends = {};
-          sortedEntries.forEach(entry => {
-            const entryDate = new Date(entry.date);
-            const monthYear = `${entryDate.getMonth()}-${entryDate.getFullYear()}`;
-            const cost = parseFloat(entry.cost);
-            if (!isNaN(cost)) {
-              monthlySpends[monthYear] = (monthlySpends[monthYear] || 0) + cost;
-            }
-          });
-
-          const numberOfMonths = Object.keys(monthlySpends).length;
-          const totalSpendForAllMonths = Object.values(monthlySpends).reduce((sum, spend) => sum + spend, 0);
-          setAverageMonthlySocialMediaSpend(numberOfMonths > 0 ? totalSpendForAllMonths / numberOfMonths : 0);
-        } else {
-          setFirstMonthSocialMediaSpend(0);
-          setAverageMonthlySocialMediaSpend(0);
-        }
-
-      } catch (error) {
-        console.error('Error fetching dashboard entry data:', error);
-        alert('Failed to load dashboard data. Please try again.');
-      }
+    const headers = {
+      'X-User-Role': currentUser.role,
+      'X-User-Allowed-Projects': JSON.stringify(currentUser.allowedProjects || []),
     };
-    fetchEntryData();
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const sumByMonth = (entries) =>
+      entries.reduce((sum, e) => {
+        const d = new Date(e.date);
+        if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+          const c = parseFloat(e.cost);
+          return isNaN(c) ? sum : sum + c;
+        }
+        return sum;
+      }, 0);
+
+    const sumAll = (entries) =>
+      entries.reduce((sum, e) => {
+        const c = parseFloat(e.cost);
+        return isNaN(c) ? sum : sum + c;
+      }, 0);
+
+    Promise.all([
+      fetch(`/api/socialmediaentries?project_name=${activeProject.name}`, { headers }).then(r => r.json()),
+      fetch(`/api/physicalmarketingentries?project_name=${activeProject.name}`, { headers }).then(r => r.json()),
+    ]).then(([socialData, physicalData]) => {
+      const social = socialData.entries || [];
+      const physical = (physicalData.entries || []).filter(e => !e.is_archived);
+      setTotalSocialSpend(sumAll(social));
+      setTotalPhysicalSpend(sumAll(physical));
+      setCurrentMonthSocialSpend(sumByMonth(social));
+      setCurrentMonthPhysicalSpend(sumByMonth(physical));
+    }).catch(err => console.error('Dashboard fetch error:', err));
   }, [activeProject, currentUser]);
 
   useEffect(() => {
-    setTotalSpend(totalPhysicalSpend + totalSocialMediaSpend);
-  }, [totalPhysicalSpend, totalSocialMediaSpend]);
+    if (!activeProject || !currentUser) { setPendingTasks([]); return; }
+    fetch(`/api/workflow/checklist?project_name=${encodeURIComponent(activeProject.name)}`, {
+      headers: { 'X-User-Role': currentUser.role },
+    })
+      .then(r => r.ok ? r.json() : { items: [] })
+      .then(data => setPendingTasks((data.items || []).filter(i => !i.is_checked).slice(0, 5)))
+      .catch(() => setPendingTasks([]));
+  }, [activeProject, currentUser]);
 
-
-const containerClassName = activeProject ? "dashboard-container" : "dashboard-container dashboard-disabled";
+  const totalSpend = totalSocialSpend + totalPhysicalSpend;
+  const currentMonthTotal = currentMonthSocialSpend + currentMonthPhysicalSpend;
 
   return (
-    <div className={containerClassName}>
-      {console.log('Dashboard: activeProject:', activeProject, 'projects:', projects)}
-      <div className="dashboard-header">
-        <h1 className="dashboard-title">Marketing Spend Dashboard</h1>
-        <select onChange={(e) => selectProject(e.target.value)} value={activeProject ? activeProject.name : ''}>
+    <div className="dashboard">
+      {/* Header */}
+      <div className="dashboard-topbar">
+        <div>
+          <h1 className="dashboard-greeting">
+            Welcome back{currentUser ? `, ${currentUser.username}` : ''}.
+          </h1>
+          {activeProject && (
+            <p className="dashboard-project-label">Active project: <strong>{activeProject.name}</strong></p>
+          )}
+        </div>
+        <select
+          className="dashboard-project-select"
+          onChange={(e) => selectProject(e.target.value)}
+          value={activeProject ? activeProject.name : ''}
+        >
           <option value="">Select Project</option>
-          {displayProjects.map(project => (
-            <option key={project.name} value={project.name}>{project.name}</option>
+          {displayProjects.map(p => (
+            <option key={p.name} value={p.name}>{p.name}</option>
           ))}
         </select>
       </div>
 
-      {activeProject && <h1 className="project-title">Project: {activeProject.name}</h1>}
-
-      <div className="total-spend-box">
-        <h3>Total Spend</h3>
-        <p>${totalSpend.toFixed(2)}</p>
+      {/* Quick Nav Cards */}
+      <div className="dashboard-nav-grid">
+        {NAV_CARDS(currentUser?.role).map(card => (
+          <button
+            key={card.label}
+            className="dashboard-nav-card"
+            onClick={() => navigate(card.path)}
+          >
+            <span className="dashboard-nav-icon">{card.icon}</span>
+            <span className="dashboard-nav-label">{card.label}</span>
+            <span className="dashboard-nav-desc">{card.desc}</span>
+          </button>
+        ))}
       </div>
 
-      <div className="dashboard-metrics">
-        <div className="metric-column">
-          <h4>Social Media Marketing</h4>
-          <div className="metric-box column-total-spend-box">
-            <h4>Total Spend</h4>
-            <p>${totalSocialMediaSpend.toFixed(2)}</p>
-          </div>
-          <div className="metric-box monthly-spend-box">
-            <h4>Monthly Spend</h4>
-            <p>${currentMonthSocialMediaSpend.toFixed(2)}</p>
-          </div>
-          <div className="two-metric-boxes">
-            <div className="metric-box">
-              <h4>Month 1</h4>
-              <p>${firstMonthSocialMediaSpend.toFixed(2)}</p>
+      {/* Spend + Pending Tasks */}
+      <div className="dashboard-lower">
+        {/* Spend Summary */}
+        <div className="dashboard-spend-section">
+          <h2 className="dashboard-section-title">Spend Summary</h2>
+          {activeProject ? (
+            <div className="dashboard-spend-grid">
+              <div className="dashboard-spend-card dashboard-spend-card--total">
+                <div className="dashboard-spend-num">${totalSpend.toFixed(2)}</div>
+                <div className="dashboard-spend-lbl">Total Spend</div>
+              </div>
+              <div className="dashboard-spend-card">
+                <div className="dashboard-spend-num">${currentMonthTotal.toFixed(2)}</div>
+                <div className="dashboard-spend-lbl">This Month</div>
+              </div>
+              <div className="dashboard-spend-card">
+                <div className="dashboard-spend-num">${totalSocialSpend.toFixed(2)}</div>
+                <div className="dashboard-spend-lbl">Social Media Total</div>
+              </div>
+              <div className="dashboard-spend-card">
+                <div className="dashboard-spend-num">${totalPhysicalSpend.toFixed(2)}</div>
+                <div className="dashboard-spend-lbl">Physical Marketing Total</div>
+              </div>
             </div>
-            <div className="metric-box">
-              <h4>Average Monthly</h4>
-              <p>${averageMonthlySocialMediaSpend.toFixed(2)}</p>
-            </div >
-          </div >
-        </div >
+          ) : (
+            <p className="dashboard-empty">Select a project to see spend data.</p>
+          )}
+        </div>
 
-        <div className="metric-column">
-          <h4>Physical Marketing</h4>
-          <div className="metric-box column-total-spend-box">
-            <h4>Total Spend</h4>
-            <p>${totalPhysicalSpend.toFixed(2)}</p>
-          </div>
-          <div className="metric-box monthly-spend-box">
-            <h4>Monthly Spend</h4>
-            <p>${currentMonthPhysicalSpend.toFixed(2)}</p>
-          </div>
-          <div className="two-metric-boxes">
-            <div className="metric-box">
-              <h4>Month 1</h4>
-              <p>${firstMonthPhysicalSpend.toFixed(2)}</p>
-            </div>
-            <div className="metric-box">
-              <h4>Average Monthly</h4>
-              <p>${averageMonthlyPhysicalSpend.toFixed(2)}</p>
-            </div>
-          </div>
+        {/* Pending Tasks */}
+        <div className="dashboard-tasks-section">
+          <h2 className="dashboard-section-title">
+            Pending Workflow Items
+            {activeProject && <button className="dashboard-tasks-link" onClick={() => navigate('/workflow')}>View all →</button>}
+          </h2>
+          {!activeProject ? (
+            <p className="dashboard-empty">Select a project to see pending tasks.</p>
+          ) : pendingTasks.length === 0 ? (
+            <p className="dashboard-empty dashboard-empty--success">✓ All checklist items complete!</p>
+          ) : (
+            <ul className="dashboard-task-list">
+              {pendingTasks.map(task => (
+                <li key={task.id} className="dashboard-task-item">
+                  <span className="dashboard-task-category">{task.category}</span>
+                  <span className="dashboard-task-label">{task.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>
