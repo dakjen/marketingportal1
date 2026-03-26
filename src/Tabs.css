@@ -161,20 +161,20 @@ nav {
 
 .install-pwa-btn {
   background: none;
-  border: 1px solid #d8c49c;
-  color: #d8c49c;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 0.8rem;
+  border: none;
+  color: #a89070;
+  font-size: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
+  padding: 2px 6px;
   white-space: nowrap;
-  transition: background 0.2s, color 0.2s;
+  opacity: 0.7;
+  transition: opacity 0.2s, color 0.2s;
 }
 
 .install-pwa-btn:hover {
-  background: #d8c49c;
-  color: #1a1a1a;
+  opacity: 1;
+  color: #d8c49c;
 }
