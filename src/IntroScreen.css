@@ -1,59 +1,382 @@
-.intro-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 80vh;
-  text-align: center;
-  padding: 20px;
-  background-color: #3a3a3a;
-  color: lightgray;
+/* ─── Reset / Base ─────────────────────────────────────────── */
+.landing-page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #222;
+  line-height: 1.6;
 }
 
-.intro-container h1 {
-  font-size: 2.8em;
-  color: white;
+/* ─── Nav ───────────────────────────────────────────────────── */
+.landing-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 48px;
+  background-color: #111;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.landing-nav-logo {
+  height: 40px;
+  width: auto;
+}
+
+.landing-nav-cta {
+  background-color: #c07481;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.landing-nav-cta:hover {
+  background-color: #a05a6a;
+}
+
+/* ─── Hero ──────────────────────────────────────────────────── */
+.landing-hero {
+  background-color: #111;
+  padding: 100px 48px 120px;
+  text-align: center;
+}
+
+.landing-hero-content {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.landing-hero-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #c07481;
   margin-bottom: 20px;
 }
 
-.intro-container p {
-  font-size: 1.2em;
-  max-width: 600px;
-  margin-bottom: 30px;
-  line-height: 1.6;
-  color: lightgray;
+.landing-hero-headline {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  margin: 0 0 24px;
+  letter-spacing: -1px;
 }
 
-.intro-buttons button {
+.landing-hero-accent {
+  color: #c07481;
+}
+
+.landing-hero-sub {
+  font-size: 1.1rem;
+  color: #aaa;
+  max-width: 620px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+}
+
+.landing-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ─── Buttons ───────────────────────────────────────────────── */
+.landing-btn-primary {
   background-color: #c07481;
-  color: white;
+  color: #fff;
   border: none;
-  padding: 12px 25px;
-  margin: 0 10px;
-  border-radius: 5px;
+  padding: 14px 32px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 1.1em;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
-.intro-buttons button:hover {
-  background-color: #a8636e; /* Darker shade for hover */
+.landing-btn-primary:hover {
+  background-color: #a05a6a;
 }
 
-.intro-buttons button:last-child {
-  background-color: #d8c49c;
-  color: black; /* New: text color for Request an Account button */
+.landing-btn-primary:active {
+  transform: scale(0.98);
 }
 
-.intro-buttons button:last-child:hover {
-  background-color: #c2b08a; /* Darker shade for hover */
+/* ─── Sections ──────────────────────────────────────────────── */
+.landing-section {
+  padding: 80px 48px;
 }
 
-.intro-logo {
-  margin-top: 40px; /* Space above the logo */
-  max-width: 150px; /* Adjust size as needed */
-  height: auto;
-  display: block; /* Ensures margin auto works for centering */
+.landing-section--light {
+  background-color: #f7f5f2;
+}
+
+.landing-section--dark {
+  background-color: #1a1a1a;
+}
+
+.landing-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.landing-section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #c07481;
+  margin-bottom: 12px;
+}
+
+.landing-section-eyebrow--light {
+  color: #c07481;
+}
+
+.landing-section-title {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 48px;
+  letter-spacing: -0.5px;
+}
+
+.landing-section-title--light {
+  color: #fff;
+}
+
+/* ─── Cards ─────────────────────────────────────────────────── */
+.landing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.landing-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 32px 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  border-top: 4px solid #c07481;
+}
+
+.landing-card-icon {
+  font-size: 2rem;
+  margin-bottom: 16px;
+}
+
+.landing-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 12px;
+}
+
+.landing-card p {
+  font-size: 0.92rem;
+  color: #666;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ─── Steps ─────────────────────────────────────────────────── */
+.landing-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+}
+
+.landing-step {
+  border-left: 3px solid #c07481;
+  padding-left: 24px;
+}
+
+.landing-step-number {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #c07481;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.landing-step h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 10px;
+}
+
+.landing-step p {
+  font-size: 0.92rem;
+  color: #999;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ─── Split section ─────────────────────────────────────────── */
+.landing-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .landing-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.landing-split-body {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 24px;
+  line-height: 1.7;
+}
+
+.landing-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.landing-checklist li {
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: #444;
+  border-bottom: 1px solid #e8e8e8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.landing-checklist li::before {
+  content: '✓';
+  color: #c07481;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ─── Stats grid ────────────────────────────────────────────── */
+.landing-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.landing-stat {
+  background: #111;
+  border-radius: 10px;
+  padding: 28px 24px;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.landing-stat-number {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #c07481;
+  margin-bottom: 8px;
+}
+
+.landing-stat-label {
+  font-size: 0.8rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ─── CTA Banner ────────────────────────────────────────────── */
+.landing-cta-banner {
+  background-color: #000;
+  padding: 80px 48px;
+  text-align: center;
+  border-top: 4px solid #c07481;
+}
+
+.landing-cta-inner h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 16px;
+}
+
+.landing-cta-inner p {
+  color: #aaa;
+  font-size: 1rem;
+  margin-bottom: 32px;
+  max-width: 540px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* ─── Footer ────────────────────────────────────────────────── */
+.landing-footer {
+  background-color: #111;
+  padding: 32px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.landing-footer-logo {
+  height: 30px;
+  width: auto;
+  opacity: 0.8;
+}
+
+.landing-footer-copy {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.landing-footer-login {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.landing-footer-login:hover {
+  color: #c07481;
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .landing-nav {
+    padding: 16px 24px;
+  }
+
+  .landing-hero {
+    padding: 60px 24px 80px;
+  }
+
+  .landing-section {
+    padding: 60px 24px;
+  }
+
+  .landing-cta-banner {
+    padding: 60px 24px;
+  }
+
+  .landing-footer {
+    padding: 24px;
+    flex-direction: column;
+    text-align: center;
+  }
 }
