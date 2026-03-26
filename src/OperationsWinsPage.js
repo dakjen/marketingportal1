@@ -1,19 +1,36 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from './AuthContext';
-import { ProjectContext } from './ProjectContext'; // Import ProjectContext
+import { ProjectContext } from './ProjectContext';
 import './OperationsWinsPage.css';
 
 const OperationsWinsPage = React.memo(() => {
-  console.error('--- OperationsWinsPage: Component Rendered ---');
   const { currentUser } = useContext(AuthContext);
-  const { activeProject } = useContext(ProjectContext); // Access activeProject
+  const { activeProject } = useContext(ProjectContext);
   const [selectedUser, setSelectedUser] = useState('');
   const [winDescription, setWinDescription] = useState('');
   const [winDate, setWinDate] = useState('');
   const [winCategory, setWinCategory] = useState('');
-  const [allUsers, setAllUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]); // New state for filtered users
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [wins, setWins] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/users');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const projectUsers = activeProject
+          ? data.users.filter(user => user.allowedProjects && (user.allowedProjects.includes('*') || user.allowedProjects.includes(activeProject.name)))
+          : [];
+        setFilteredUsers(projectUsers);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+    fetchUsers();
+  }, [activeProject]);
 
   const fetchWins = useCallback(async () => {
     if (!activeProject) {
@@ -33,7 +50,11 @@ const OperationsWinsPage = React.memo(() => {
     }
   }, [activeProject]);
 
-  const handleWinSubmit = async (event) => {
+  useEffect(() => {
+    fetchWins();
+  }, [fetchWins]);
+
+  const handleWinSubmit = useCallback(async (event) => {
     event.preventDefault();
     if (!activeProject) {
       alert('Please select an active project first.');
@@ -62,8 +83,7 @@ const OperationsWinsPage = React.memo(() => {
       }
 
       alert('Win submitted successfully!');
-      fetchWins(); // Re-fetch wins to update the list
-      // Clear form
+      fetchWins();
       setSelectedUser('');
       setWinDescription('');
       setWinDate('');
@@ -72,7 +92,7 @@ const OperationsWinsPage = React.memo(() => {
       console.error('Error submitting win:', error);
       alert(error.message || 'Failed to submit win. Please try again.');
     }
-  };
+  }, [activeProject, currentUser, selectedUser, winDescription, winDate, winCategory, fetchWins]);
 
   return (
     <div>
