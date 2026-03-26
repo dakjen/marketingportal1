@@ -2,6 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './IntroScreen.css';
 const DjCreativeLogo = require('./assets/djcreative-logo.png');
+const HoughHero = require('./assets/4928004112513198779.jpg');
+const HoughAngle2 = require('./assets/5352902128820436453.jpg');
+const HoughAngle3 = require('./assets/6129611180776508136.jpg');
+const FamilyPhoto = require('./assets/national-cancer-institute-VJVsEnR_vNE-unsplash.jpg');
+const KeysPhoto = require('./assets/jakub-zerdzicki-Vg96IZTFubo-unsplash.jpg');
+const ColorfulHousing = require('./assets/roger-starnes-sr-fIq3FoU8e8U-unsplash.jpg');
 
 function IntroScreen() {
   const navigate = useNavigate();
@@ -25,7 +31,7 @@ function IntroScreen() {
       </nav>
 
       {/* HERO */}
-      <section className="landing-hero">
+      <section className="landing-hero" style={{ backgroundImage: `url(${HoughHero})` }}>
         <div className="landing-hero-content">
           <p className="landing-hero-eyebrow">Lease-Up Marketing for Affordable &amp; Workforce Housing</p>
           <h1 className="landing-hero-headline">
@@ -66,12 +72,17 @@ function IntroScreen() {
 
       {/* ABOUT */}
       <section className="landing-section landing-section--light">
-        <div className="landing-container">
-          <p className="landing-section-eyebrow">About Us</p>
-          <h2 className="landing-section-title">An insider perspective other agencies don't have</h2>
-          <div className="landing-about-body">
-            <p>With deep roots in real estate development and community engagement, we bring an insider perspective that typical marketing agencies simply don't have. We understand the regulatory environment, the income-eligibility mechanics, the community dynamics, and the reporting expectations that matter to developers, investors, and property managers — and we build every campaign around them.</p>
-            <p className="landing-about-callout">Delayed lease-up creates delayed revenue and increased investor risk. We exist to close that gap.</p>
+        <div className="landing-container landing-about-split">
+          <div>
+            <p className="landing-section-eyebrow">About Us</p>
+            <h2 className="landing-section-title">An insider perspective other agencies don't have</h2>
+            <div className="landing-about-body">
+              <p>With deep roots in real estate development and community engagement, we bring an insider perspective that typical marketing agencies simply don't have. We understand the regulatory environment, the income-eligibility mechanics, the community dynamics, and the reporting expectations that matter to developers, investors, and property managers — and we build every campaign around them.</p>
+              <p className="landing-about-callout">Delayed lease-up creates delayed revenue and increased investor risk. We exist to close that gap.</p>
+            </div>
+          </div>
+          <div className="landing-about-photo">
+            <img src={FamilyPhoto} alt="Residents at home" />
           </div>
         </div>
       </section>
@@ -177,6 +188,13 @@ function IntroScreen() {
         </div>
       </section>
 
+      {/* PHOTO BANNER */}
+      <div className="landing-photo-banner">
+        <img src={KeysPhoto} alt="Keys to a new home" className="landing-photo-banner-img landing-photo-banner-img--keys" />
+        <img src={ColorfulHousing} alt="Affordable housing development" className="landing-photo-banner-img" />
+        <img src={HoughAngle2} alt="9410 Hough Avenue" className="landing-photo-banner-img" />
+      </div>
+
       {/* APPROACH */}
       <section className="landing-section landing-section--dark">
         <div className="landing-container">
@@ -228,6 +246,12 @@ function IntroScreen() {
           <p className="landing-section-eyebrow">Proven Results</p>
           <h2 className="landing-section-title">Case Study: 9410 Hough Avenue, Cleveland, OH</h2>
           <p className="landing-case-desc">116-unit mixed-income affordable housing development. Full Boat package — 6-month lease-up campaign, application support, and model unit staging.</p>
+
+          <div className="landing-case-photos">
+            <img src={HoughHero} alt="9410 Hough Avenue - street view" />
+            <img src={HoughAngle2} alt="9410 Hough Avenue - parking lot view" />
+            <img src={HoughAngle3} alt="9410 Hough Avenue - front view" />
+          </div>
 
           <div className="landing-case-stats">
             <div className="landing-case-stat">
