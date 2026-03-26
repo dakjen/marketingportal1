@@ -28,7 +28,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 
 function AppContent() {
   const { isLoggedIn, logout, currentUser } = useContext(AuthContext);
-  const { projects, activeProject, selectProject } = useContext(ProjectContext);
+  const { activeProject, selectProject } = useContext(ProjectContext);
   const [showDropdown, setShowDropdown] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [installPrompt, setInstallPrompt] = useState(null);
@@ -162,7 +162,6 @@ function AppContent() {
               isLoggedIn ? (
                 <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external', 'view-only']}>
                   <Dashboard
-                    projects={projects}
                     activeProject={activeProject}
                     selectProject={selectProject}
                   />

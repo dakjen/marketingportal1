@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import { ProjectContext } from './ProjectContext';
 import { canEditEntries, canManageProjects, canViewMessages, canViewReporting } from './roles';
 import './Dashboard.css';
 
@@ -37,13 +38,17 @@ const NAV_CARDS = (role) => [
   },
 ].filter(Boolean);
 
-function Dashboard({ projects, activeProject, selectProject }) {
+function Dashboard({ activeProject, selectProject }) {
   const { currentUser } = useContext(AuthContext);
+  const { allProjects } = useContext(ProjectContext);
   const navigate = useNavigate();
 
-  const displayProjects = currentUser && currentUser.role === 'external'
-    ? projects.filter(project => currentUser.allowedProjects.includes(project.name))
-    : projects;
+  const displayProjects = (() => {
+    if (!currentUser || !allProjects) return [];
+    if (currentUser.role === 'admin' || currentUser.role === 'admin2') return allProjects;
+    if (currentUser.allowedProjects?.includes('*')) return allProjects;
+    return allProjects.filter(p => (currentUser.allowedProjects || []).includes(p.name));
+  })();
 
   const [totalSocialSpend, setTotalSocialSpend] = useState(0);
   const [totalPhysicalSpend, setTotalPhysicalSpend] = useState(0);
