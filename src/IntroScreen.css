@@ -80,7 +80,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.6) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.45) 100%);
 }
 
 .landing-hero-content {
@@ -185,7 +185,7 @@
 }
 
 .landing-section--dark {
-  background-color: #1a1a1a;
+  background-color: #f5f2ee;
 }
 
 .landing-container {
@@ -215,7 +215,7 @@
 }
 
 .landing-section-title--light {
-  color: #fff;
+  color: #111;
 }
 
 /* ─── About split ───────────────────────────────────────────── */
@@ -261,7 +261,7 @@
 /* ─── Problem/Solution ──────────────────────────────────────── */
 .landing-problem-intro {
   font-size: 1rem;
-  color: #aaa;
+  color: #555;
   max-width: 760px;
   margin-bottom: 40px;
   line-height: 1.75;
@@ -278,13 +278,14 @@
 }
 
 .landing-problem-col {
-  background-color: #242424;
+  background-color: #fff;
   border-radius: 10px;
   padding: 32px;
+  border: 1px solid #e5e0d8;
 }
 
 .landing-problem-col--accent {
-  background-color: #1f1510;
+  background-color: #fff9f9;
   border: 1px solid #c07481;
 }
 
@@ -327,16 +328,16 @@
 }
 
 .landing-check-list--red li {
-  color: #bbb;
+  color: #555;
 }
 
 .landing-check-list--red li::before {
   content: '✗';
-  color: #888;
+  color: #999;
 }
 
 .landing-check-list--green li {
-  color: #ddd;
+  color: #444;
 }
 
 .landing-check-list--green li::before {
@@ -345,8 +346,8 @@
 }
 
 .landing-check-list--pink li {
-  color: #ccc;
-  border-bottom-color: rgba(255,255,255,0.05);
+  color: #444;
+  border-bottom-color: rgba(0,0,0,0.06);
 }
 
 .landing-check-list--pink li::before {
@@ -477,7 +478,7 @@
 /* ─── Approach / Phases ─────────────────────────────────────── */
 .landing-approach-intro {
   font-size: 1rem;
-  color: #aaa;
+  color: #555;
   max-width: 640px;
   margin-bottom: 40px;
   line-height: 1.75;
@@ -494,7 +495,8 @@
 }
 
 .landing-phase {
-  background-color: #242424;
+  background-color: #fff;
+  border: 1px solid #e5e0d8;
   border-radius: 10px;
   padding: 32px;
 }
@@ -502,7 +504,7 @@
 .landing-phase-header {
   margin-bottom: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #e5e0d8;
 }
 
 .landing-phase-num {
@@ -518,7 +520,7 @@
 .landing-phase h3 {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #fff;
+  color: #111;
   margin: 0 0 8px;
 }
 
@@ -530,7 +532,7 @@
 
 .landing-phase-objective {
   font-size: 0.85rem;
-  color: #aaa;
+  color: #777;
   font-style: italic;
   margin: 0;
 }
@@ -542,7 +544,7 @@
 
 .landing-phase ul li {
   font-size: 0.88rem;
-  color: #bbb;
+  color: #555;
   line-height: 1.65;
   margin-bottom: 6px;
 }
@@ -709,14 +711,14 @@
 .landing-founder-intro {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #fff;
+  color: #111;
   margin-bottom: 20px;
   font-style: italic;
 }
 
 .landing-founder-body {
   font-size: 0.97rem;
-  color: #aaa;
+  color: #555;
   max-width: 820px;
   line-height: 1.75;
   margin-bottom: 36px;
@@ -727,7 +729,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #888;
+  color: #555;
   margin-bottom: 16px;
 }
 
@@ -824,13 +826,13 @@
 .landing-why-card h3 {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #fff;
+  color: #111;
   margin: 0 0 8px;
 }
 
 .landing-why-card p {
   font-size: 0.87rem;
-  color: #999;
+  color: #555;
   line-height: 1.65;
   margin: 0;
 }
