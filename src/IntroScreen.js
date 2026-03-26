@@ -39,7 +39,7 @@ function IntroScreen() {
             <span className="landing-hero-accent">we move developments forward.</span>
           </h1>
           <p className="landing-hero-sub">
-            DJC Marketing is a results-driven lease-up marketing firm specializing in affordable and workforce housing developments. We help properties achieve faster stabilization by driving qualified leads, supporting applicants through the process, and maintaining clear communication between owners, property managers, and prospective residents.
+            DJC Marketing is a results-driven lease-up marketing firm specializing in affordable and workforce housing developments. We help properties achieve faster stabilization by driving strong lead volume, supporting applicants through the process, and maintaining clear communication between owners, property managers, and prospective residents.
           </p>
         </div>
       </section>
@@ -64,10 +64,10 @@ function IntroScreen() {
           <div className="landing-stat-divider" />
           <div className="landing-stat-item">
             <div className="landing-stat-num">36.2%</div>
-            <div className="landing-stat-lbl">Qualification Rate*</div>
+            <div className="landing-stat-lbl">Application Success Rate*</div>
           </div>
         </div>
-        <p className="landing-stats-footnote">*9410 Hough Avenue, Cleveland, OH — 13.7 points above industry average for dual income-restricted properties.</p>
+        <p className="landing-stats-footnote">*9410 Hough Avenue, Cleveland, OH — 13.7 points above industry average.</p>
       </div>
 
       {/* ABOUT */}
@@ -77,7 +77,7 @@ function IntroScreen() {
             <p className="landing-section-eyebrow">About Us</p>
             <h2 className="landing-section-title">An insider perspective other agencies don't have</h2>
             <div className="landing-about-body">
-              <p>With deep roots in real estate development and community engagement, we bring an insider perspective that typical marketing agencies simply don't have. We understand the regulatory environment, the income-eligibility mechanics, the community dynamics, and the reporting expectations that matter to developers, investors, and property managers — and we build every campaign around them.</p>
+              <p>With deep roots in real estate development and community engagement, we bring an insider perspective that typical marketing agencies simply don't have. We understand the regulatory environment, the community dynamics, and the reporting expectations that matter to developers, investors, and property managers — and we build every campaign around them.</p>
               <p className="landing-about-callout">Delayed lease-up creates delayed revenue and increased investor risk. We exist to close that gap.</p>
             </div>
           </div>
@@ -92,7 +92,7 @@ function IntroScreen() {
         <div className="landing-container">
           <p className="landing-section-eyebrow landing-section-eyebrow--light">The Problem We Solve</p>
           <h2 className="landing-section-title landing-section-title--light">Delayed Lease-Up = Delayed Revenue</h2>
-          <p className="landing-problem-intro">Affordable housing developments face a distinct set of lease-up challenges that standard marketing agencies aren't equipped to handle. Income eligibility requirements narrow the qualified applicant pool. Application platforms create friction. Community awareness takes time to build. And property management teams are often stretched too thin to run outreach on their own.</p>
+          <p className="landing-problem-intro">Affordable housing developments face a distinct set of lease-up challenges that standard marketing agencies aren't equipped to handle. Application platforms create friction. Community awareness takes time to build. And property management teams are often stretched too thin to run outreach on their own.</p>
           <div className="landing-problem-grid">
             <div className="landing-problem-col">
               <h3>Common Challenges</h3>
@@ -108,7 +108,7 @@ function IntroScreen() {
             <div className="landing-problem-col landing-problem-col--accent">
               <h3>The DJC Difference</h3>
               <ul className="landing-check-list landing-check-list--green">
-                <li>Targeted outreach to income-qualified audiences</li>
+                <li>Targeted outreach to wide, high-intent audiences</li>
                 <li>Active applicant follow-up and support</li>
                 <li>Grassroots community and employer outreach</li>
                 <li>Multi-channel paid and organic campaigns</li>
@@ -165,7 +165,7 @@ function IntroScreen() {
                 <li>Model unit staging — design, procurement, delivery, and photography</li>
                 <li>Optional 50% furniture donation perk through affiliated nonprofit</li>
                 <li>Application support: follow-up, re-review, document assistance</li>
-                <li>Full applicant pool analysis and eligibility reporting</li>
+                <li>Full applicant pool analysis and pipeline reporting</li>
               </ul>
             </div>
           </div>
@@ -182,7 +182,7 @@ function IntroScreen() {
             </div>
             <div className="landing-addon">
               <h4>Applicant Pool Reporting</h4>
-              <p>Deep-dive eligibility analysis, qualification tier breakdowns, Section 8 tracking, and benchmark comparisons. Delivered to your stakeholder team.</p>
+              <p>Deep-dive applicant pool analysis, lead pipeline breakdowns, Section 8 tracking, and benchmark comparisons. Delivered to your stakeholder team.</p>
             </div>
           </div>
         </div>
@@ -200,7 +200,7 @@ function IntroScreen() {
         <div className="landing-container">
           <p className="landing-section-eyebrow landing-section-eyebrow--light">Our Approach</p>
           <h2 className="landing-section-title landing-section-title--light">A Phased, Data-Driven Campaign</h2>
-          <p className="landing-approach-intro">We structure every engagement in two phases to maximize lead volume at launch and convert qualified applicants as the campaign matures.</p>
+          <p className="landing-approach-intro">We structure every engagement in two phases to maximize lead volume at launch and convert applicants as the campaign matures.</p>
           <div className="landing-phases">
             <div className="landing-phase">
               <div className="landing-phase-header">
@@ -277,11 +277,10 @@ function IntroScreen() {
               <h3>Applicant Pool Performance <span>(March 2026)</span></h3>
               <ul>
                 <li>224 total completed applications reviewed</li>
-                <li>81 applicants met income eligibility criteria <strong>(36.2% qualification rate)</strong></li>
-                <li>42 strong candidates qualify at 3x rent — nearly 2x industry average</li>
-                <li>Only 5 applicants (2.2%) disqualified for exceeding income cap vs. 5–15% industry average</li>
-                <li>25 applicants flagged for income verification; 8 estimated to qualify upon confirmation</li>
+                <li>81 strong applicants in the active pipeline <strong>(36.2% application success rate)</strong></li>
+                <li>42 strong candidates at 3x rent — nearly 2x industry average</li>
                 <li>15 estimated Section 8/HCVP voucher holders in the pool</li>
+                <li>High reapplication rate driven by active applicant follow-up</li>
               </ul>
             </div>
             <div className="landing-case-benchmark">
@@ -296,7 +295,7 @@ function IntroScreen() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Qualification Rate</td>
+                    <td>Application Success Rate</td>
                     <td className="landing-benchmark-win">36.2%</td>
                     <td>~22.5%</td>
                   </tr>
@@ -306,19 +305,14 @@ function IntroScreen() {
                     <td>~10–12%</td>
                   </tr>
                   <tr>
-                    <td>Over-Income Disqualifications</td>
-                    <td className="landing-benchmark-win">2.2%</td>
-                    <td>5–15%</td>
-                  </tr>
-                  <tr>
-                    <td>Income Too Low</td>
-                    <td className="landing-benchmark-win">57.6%</td>
-                    <td>70–85%</td>
-                  </tr>
-                  <tr>
                     <td>Section 8 Representation</td>
                     <td>6.7%</td>
                     <td>Healthy range</td>
+                  </tr>
+                  <tr>
+                    <td>Reapplication Rate</td>
+                    <td className="landing-benchmark-win">&gt;20%</td>
+                    <td>Industry low</td>
                   </tr>
                 </tbody>
               </table>
@@ -337,9 +331,9 @@ function IntroScreen() {
           <h3 className="landing-founder-why-title">What Makes Dakotah Uniquely Positioned for This Work</h3>
           <ul className="landing-check-list landing-check-list--pink landing-founder-list">
             <li>5+ years of hands-on experience in the real estate development industry — not as an observer, but as an active participant in the process from project launch through occupancy.</li>
-            <li>Deep understanding of affordable housing regulatory structures, AMI thresholds, income eligibility mechanics, and Section 8/HCVP dynamics — the complexity other marketers try to work around, Dakotah works within.</li>
-            <li>Community trust and grassroots outreach expertise, with a demonstrated ability to reach income-qualified residents in underserved neighborhoods through authentic, on-the-ground engagement.</li>
-            <li>Data-fluent reporting and analysis capabilities, producing applicant pool breakdowns, qualification tier reports, and benchmark comparisons that give developers and investors the transparency they need.</li>
+            <li>Deep understanding of affordable housing regulatory structures and Section 8/HCVP dynamics — the complexity other marketers try to work around, Dakotah works within.</li>
+            <li>Community trust and grassroots outreach expertise, with a demonstrated ability to reach residents in underserved neighborhoods through authentic, on-the-ground engagement.</li>
+            <li>Data-fluent reporting and analysis capabilities, producing applicant pool breakdowns, pipeline reports, and benchmark comparisons that give developers and investors the transparency they need.</li>
             <li>Creative marketing instincts paired with development-sector discipline — campaigns that are not only compelling but strategically aligned with project timelines, compliance requirements, and leasing goals.</li>
             <li>Founder-led accountability: Dakotah is not a sales contact handing off work to a junior team. She is the strategist, the project lead, and the person who picks up the phone.</li>
           </ul>
@@ -392,16 +386,16 @@ function IntroScreen() {
               <p>We don't just understand marketing — we understand how affordable housing deals work, what investors expect, and what property managers actually need from a marketing partner.</p>
             </div>
             <div className="landing-why-card">
-              <h3>Income-Qualified Audience Focus</h3>
-              <p>Every campaign is built to reach residents who actually qualify. We don't generate noise — we generate applicants who can sign leases.</p>
+              <h3>Wide Audience Reach</h3>
+              <p>Every campaign is built to reach as many potential residents as possible. We don't generate noise — we generate real leads at high volume.</p>
             </div>
             <div className="landing-why-card">
               <h3>Transparent, Data-Rich Reporting</h3>
-              <p>Biweekly reports, applicant pool analytics, benchmark comparisons, and qualification tier breakdowns. You always know exactly where the campaign stands.</p>
+              <p>Biweekly reports, applicant pool analytics, benchmark comparisons, and pipeline breakdowns. You always know exactly where the campaign stands.</p>
             </div>
             <div className="landing-why-card">
               <h3>Active Applicant Support</h3>
-              <p>We follow up. We re-review flagged applications. We help qualified residents complete the process — recovering leads that would otherwise be lost.</p>
+              <p>We follow up. We re-review flagged applications. We help residents complete the process — recovering leads that would otherwise be lost.</p>
             </div>
             <div className="landing-why-card">
               <h3>Multi-Channel Execution</h3>
