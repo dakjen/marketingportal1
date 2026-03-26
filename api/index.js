@@ -163,7 +163,7 @@ app.get('/api/test', (req, res) => {
 });
 
 // Routes
-app.use('/api', projectsRouter(pool));
+app.use('/api/projects', projectsRouter(pool));
 app.use('/api', entriesRouter(pool));
 app.use('/api', uploadsRouter(pool));
 app.use('/api', reportsRouter(pool));
