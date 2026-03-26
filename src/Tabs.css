@@ -158,3 +158,23 @@ nav {
 .app-login-status-display {
   display: none;
 }
+
+.install-pwa-btn {
+  background: none;
+  border: 1px solid #d8c49c;
+  color: #d8c49c;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+
+.install-pwa-btn:hover {
+  background: #d8c49c;
+  color: #1a1a1a;
+}

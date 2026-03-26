@@ -31,6 +31,27 @@ function AppContent() {
   const { projects, activeProject, selectProject } = useContext(ProjectContext);
   const [showDropdown, setShowDropdown] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+
+  // Capture the install prompt and suppress the browser's automatic banner
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => setIsAppInstalled(true));
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') setIsAppInstalled(true);
+    setInstallPrompt(null);
+  };
 
   useEffect(() => {
     const fetchUnreadCount = async () => {
@@ -98,6 +119,13 @@ function AppContent() {
                   <NavLink to="/project-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
                     Project Management
                   </NavLink>
+                </li>
+              )}
+              {isLoggedIn && installPrompt && !isAppInstalled && (
+                <li className="tab-item">
+                  <button className="install-pwa-btn" onClick={handleInstallClick} title="Install DJC Portal as a desktop app">
+                    <i className="fas fa-download"></i> Install App
+                  </button>
                 </li>
               )}
               <li className="tab-item profile-dropdown-container">
