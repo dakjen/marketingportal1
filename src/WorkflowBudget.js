@@ -42,10 +42,9 @@ function WorkflowBudget({ projectName }) {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchBudget();
-  }, [projectName]);
+  }, [projectName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSaveBudget = async (category, budget_type, amount, period) => {
     try {
