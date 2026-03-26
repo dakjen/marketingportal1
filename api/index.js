@@ -1678,6 +1678,29 @@ app.put('/api/users/:username/password', authorizeRole(['admin', 'internal']), a
   }
 });
 
+// Self-service password reset — generates a temporary password for a given username
+app.post('/api/forgot-password', async (req, res) => {
+  const { username } = req.body;
+  if (!username) {
+    return res.status(400).json({ message: 'Username is required.' });
+  }
+  try {
+    const result = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
+    if (result.rowCount === 0) {
+      // Return success regardless to avoid username enumeration
+      return res.status(200).json({ message: 'If that username exists, a temporary password has been set.' });
+    }
+    const crypto = require('crypto');
+    const tempPassword = crypto.randomBytes(5).toString('hex'); // 10-char hex password
+    const hashed = await bcrypt.hash(tempPassword, 10);
+    await pool.query('UPDATE users SET password_hash = $1 WHERE username = $2', [hashed, username]);
+    res.status(200).json({ tempPassword });
+  } catch (error) {
+    console.error('Error resetting password:', error.stack);
+    res.status(500).json({ message: 'Error resetting password.' });
+  }
+});
+
 // Update general user details (username, name, email, role)
 app.put('/api/users/:username', authorizeRole(['admin']), async (req, res) => {
   const { username } = req.params;
