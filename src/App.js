@@ -1,61 +1,61 @@
 import React, { useContext, useState, useEffect } from 'react';
-     import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from
-       'react-router-dom';
-     import Dashboard from './Dashboard';
-     import SocialMediaEntries from './SocialMediaEntries';
-     import PhysicalMarketingEntries from './PhysicalMarketingEntries';
-     import ProjectManagementPage from './ProjectManagementPage';
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
+import Dashboard from './Dashboard';
+import SocialMediaEntries from './SocialMediaEntries';
+import PhysicalMarketingEntries from './PhysicalMarketingEntries';
+import ProjectManagementPage from './ProjectManagementPage';
 import MessagesPage from './MessagesPage';
 import ReportingPage from './ReportingPage';
-     import LoginPage from './LoginPage';
-     import ContactAdminPage from './ContactAdminPage';
-     import IntroScreen from './IntroScreen'; // New import
-     import RequestAccountPage from './RequestAccountPage'; // New import
-import AdminProjectInputsPage from './AdminProjectInputsPage'; // New import
-import AdminOperationsDashboardPage from './AdminOperationsDashboardPage'; // New import
-import PrivateRoute from './PrivateRoute'; // New import
+import LoginPage from './LoginPage';
+import ProfilePage from './ProfilePage';
+import ContactAdminPage from './ContactAdminPage';
+import IntroScreen from './IntroScreen';
+import RequestAccountPage from './RequestAccountPage';
+import WorkflowPage from './WorkflowPage';
+import { AuthProvider, AuthContext } from './AuthContext';
+import { ProjectProvider, ProjectContext } from './ProjectContext';
+import { canEditEntries, canManageProjects, canViewMessages, canViewReporting } from './roles';
+import './Tabs.css';
 
+const PrivateRoute = ({ children, allowedRoles }) => {
+  const { isLoggedIn, currentUser, isLoading } = useContext(AuthContext);
+  if (isLoading) { return <div>Loading...</div>; }
+  if (!isLoggedIn) { return <Navigate to="/intro" />; }
+  if (allowedRoles && !allowedRoles.includes(currentUser?.role)) { return <Navigate to="/" />; }
+  return children;
+};
 
-   import { AuthProvider, AuthContext } from './AuthContext';
-   import { ProjectProvider, ProjectContext } from './ProjectContext';
-   import './Tabs.css';
+function AppContent() {
+  const { isLoggedIn, logout, currentUser } = useContext(AuthContext);
+  const { projects, activeProject, selectProject } = useContext(ProjectContext);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-   console.log('App.js: ProjectContext is here!', ProjectContext); // Debugging line
-   
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (!currentUser) return;
+      try {
+        const response = await fetch('/api/messages/unread-count', {
+          headers: {
+            'X-User-Username': currentUser.username,
+            'X-User-Role': currentUser.role,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUnreadCount(data.unreadCount);
+        }
+      } catch (error) {
+        console.error('Failed to fetch unread message count:', error);
+      }
+    };
 
-   function AppContent() {
-     const { isLoggedIn, logout, currentUser } = useContext(AuthContext);
-     const { projects, activeProject, selectProject } = useContext(ProjectContext);
-     const [showDropdown, setShowDropdown] = useState(false);
-     const [unreadCount, setUnreadCount] = useState(0);
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [currentUser]);
 
-     useEffect(() => {
-       const fetchUnreadCount = async () => {
-         if (!currentUser) return;
-
-         try {
-           const response = await fetch('/api/messages/unread-count', {
-             headers: {
-               'X-User-Username': currentUser.username,
-               'X-User-Role': currentUser.role,
-             },
-           });
-           if (response.ok) {
-             const data = await response.json();
-             setUnreadCount(data.unreadCount);
-           }
-         } catch (error) {
-           console.error('Failed to fetch unread message count:', error);
-         }
-       };
-
-       fetchUnreadCount();
-       const interval = setInterval(fetchUnreadCount, 30000); // Poll every 30 seconds
-
-       return () => clearInterval(interval);
-     }, [currentUser]);
-   
-     return (
+  return (
     <div className="app-container">
       {isLoggedIn && (
         <>
@@ -66,43 +66,46 @@ import PrivateRoute from './PrivateRoute'; // New import
                   Dashboard
                 </NavLink>
               </li>
-              {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
+              {canEditEntries(currentUser?.role) && (
                 <li className="tab-item">
                   <NavLink to="/social-media" className={({ isActive }) => (isActive ? 'active' : '')}>
                     Social media entries
                   </NavLink>
                 </li>
               )}
-              {(currentUser?.role === 'admin' || currentUser?.role === 'admin2' || currentUser?.role === 'internal') && (
+              {canEditEntries(currentUser?.role) && (
                 <li className="tab-item">
                   <NavLink to="/physical-marketing" className={({ isActive }) => (isActive ? 'active' : '')}>
                     Physical marketing entries
                   </NavLink>
                 </li>
               )}
-              {(currentUser?.role === 'admin') && (
+              {canViewReporting(currentUser?.role) && (
                 <li className="tab-item">
                   <NavLink to="/reporting" className={({ isActive }) => (isActive ? 'active' : '')}>
                     Reporting
                   </NavLink>
                 </li>
               )}
-              {(currentUser?.role === 'admin' || currentUser?.role === 'internal') && (
+              {canViewMessages(currentUser?.role) && (
                 <li className="tab-item">
                   <NavLink to="/messages" className={({ isActive }) => (isActive ? 'active' : '')}>
                     Messages {unreadCount > 0 && <span className="unread-count">{unreadCount}</span>}
                   </NavLink>
                 </li>
               )}
-              {(currentUser?.role === 'admin' || currentUser?.role === 'admin2') && (                   <li className="tab-item">
-                <NavLink to="/project-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
-                  Project Management
+              <li className="tab-item">
+                <NavLink to="/workflow" className={({ isActive }) => (isActive ? 'active' : '')}>
+                  Workflow
                 </NavLink>
               </li>
+              {canManageProjects(currentUser?.role) && (
+                <li className="tab-item">
+                  <NavLink to="/project-management" className={({ isActive }) => (isActive ? 'active project-management-tab' : 'project-management-tab')}>
+                    Project Management
+                  </NavLink>
+                </li>
               )}
-
-
-
               <li className="tab-item profile-dropdown-container">
                 {currentUser && <p className="user-display">User: {currentUser.username}</p>}
                 <div className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
@@ -120,85 +123,96 @@ import PrivateRoute from './PrivateRoute'; // New import
                 )}
               </li>
             </ul>
-            <div className="app-login-status-display">
-      </div>
+            <div className="app-login-status-display"></div>
           </nav>
           <hr />
         </>
       )}
       <div className="main-content">
         <Routes>
-           <Route path="/intro" element={isLoggedIn ? <Navigate to="/" /> : <IntroScreen />} />
-           <Route path="/request-account" element={isLoggedIn ? <Navigate to="/" /> : <RequestAccountPage />} />
-
-           <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <LoginPage />} />
-           <Route path="/forgot-password" element={<ContactAdminPage />} />
-           <Route
-             path="/"
-             element={
-               isLoggedIn ? (
-                 <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external', 'view-only']}>
-                   <Dashboard
-                     projects={projects}
-                     activeProject={activeProject}
-                     selectProject={selectProject}
-                   />
-                 </PrivateRoute>
-               ) : (
-                 <Navigate to="/intro" />
-               )
-             }
-           />
-           <Route
-             path="/social-media"
-             element={
-               <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
-                 <SocialMediaEntries />
-               </PrivateRoute>
-             }
-           />
-           <Route
-             path="/physical-marketing"
-             element={
-               <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
-                 <PhysicalMarketingEntries />
-               </PrivateRoute>
-             }
-           />
-           <Route
-             path="/messages"
-             element={
-               <PrivateRoute allowedRoles={['admin', 'internal']}>
-                 <MessagesPage />
-               </PrivateRoute>
-             }
-           />
-                    <Route
-                      path="/project-management"
-                      element={
-                        <PrivateRoute allowedRoles={['admin', 'admin2']}>
-                          <ProjectManagementPage />
-                        </PrivateRoute>
-                      }
-                    />
-         <Route
+          <Route path="/intro" element={isLoggedIn ? <Navigate to="/" /> : <IntroScreen />} />
+          <Route path="/request-account" element={isLoggedIn ? <Navigate to="/" /> : <RequestAccountPage />} />
+          <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <LoginPage />} />
+          <Route path="/forgot-password" element={<ContactAdminPage />} />
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external', 'view-only']}>
+                  <Dashboard
+                    projects={projects}
+                    activeProject={activeProject}
+                    selectProject={selectProject}
+                  />
+                </PrivateRoute>
+              ) : (
+                <Navigate to="/intro" />
+              )
+            }
+          />
+          <Route
+            path="/project-management"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'admin2']}>
+                <ProjectManagementPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/social-media"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'view-only']}>
+                {activeProject ? <SocialMediaEntries /> : <p>Please select a project to view social media entries.</p>}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/physical-marketing"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'admin2', 'internal']}>
+                {activeProject ? <PhysicalMarketingEntries /> : <p>Please select a project to view physical marketing entries.</p>}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external']}>
+                <ProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'internal']}>
+                <MessagesPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/reporting/*"
             element={
               <PrivateRoute allowedRoles={['admin', 'internal']}>
                 <ReportingPage />
               </PrivateRoute>
             }
-          >
-            <Route path="admin-project-inputs" element={<AdminProjectInputsPage />} />
-            <Route path="admin-operations-dashboard" element={<AdminOperationsDashboardPage />} />
-          </Route>
-       </Routes>
+          />
+          <Route
+            path="/workflow"
+            element={
+              <PrivateRoute allowedRoles={['admin', 'admin2', 'internal', 'external', 'view-only']}>
+                <WorkflowPage />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
       </div>
     </div>
   );
 }
 
- function App() {
+function App() {
   const AppProviders = () => {
     const { reloadUser } = useContext(AuthContext);
     return (
@@ -208,13 +222,13 @@ import PrivateRoute from './PrivateRoute'; // New import
     );
   };
 
-   return (
-     <Router>
-       <AuthProvider>
-         <AppProviders />
-       </AuthProvider>
-     </Router>
-   );
- }
- 
- export default App;
+  return (
+    <Router>
+      <AuthProvider>
+        <AppProviders />
+      </AuthProvider>
+    </Router>
+  );
+}
+
+export default App;

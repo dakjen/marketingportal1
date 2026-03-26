@@ -27,7 +27,7 @@ function ProfilePage() {
   const [myEditedName, setMyEditedName] = useState(currentUser ? currentUser.name : '');
   const [myEditedEmail, setMyEditedEmail] = useState(currentUser ? currentUser.email : '');
   const [myEditedUsername, setMyEditedUsername] = useState(currentUser ? currentUser.username : '');
-  const [myEditedPassword, setMyEditedPassword] = useState(currentUser ? currentUser.password : '');
+  const [myEditedPassword, setMyEditedPassword] = useState('');
 
   // Fetch users from API on mount
   useEffect(() => {
@@ -53,7 +53,7 @@ function ProfilePage() {
       setMyEditedName(currentUser.name);
       setMyEditedEmail(currentUser.email);
       setMyEditedUsername(currentUser.username);
-      setMyEditedPassword(currentUser.password);
+      setMyEditedPassword('');
     }
   }, [currentUser]);
 
@@ -200,7 +200,7 @@ function ProfilePage() {
     setMyEditedName(currentUser.name);
     setMyEditedEmail(currentUser.email);
     setMyEditedUsername(currentUser.username);
-    setMyEditedPassword(currentUser.password);
+    setMyEditedPassword('');
   };
 
   const handleSaveMyProfile = async () => {
@@ -231,7 +231,7 @@ function ProfilePage() {
     setMyEditedName(currentUser.name);
     setMyEditedEmail(currentUser.email);
     setMyEditedUsername(currentUser.username);
-    setMyEditedPassword(currentUser.password);
+    setMyEditedPassword('');
   };
 
   const handlePasswordChange = (e) => {
@@ -443,7 +443,7 @@ function ProfilePage() {
                           <option value="admin2">Viewer</option>
                         </select>
                         <button onClick={() => handleSaveEdit(user.username)} className="save-user-button" disabled={currentUser.role === 'admin2'}>Save</button>
-                        <button onClick={() => handleCancelEdit} className="cancel-user-button" disabled={currentUser.role === 'admin2'}>Cancel</button>
+                        <button onClick={handleCancelEdit} className="cancel-user-button" disabled={currentUser.role === 'admin2'}>Cancel</button>
                       </div>
                     ) : (
                       <> 
