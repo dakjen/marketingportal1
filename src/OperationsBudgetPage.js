@@ -183,9 +183,37 @@ export function OperationsBudgetPage() {
       return 0;
     });
 
+  const socialMediaTotal = socialMediaFilteredEntries.reduce((sum, e) => sum + e.amount, 0);
+  const physicalMarketingTotal = physicalMarketingFilteredEntries.reduce((sum, e) => sum + e.amount, 0);
+  const grandTotal = socialMediaTotal + physicalMarketingTotal;
+
+  const socialMediaByCategory = socialMediaFilteredEntries.reduce((acc, e) => {
+    acc[e.type] = (acc[e.type] || 0) + e.amount;
+    return acc;
+  }, {});
+  const physicalMarketingByCategory = physicalMarketingFilteredEntries.reduce((acc, e) => {
+    acc[e.type] = (acc[e.type] || 0) + e.amount;
+    return acc;
+  }, {});
+
   return (
     <div className="operations-budget-page">
       <h2>Operations Budget</h2>
+
+      <div className="budget-summary-row">
+        <div className="budget-summary-card">
+          <div className="budget-summary-label">Social Media Total</div>
+          <div className="budget-summary-amount">${socialMediaTotal.toFixed(2)}</div>
+        </div>
+        <div className="budget-summary-card">
+          <div className="budget-summary-label">Physical Marketing Total</div>
+          <div className="budget-summary-amount">${physicalMarketingTotal.toFixed(2)}</div>
+        </div>
+        <div className="budget-summary-card budget-summary-card--total">
+          <div className="budget-summary-label">Grand Total</div>
+          <div className="budget-summary-amount">${grandTotal.toFixed(2)}</div>
+        </div>
+      </div>
 
       <div className="budget-columns-container">
         <div className="budget-column">
@@ -246,16 +274,31 @@ export function OperationsBudgetPage() {
             {socialMediaFilteredEntries.length === 0 ? (
               <p>No social media budget entries added yet for this project.</p>
             ) : (
-              <ul>
-                {socialMediaFilteredEntries.map(entry => (
-                  <li key={entry.id} style={{ fontWeight: entry.month_allocation === 'month 1' ? 'bold' : 'normal' }}>
-                    {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval}) - {entry.month_allocation}
-                    {currentUser && currentUser.role === 'admin' && (
-                      <button onClick={() => handleDeleteEntry(entry.id)}>Delete</button>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul>
+                  {socialMediaFilteredEntries.map(entry => (
+                    <li key={entry.id} style={{ fontWeight: entry.month_allocation === 'month 1' ? 'bold' : 'normal' }}>
+                      {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval}) - {entry.month_allocation}
+                      {currentUser && currentUser.role === 'admin' && (
+                        <button onClick={() => handleDeleteEntry(entry.id)}>Delete</button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <div className="budget-category-breakdown">
+                  <h4>By Category</h4>
+                  {Object.entries(socialMediaByCategory).map(([cat, amt]) => (
+                    <div key={cat} className="budget-category-row">
+                      <span>{cat}</span>
+                      <span>${amt.toFixed(2)}</span>
+                    </div>
+                  ))}
+                  <div className="budget-category-row budget-category-row--total">
+                    <span>Total</span>
+                    <span>${socialMediaTotal.toFixed(2)}</span>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -317,16 +360,31 @@ export function OperationsBudgetPage() {
             {physicalMarketingFilteredEntries.length === 0 ? (
               <p>No physical marketing budget entries added yet for this project.</p>
             ) : (
-              <ul>
-                {physicalMarketingFilteredEntries.map(entry => (
-                  <li key={entry.id} style={{ fontWeight: entry.month_allocation === 'month 1' ? 'bold' : 'normal' }}>
-                    {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval}) - {entry.month_allocation}
-                    {currentUser && currentUser.role === 'admin' && (
-                      <button onClick={() => handleDeleteEntry(entry.id)}>Delete</button>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul>
+                  {physicalMarketingFilteredEntries.map(entry => (
+                    <li key={entry.id} style={{ fontWeight: entry.month_allocation === 'month 1' ? 'bold' : 'normal' }}>
+                      {entry.type}: ${entry.amount.toFixed(2)} ({entry.interval}) - {entry.month_allocation}
+                      {currentUser && currentUser.role === 'admin' && (
+                        <button onClick={() => handleDeleteEntry(entry.id)}>Delete</button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <div className="budget-category-breakdown">
+                  <h4>By Category</h4>
+                  {Object.entries(physicalMarketingByCategory).map(([cat, amt]) => (
+                    <div key={cat} className="budget-category-row">
+                      <span>{cat}</span>
+                      <span>${amt.toFixed(2)}</span>
+                    </div>
+                  ))}
+                  <div className="budget-category-row budget-category-row--total">
+                    <span>Total</span>
+                    <span>${physicalMarketingTotal.toFixed(2)}</span>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>

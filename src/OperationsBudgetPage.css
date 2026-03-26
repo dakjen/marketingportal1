@@ -28,3 +28,79 @@
   margin-top: 0;
   margin-bottom: 10px;
 }
+
+.budget-summary-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.budget-summary-card {
+  flex: 1;
+  min-width: 160px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-top: 4px solid #c07481;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.budget-summary-card--total {
+  background-color: #000;
+  border-color: #000;
+  border-top-color: #c07481;
+}
+
+.budget-summary-card--total .budget-summary-label,
+.budget-summary-card--total .budget-summary-amount {
+  color: #fff;
+}
+
+.budget-summary-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.budget-summary-amount {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.budget-category-breakdown {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.budget-category-breakdown h4 {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+}
+
+.budget-category-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.9rem;
+  color: #444;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.budget-category-row--total {
+  font-weight: 700;
+  color: #000;
+  border-bottom: none;
+  border-top: 2px solid #000;
+  margin-top: 4px;
+  padding-top: 8px;
+}
