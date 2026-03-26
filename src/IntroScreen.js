@@ -12,9 +12,6 @@ function IntroScreen() {
       {/* NAV */}
       <nav className="landing-nav">
         <img src={DjCreativeLogo} alt="DakJen Creative" className="landing-nav-logo" />
-        <button className="landing-nav-cta" onClick={() => navigate('/request-account')}>
-          Get Started
-        </button>
       </nav>
 
       {/* HERO */}
@@ -28,11 +25,6 @@ function IntroScreen() {
           <p className="landing-hero-sub">
             DakJen Creative is a full-service marketing agency specializing in lease-up campaigns for multifamily and commercial real estate. We combine strategic storytelling with real-time data transparency so you always know exactly where your budget is going.
           </p>
-          <div className="landing-hero-actions">
-            <button className="landing-btn-primary" onClick={() => navigate('/request-account')}>
-              Request Portal Access
-            </button>
-          </div>
         </div>
       </section>
 
@@ -127,17 +119,6 @@ function IntroScreen() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA BANNER */}
-      <section className="landing-cta-banner">
-        <div className="landing-container landing-cta-inner">
-          <h2>Ready to see your marketing clearly?</h2>
-          <p>Request access to the DJC Client Portal and get real-time visibility into your lease-up campaign.</p>
-          <button className="landing-btn-primary" onClick={() => navigate('/request-account')}>
-            Request Portal Access
-          </button>
         </div>
       </section>
 
