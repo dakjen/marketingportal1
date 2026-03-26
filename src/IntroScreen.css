@@ -293,28 +293,44 @@
   letter-spacing: 0.5px;
 }
 
-/* ─── CTA Banner ────────────────────────────────────────────── */
-.landing-cta-banner {
-  background-color: #000;
+/* ─── Coming Soon ───────────────────────────────────────────── */
+.landing-coming-soon {
+  background-color: #0d0d0d;
   padding: 80px 48px;
   text-align: center;
   border-top: 4px solid #c07481;
+  border-bottom: 1px solid #2a2a2a;
 }
 
-.landing-cta-inner h2 {
+.landing-coming-soon-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.landing-coming-soon-inner h2 {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 800;
   color: #fff;
   margin: 0 0 16px;
 }
 
-.landing-cta-inner p {
+.landing-coming-soon-inner p {
   color: #aaa;
   font-size: 1rem;
-  margin-bottom: 32px;
-  max-width: 540px;
-  margin-left: auto;
-  margin-right: auto;
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+
+.landing-coming-soon-btn {
+  background-color: #333;
+  color: #777;
+  border: 1px solid #444;
+  padding: 14px 32px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: not-allowed;
+  letter-spacing: 0.3px;
 }
 
 /* ─── Footer ────────────────────────────────────────────────── */

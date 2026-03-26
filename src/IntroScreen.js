@@ -122,6 +122,18 @@ function IntroScreen() {
         </div>
       </section>
 
+      {/* COMING SOON */}
+      <section className="landing-coming-soon">
+        <div className="landing-container landing-coming-soon-inner">
+          <p className="landing-section-eyebrow landing-section-eyebrow--light">Client Portal</p>
+          <h2>Our Lease-Up Marketing Portal is coming soon</h2>
+          <p>We're building a dedicated client portal where you'll get real-time visibility into your lease-up campaign — spend tracking, performance breakdowns, and reporting, all in one place.</p>
+          <button className="landing-coming-soon-btn" disabled>
+            Notify Me When It Launches
+          </button>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="landing-footer">
         <img src={DjCreativeLogo} alt="DakJen Creative" className="landing-footer-logo" />
