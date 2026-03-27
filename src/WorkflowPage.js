@@ -28,7 +28,7 @@ function WorkflowPage() {
   return (
     <div className="workflow-container">
       <div className="workflow-header">
-        <h2>Workflow — {activeProject}</h2>
+        <h2>Workflow — {activeProject.name}</h2>
       </div>
 
       <div className="workflow-inner-tabs">
@@ -44,10 +44,10 @@ function WorkflowPage() {
       </div>
 
       <div className="workflow-tab-content">
-        {activeTab === 'checklist' && <WorkflowChecklist projectName={activeProject} />}
-        {activeTab === 'budget' && <WorkflowBudget projectName={activeProject} />}
-        {activeTab === 'listings' && <WorkflowListings projectName={activeProject} />}
-        {activeTab === 'team' && <WorkflowTeam projectName={activeProject} />}
+        {activeTab === 'checklist' && <WorkflowChecklist projectName={activeProject.name} />}
+        {activeTab === 'budget' && <WorkflowBudget projectName={activeProject.name} />}
+        {activeTab === 'listings' && <WorkflowListings projectName={activeProject.name} />}
+        {activeTab === 'team' && <WorkflowTeam projectName={activeProject.name} />}
       </div>
     </div>
   );
