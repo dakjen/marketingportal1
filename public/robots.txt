@@ -1,3 +1,11 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /login
+Disallow: /dashboard
+Disallow: /social-media
+Disallow: /reporting
+Disallow: /messages
+Disallow: /workflow
+Disallow: /project-management
+
+Sitemap: https://marketing.dakjencreative.com/sitemap.xml
