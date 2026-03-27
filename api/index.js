@@ -151,6 +151,9 @@ pool.connect((err, client, release) => {
         UNIQUE (project_name, djc_role)
       );
     `);
+    // Add columns that may be missing from tables created before schema updates
+    await pool.query(`ALTER TABLE social_media_entries ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT false`);
+    await pool.query(`ALTER TABLE physical_marketing_entries ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT false`);
     console.log('Tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating tables:', err.stack);

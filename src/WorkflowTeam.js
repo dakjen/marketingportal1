@@ -50,7 +50,7 @@ function WorkflowTeam({ projectName }) {
         });
         if (!response.ok) throw new Error('Failed to load users');
         const data = await response.json();
-        setUsers(data);
+        setUsers(data.users || data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
