@@ -386,7 +386,51 @@
   font-size: 0.75rem;
   color: #86efac;
   white-space: nowrap;
-  margin-left: 12px;
+  margin-left: 4px;
+}
+
+.checklist-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.checklist-assigned-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #c07481;
+  background: #fdf0f2;
+  border: 1px solid #f0c4cb;
+  border-radius: 99px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.checklist-assign-btn {
+  font-size: 0.72rem;
+  color: #aaa;
+  background: none;
+  border: 1px solid #e0dbd4;
+  border-radius: 99px;
+  padding: 2px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+.checklist-assign-btn:hover {
+  color: #c07481;
+  border-color: #c07481;
+}
+
+.checklist-assign-select {
+  font-size: 0.8rem;
+  padding: 3px 6px;
+  border: 1.5px solid #c07481;
+  border-radius: 6px;
+  outline: none;
+  background: #fff;
 }
 
 /* ─── Budget ─────────────────────────────────────────────────────────────── */

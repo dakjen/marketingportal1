@@ -14,6 +14,9 @@ function WorkflowChecklist({ projectName }) {
   const { currentUser } = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [assigningId, setAssigningId] = useState(null);
+  const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'admin2';
 
   useEffect(() => {
     const fetchChecklist = async () => {
@@ -35,12 +38,18 @@ function WorkflowChecklist({ projectName }) {
     fetchChecklist();
   }, [projectName, currentUser]);
 
+  useEffect(() => {
+    if (!isAdmin) return;
+    fetch('/api/users', { headers: { 'X-User-Role': currentUser.role } })
+      .then(r => r.json())
+      .then(data => setUsers(data.users || []))
+      .catch(() => {});
+  }, [isAdmin, currentUser]);
+
   const handleToggle = async (item) => {
     if (!isInternalOrAbove(currentUser.role)) return;
     const newChecked = !item.is_checked;
-    // Optimistic update
     setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_checked: newChecked } : i));
-
     try {
       const response = await fetch(`/api/workflow/checklist/${item.id}`, {
         method: 'PUT',
@@ -56,9 +65,30 @@ function WorkflowChecklist({ projectName }) {
       setItems(prev => prev.map(i => i.id === item.id ? updated : i));
     } catch (error) {
       console.error('Error toggling checklist item:', error);
-      // Revert on error
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_checked: item.is_checked } : i));
       alert('Failed to update item. Please try again.');
+    }
+  };
+
+  const handleAssign = async (itemId, username) => {
+    try {
+      const response = await fetch(`/api/workflow/checklist/${itemId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Role': currentUser.role,
+          'X-User-Username': currentUser.username,
+        },
+        body: JSON.stringify({ assigned_to: username || null }),
+      });
+      if (!response.ok) throw new Error('Failed to assign');
+      const updated = await response.json();
+      setItems(prev => prev.map(i => i.id === itemId ? updated : i));
+    } catch (error) {
+      console.error('Error assigning task:', error);
+      alert('Failed to assign task. Please try again.');
+    } finally {
+      setAssigningId(null);
     }
   };
 
@@ -106,12 +136,43 @@ function WorkflowChecklist({ projectName }) {
                     />
                     <span className="item-text">{item.item_text}</span>
                   </label>
-                  {item.is_checked && item.checked_by_username && (
-                    <span className="checked-by">
-                      ✓ {item.checked_by_username}
-                      {item.checked_at && ` · ${new Date(item.checked_at).toLocaleDateString()}`}
-                    </span>
-                  )}
+
+                  <div className="checklist-item-meta">
+                    {item.assigned_to && (
+                      <span className="checklist-assigned-badge">
+                        @{item.assigned_to}
+                      </span>
+                    )}
+                    {item.is_checked && item.checked_by_username && (
+                      <span className="checked-by">
+                        ✓ {item.checked_by_username}
+                        {item.checked_at && ` · ${new Date(item.checked_at).toLocaleDateString()}`}
+                      </span>
+                    )}
+                    {isAdmin && (
+                      assigningId === item.id ? (
+                        <select
+                          className="checklist-assign-select"
+                          defaultValue={item.assigned_to || ''}
+                          autoFocus
+                          onChange={e => handleAssign(item.id, e.target.value)}
+                          onBlur={() => setAssigningId(null)}
+                        >
+                          <option value="">— Unassigned —</option>
+                          {users.map(u => (
+                            <option key={u.username} value={u.username}>{u.username}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <button
+                          className="checklist-assign-btn"
+                          onClick={() => setAssigningId(item.id)}
+                        >
+                          {item.assigned_to ? 'Reassign' : 'Assign'}
+                        </button>
+                      )
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

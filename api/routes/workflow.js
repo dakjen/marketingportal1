@@ -85,19 +85,27 @@ module.exports = (pool) => {
 
   router.put('/workflow/checklist/:id', authorizeRole(['admin', 'internal']), async (req, res) => {
     const { id } = req.params;
-    const { is_checked } = req.body;
+    const { is_checked, assigned_to } = req.body;
     const username = req.headers['x-user-username'];
 
     try {
-      const result = await pool.query(
-        `UPDATE project_checklist_items
-         SET is_checked=$1, checked_by_username=$2, checked_at=$3
-         WHERE id=$4 RETURNING *`,
-        [is_checked, is_checked ? username : null, is_checked ? new Date() : null, id]
-      );
-      if (result.rowCount === 0) {
-        return res.status(404).json({ message: 'Checklist item not found.' });
+      let result;
+      if (assigned_to !== undefined) {
+        // Assignment update only
+        result = await pool.query(
+          `UPDATE project_checklist_items SET assigned_to=$1 WHERE id=$2 RETURNING *`,
+          [assigned_to || null, id]
+        );
+      } else {
+        // Check/uncheck update
+        result = await pool.query(
+          `UPDATE project_checklist_items
+           SET is_checked=$1, checked_by_username=$2, checked_at=$3
+           WHERE id=$4 RETURNING *`,
+          [is_checked, is_checked ? username : null, is_checked ? new Date() : null, id]
+        );
       }
+      if (result.rowCount === 0) return res.status(404).json({ message: 'Checklist item not found.' });
       res.status(200).json(result.rows[0]);
     } catch (error) {
       console.error('Error updating checklist item:', error.stack);

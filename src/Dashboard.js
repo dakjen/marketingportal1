@@ -109,7 +109,13 @@ function Dashboard({ activeProject, selectProject }) {
       headers: { 'X-User-Role': currentUser.role },
     })
       .then(r => r.ok ? r.json() : { items: [] })
-      .then(data => setPendingTasks((data.items || []).filter(i => !i.is_checked).slice(0, 5)))
+      .then(data => {
+          const isAdmin = currentUser.role === 'admin' || currentUser.role === 'admin2';
+          const unchecked = (data.items || []).filter(i => !i.is_checked);
+          const mine = unchecked.filter(i => i.assigned_to === currentUser.username);
+          // Non-admins see their own assigned tasks; admins see all unchecked
+          setPendingTasks((isAdmin ? unchecked : mine.length > 0 ? mine : unchecked).slice(0, 5));
+        })
       .catch(() => setPendingTasks([]));
   }, [activeProject, currentUser]);
 
@@ -187,7 +193,7 @@ function Dashboard({ activeProject, selectProject }) {
         {/* Pending Tasks */}
         <div className="dashboard-tasks-section">
           <h2 className="dashboard-section-title">
-            Pending Workflow Items
+            {currentUser?.role === 'admin' || currentUser?.role === 'admin2' ? 'Pending Workflow Items' : 'My Assigned Tasks'}
             {activeProject && <button className="dashboard-tasks-link" onClick={() => navigate('/workflow')}>View all →</button>}
           </h2>
           {!activeProject ? (
@@ -200,6 +206,7 @@ function Dashboard({ activeProject, selectProject }) {
                 <li key={task.id} className="dashboard-task-item">
                   <span className="dashboard-task-category">{task.category}</span>
                   <span className="dashboard-task-label">{task.item_text}</span>
+                  {task.assigned_to && <span className="dashboard-task-assignee">@{task.assigned_to}</span>}
                 </li>
               ))}
             </ul>
