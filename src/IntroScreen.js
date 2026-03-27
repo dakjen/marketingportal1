@@ -129,12 +129,12 @@ function IntroScreen() {
       <section className="landing-section landing-section--light">
         <div className="landing-container">
           <p className="landing-section-eyebrow">How We Work</p>
-          <h2 className="landing-section-title">Every Engagement is Built Around Your Property.</h2>
-          <p className="landing-services-intro">We don't sell packages off a shelf. We start with your property — the community, the timeline, the deal structure, the income restrictions, the neighborhood — and build a campaign around what will actually move the needle for that specific project. Our three engagement levels give clients a framework for scoping and budgeting, but what happens inside each one is never templated.</p>
+          <h2 className="landing-section-title">Every Proposal is Built Around Your Property.</h2>
+          <p className="landing-services-intro">We don't sell packages off a shelf. Every proposal starts with your property — the community, the timeline, the deal structure, the income restrictions, the neighborhood — and is built from there. The examples below reflect the scope of work we've delivered for past clients. Your engagement will be scoped based on what your property actually needs.</p>
 
           <div className="landing-tiers">
             <div className="landing-tier">
-              <div className="landing-tier-label">Engagement Level 1</div>
+              <div className="landing-tier-label">Example Scope</div>
               <h3>Online &amp; Social Campaign</h3>
               <p className="landing-tier-tagline">For properties that need strong digital lead volume. We determine the right mix of paid and organic channels, messaging, and targeting based on your property's audience, location, and income requirements — not a preset formula.</p>
               <ul>
@@ -147,7 +147,7 @@ function IntroScreen() {
             </div>
             <div className="landing-tier landing-tier--featured">
               <div className="landing-tier-badge">Most Common</div>
-              <div className="landing-tier-label">Engagement Level 2</div>
+              <div className="landing-tier-label">Example Scope</div>
               <h3>Total Marketing Package</h3>
               <p className="landing-tier-tagline">For properties that need broad reach across digital and traditional channels. Channel priorities, spend allocation, and outreach strategy are built around your specific neighborhood, stakeholder expectations, and leasing timeline.</p>
               <ul>
@@ -161,7 +161,7 @@ function IntroScreen() {
               </ul>
             </div>
             <div className="landing-tier">
-              <div className="landing-tier-label">Engagement Level 3</div>
+              <div className="landing-tier-label">Example Scope</div>
               <h3>Full Boat</h3>
               <p className="landing-tier-tagline">For properties that need DJC embedded end-to-end — from launch through stabilization. Every element of the campaign, the applicant experience, and the reporting is shaped around what your property and your investors need.</p>
               <ul>
@@ -172,6 +172,23 @@ function IntroScreen() {
                 <li>Application support: follow-up, re-review, document assistance</li>
                 <li>Full applicant pool analysis and pipeline reporting</li>
               </ul>
+            </div>
+          </div>
+
+          <h3 className="landing-addons-title">Additional Services — Available for Any Engagement</h3>
+          <p className="landing-addons-intro">These are standalone services that can be added to any custom proposal based on your property's needs.</p>
+          <div className="landing-addons">
+            <div className="landing-addon">
+              <h4>Application Support</h4>
+              <p>Per-applicant review, follow-up by phone, email, and text, and document coordination. Proven to recover 20%+ of initially rejected applicants.</p>
+            </div>
+            <div className="landing-addon">
+              <h4>Model Unit Staging</h4>
+              <p>Full design, procurement, delivery, and staging of a tour-ready model unit. Includes professional photography for all marketing materials.</p>
+            </div>
+            <div className="landing-addon">
+              <h4>Applicant Pool Reporting</h4>
+              <p>Deep-dive applicant pool analysis, lead pipeline breakdowns, Section 8 tracking, and benchmark comparisons. Delivered to your stakeholder team.</p>
             </div>
           </div>
         </div>
