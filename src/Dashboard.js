@@ -199,7 +199,7 @@ function Dashboard({ activeProject, selectProject }) {
               {pendingTasks.map(task => (
                 <li key={task.id} className="dashboard-task-item">
                   <span className="dashboard-task-category">{task.category}</span>
-                  <span className="dashboard-task-label">{task.label}</span>
+                  <span className="dashboard-task-label">{task.item_text}</span>
                 </li>
               ))}
             </ul>
