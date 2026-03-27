@@ -4,10 +4,16 @@
   "description": "DakJen Creative lease-up marketing portal for team collaboration and tracking.",
   "icons": [
     {
-      "src": "favicon-new.png",
+      "src": "icon-building.svg",
       "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon-new.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "start_url": "/",

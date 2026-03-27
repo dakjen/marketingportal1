@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="90" fill="#1a1a1a"/>
+  <!-- Main building body -->
+  <rect x="146" y="172" width="220" height="288" fill="#d8c49c" rx="6"/>
+  <!-- Roof accent bar -->
+  <rect x="146" y="155" width="220" height="22" fill="#c07481" rx="6"/>
+  <!-- Windows row 1 -->
+  <rect x="172" y="202" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <rect x="234" y="202" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <rect x="296" y="202" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <!-- Windows row 2 -->
+  <rect x="172" y="264" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <rect x="234" y="264" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <rect x="296" y="264" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <!-- Windows row 3 -->
+  <rect x="172" y="326" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <rect x="234" y="326" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <rect x="296" y="326" width="44" height="44" fill="#1a1a1a" rx="4"/>
+  <!-- Door -->
+  <rect x="214" y="404" width="84" height="56" fill="#c07481" rx="5"/>
+  <!-- Door handle -->
+  <circle cx="284" cy="434" r="5" fill="#d8c49c"/>
+</svg>
