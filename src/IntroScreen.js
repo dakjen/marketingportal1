@@ -128,15 +128,15 @@ function IntroScreen() {
       {/* SERVICES */}
       <section className="landing-section landing-section--light">
         <div className="landing-container">
-          <p className="landing-section-eyebrow">Our Approach</p>
-          <h2 className="landing-section-title">Customized Strategy. Structured Starting Points.</h2>
-          <p className="landing-services-intro">No two properties are the same — and we don't treat them that way. Every DJC engagement is built around your specific project, community, timeline, and budget. Our three packages give you a clear starting point, but the strategy behind each one is always tailored to what your property actually needs to reach full occupancy.</p>
+          <p className="landing-section-eyebrow">How We Work</p>
+          <h2 className="landing-section-title">Every Engagement is Built Around Your Property.</h2>
+          <p className="landing-services-intro">We don't sell packages off a shelf. We start with your property — the community, the timeline, the deal structure, the income restrictions, the neighborhood — and build a campaign around what will actually move the needle for that specific project. Our three engagement levels give clients a framework for scoping and budgeting, but what happens inside each one is never templated.</p>
 
           <div className="landing-tiers">
             <div className="landing-tier">
-              <div className="landing-tier-label">Starting Point: Digital</div>
+              <div className="landing-tier-label">Engagement Level 1</div>
               <h3>Online &amp; Social Campaign</h3>
-              <p className="landing-tier-tagline">A strong digital foundation, customized to your property's audience and market. Best for projects with an established community presence that need targeted lead volume.</p>
+              <p className="landing-tier-tagline">For properties that need strong digital lead volume. We determine the right mix of paid and organic channels, messaging, and targeting based on your property's audience, location, and income requirements — not a preset formula.</p>
               <ul>
                 <li>Targeted social media ads on Facebook, Instagram, Google, and LinkedIn</li>
                 <li>Organic content creation and scheduling</li>
@@ -146,12 +146,12 @@ function IntroScreen() {
               </ul>
             </div>
             <div className="landing-tier landing-tier--featured">
-              <div className="landing-tier-badge">Most Popular</div>
-              <div className="landing-tier-label">Starting Point: Full Channel</div>
+              <div className="landing-tier-badge">Most Common</div>
+              <div className="landing-tier-label">Engagement Level 2</div>
               <h3>Total Marketing Package</h3>
-              <p className="landing-tier-tagline">Digital plus traditional and community — the right mix for most lease-up campaigns. We customize channel priorities, messaging, and budget allocation to your specific property and neighborhood.</p>
+              <p className="landing-tier-tagline">For properties that need broad reach across digital and traditional channels. Channel priorities, spend allocation, and outreach strategy are built around your specific neighborhood, stakeholder expectations, and leasing timeline.</p>
               <ul>
-                <li>All Tier 1 digital and social services</li>
+                <li>All Level 1 digital and social services</li>
                 <li>Billboard and job site banner coordination</li>
                 <li>Radio, newspaper, and podcast placements</li>
                 <li>Agency, nonprofit, and employer partnership outreach</li>
@@ -161,33 +161,17 @@ function IntroScreen() {
               </ul>
             </div>
             <div className="landing-tier">
-              <div className="landing-tier-label">Starting Point: All In</div>
+              <div className="landing-tier-label">Engagement Level 3</div>
               <h3>Full Boat</h3>
-              <p className="landing-tier-tagline">Every channel, every touchpoint, fully hands-on. For properties that need maximum coverage and want DJC embedded in the process from launch through stabilization.</p>
+              <p className="landing-tier-tagline">For properties that need DJC embedded end-to-end — from launch through stabilization. Every element of the campaign, the applicant experience, and the reporting is shaped around what your property and your investors need.</p>
               <ul>
-                <li>Everything in Tier 2</li>
+                <li>Everything in Level 2</li>
                 <li>Direct grassroots neighborhood engagement and canvassing</li>
                 <li>Model unit staging — design, procurement, delivery, and photography</li>
                 <li>Optional 50% furniture donation perk through affiliated nonprofit</li>
                 <li>Application support: follow-up, re-review, document assistance</li>
                 <li>Full applicant pool analysis and pipeline reporting</li>
               </ul>
-            </div>
-          </div>
-
-          <h3 className="landing-addons-title">Build Your Own — Add-Ons Available for Any Package</h3>
-          <div className="landing-addons">
-            <div className="landing-addon">
-              <h4>Application Support</h4>
-              <p>Per-applicant review, follow-up by phone, email, and text, and document coordination. Proven to recover 20%+ of initially rejected applicants.</p>
-            </div>
-            <div className="landing-addon">
-              <h4>Model Unit Staging</h4>
-              <p>Full design, procurement, delivery, and staging of a tour-ready model unit. Includes professional photography for all marketing materials.</p>
-            </div>
-            <div className="landing-addon">
-              <h4>Applicant Pool Reporting</h4>
-              <p>Deep-dive applicant pool analysis, lead pipeline breakdowns, Section 8 tracking, and benchmark comparisons. Delivered to your stakeholder team.</p>
             </div>
           </div>
         </div>
