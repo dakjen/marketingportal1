@@ -128,15 +128,15 @@ function IntroScreen() {
       {/* SERVICES */}
       <section className="landing-section landing-section--light">
         <div className="landing-container">
-          <p className="landing-section-eyebrow">Our Services</p>
-          <h2 className="landing-section-title">Three Tiers. One Goal: Full Occupancy.</h2>
-          <p className="landing-services-intro">Every property is different. We offer three service tiers so you can match the level of support to your project's needs, timeline, and budget.</p>
+          <p className="landing-section-eyebrow">Our Approach</p>
+          <h2 className="landing-section-title">Customized Strategy. Structured Starting Points.</h2>
+          <p className="landing-services-intro">No two properties are the same — and we don't treat them that way. Every DJC engagement is built around your specific project, community, timeline, and budget. Our three packages give you a clear starting point, but the strategy behind each one is always tailored to what your property actually needs to reach full occupancy.</p>
 
           <div className="landing-tiers">
             <div className="landing-tier">
-              <div className="landing-tier-label">Tier 1</div>
+              <div className="landing-tier-label">Starting Point: Digital</div>
               <h3>Online &amp; Social Campaign</h3>
-              <p className="landing-tier-tagline">Digital lead generation across paid and organic channels.</p>
+              <p className="landing-tier-tagline">A strong digital foundation, customized to your property's audience and market. Best for projects with an established community presence that need targeted lead volume.</p>
               <ul>
                 <li>Targeted social media ads on Facebook, Instagram, Google, and LinkedIn</li>
                 <li>Organic content creation and scheduling</li>
@@ -147,9 +147,9 @@ function IntroScreen() {
             </div>
             <div className="landing-tier landing-tier--featured">
               <div className="landing-tier-badge">Most Popular</div>
-              <div className="landing-tier-label">Tier 2</div>
+              <div className="landing-tier-label">Starting Point: Full Channel</div>
               <h3>Total Marketing Package</h3>
-              <p className="landing-tier-tagline">Everything in Tier 1, plus traditional media and expanded community outreach.</p>
+              <p className="landing-tier-tagline">Digital plus traditional and community — the right mix for most lease-up campaigns. We customize channel priorities, messaging, and budget allocation to your specific property and neighborhood.</p>
               <ul>
                 <li>All Tier 1 digital and social services</li>
                 <li>Billboard and job site banner coordination</li>
@@ -161,9 +161,9 @@ function IntroScreen() {
               </ul>
             </div>
             <div className="landing-tier">
-              <div className="landing-tier-label">Tier 3</div>
+              <div className="landing-tier-label">Starting Point: All In</div>
               <h3>Full Boat</h3>
-              <p className="landing-tier-tagline">All Channels + Community Engagement. Our most comprehensive, hands-on approach.</p>
+              <p className="landing-tier-tagline">Every channel, every touchpoint, fully hands-on. For properties that need maximum coverage and want DJC embedded in the process from launch through stabilization.</p>
               <ul>
                 <li>Everything in Tier 2</li>
                 <li>Direct grassroots neighborhood engagement and canvassing</li>
@@ -175,7 +175,7 @@ function IntroScreen() {
             </div>
           </div>
 
-          <h3 className="landing-addons-title">Add-On Services</h3>
+          <h3 className="landing-addons-title">Build Your Own — Add-Ons Available for Any Package</h3>
           <div className="landing-addons">
             <div className="landing-addon">
               <h4>Application Support</h4>
