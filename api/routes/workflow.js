@@ -85,19 +85,22 @@ module.exports = (pool) => {
 
   router.put('/workflow/checklist/:id', authorizeRole(['admin', 'internal']), async (req, res) => {
     const { id } = req.params;
-    const { is_checked, assigned_to } = req.body;
+    const { is_checked, assigned_to, item_text } = req.body;
     const username = req.headers['x-user-username'];
 
     try {
       let result;
       if (assigned_to !== undefined) {
-        // Assignment update only
         result = await pool.query(
           `UPDATE project_checklist_items SET assigned_to=$1 WHERE id=$2 RETURNING *`,
           [assigned_to || null, id]
         );
+      } else if (item_text !== undefined) {
+        result = await pool.query(
+          `UPDATE project_checklist_items SET item_text=$1 WHERE id=$2 RETURNING *`,
+          [item_text, id]
+        );
       } else {
-        // Check/uncheck update
         result = await pool.query(
           `UPDATE project_checklist_items
            SET is_checked=$1, checked_by_username=$2, checked_at=$3
@@ -110,6 +113,36 @@ module.exports = (pool) => {
     } catch (error) {
       console.error('Error updating checklist item:', error.stack);
       res.status(500).json({ message: 'Error updating checklist item', error: error.message });
+    }
+  });
+
+  router.post('/workflow/checklist', authorizeRole(['admin']), async (req, res) => {
+    const { project_name, category, item_text } = req.body;
+    if (!project_name || !category || !item_text) {
+      return res.status(400).json({ message: 'project_name, category, and item_text are required.' });
+    }
+    try {
+      const result = await pool.query(
+        `INSERT INTO project_checklist_items(project_name, category, item_text, sort_order)
+         VALUES($1, $2, $3, 999) RETURNING *`,
+        [project_name, category, item_text]
+      );
+      res.status(201).json(result.rows[0]);
+    } catch (error) {
+      console.error('Error adding checklist item:', error.stack);
+      res.status(500).json({ message: 'Error adding checklist item', error: error.message });
+    }
+  });
+
+  router.delete('/workflow/checklist/:id', authorizeRole(['admin']), async (req, res) => {
+    const { id } = req.params;
+    try {
+      const result = await pool.query('DELETE FROM project_checklist_items WHERE id=$1 RETURNING id', [id]);
+      if (result.rowCount === 0) return res.status(404).json({ message: 'Item not found.' });
+      res.status(200).json({ message: 'Deleted.' });
+    } catch (error) {
+      console.error('Error deleting checklist item:', error.stack);
+      res.status(500).json({ message: 'Error deleting checklist item', error: error.message });
     }
   });
 
