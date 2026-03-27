@@ -1,163 +1,209 @@
 .social-media-container {
-  max-width: 800px; /* Adjust as needed */
-  margin: 20px auto; /* Center the container and add some vertical margin */
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  max-width: 900px;
+  margin: 28px auto;
+  padding: 28px;
+  border: 1.5px solid #e8e3dc;
+  border-radius: 12px;
   background-color: #fff;
 }
 
-.social-media-container h2,
+.social-media-container h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 6px;
+  text-align: left;
+}
+
 .social-media-container h3 {
-  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #aaa;
+  margin: 28px 0 12px;
+  text-align: left;
 }
 
 .social-media-container form div {
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .social-media-container form label {
   display: block;
   margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #444;
 }
 
 .social-media-container form input[type="text"],
+.social-media-container form input[type="date"],
+.social-media-container form input[type="number"],
 .social-media-container form select,
 .social-media-container .custom-platform-input input[type="text"],
 .social-media-container form textarea {
-  width: calc(100% - 22px); /* Account for padding and border */
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e0dbd4;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  background: #faf9f7;
+  transition: border-color 0.15s;
+  outline: none;
 }
 
-.social-media-container form button {
-  background-color: #c07481; /* Accent color */
-  color: white;
-  padding: 10px 20px;
+.social-media-container form input:focus,
+.social-media-container form select:focus,
+.social-media-container form textarea:focus {
+  border-color: #c07481;
+  background: #fff;
+}
+
+.social-media-container form button[type="submit"],
+.social-media-container form button:not(.delete-entry-button):not(.edit-entry-button):not(.cancel-entry-button):not(.save-entry-button) {
+  background-color: #c07481;
+  color: #fff;
+  padding: 10px 22px;
   border: none;
-  border-radius: 4px;
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: background 0.15s;
 }
 
 .social-media-container form button:hover {
-  background-color: #a05a6a;
+  background-color: #a85f6e;
 }
 
-.social-media-container ul li {
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-}
-
+/* Table */
 .entries-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.entries-table th,
-.entries-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
+  margin-top: 16px;
+  font-size: 0.85rem;
 }
 
 .entries-table th {
-  background-color: #f2f2f2;
-  font-weight: bold;
+  background: #f5f2ee;
+  color: #555;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 2px solid #e8e3dc;
 }
 
-.entries-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+.entries-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0ede8;
+  color: #333;
+  vertical-align: middle;
 }
 
 .entries-table tbody tr:hover {
-  background-color: #f1f1f1;
+  background: #faf9f7;
 }
 
+/* Action buttons */
 .delete-entry-button {
-  background-color: #444444;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
+  background: #fee;
+  color: #c0404f;
+  border: 1px solid #fcc;
+  padding: 4px 10px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 0.9em;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 .delete-entry-button:hover {
-  background-color: #333333;
+  background: #fdd;
 }
 
 .edit-entry-button {
-  background-color: #aeaeae;
-  color: black; /* Changed to black for readability on light grey */
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
+  background: #f5f2ee;
+  color: #555;
+  border: 1px solid #e0dbd4;
+  padding: 4px 10px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 0.9em;
-  margin-left: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-left: 4px;
 }
 
 .edit-entry-button:hover {
-  background-color: #9a9a9a;
+  background: #ede8e0;
 }
 
 .edit-entry-form-inline {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
-  padding: 5px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
+  padding: 8px;
+  background: #faf9f7;
+  border-radius: 7px;
+  border: 1px solid #e8e3dc;
 }
 
 .edit-entry-form-inline label {
-  font-weight: bold;
-  margin-right: 5px;
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #666;
 }
 
 .edit-entry-form-inline input,
 .edit-entry-form-inline select,
 .edit-entry-form-inline textarea {
   flex-grow: 1;
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 6px 8px;
+  border: 1.5px solid #e0dbd4;
+  border-radius: 6px;
+  font-size: 0.85rem;
   min-width: 80px;
+  outline: none;
 }
 
-.save-entry-button,
-.cancel-entry-button {
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9em;
-  margin-left: 5px;
-  border: none;
+.edit-entry-form-inline input:focus,
+.edit-entry-form-inline select:focus {
+  border-color: #c07481;
 }
 
 .save-entry-button {
-  background-color: #28a745;
-  color: white;
+  background: #c07481;
+  color: #fff;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .save-entry-button:hover {
-  background-color: #218838;
+  background: #a85f6e;
 }
 
 .cancel-entry-button {
-  background-color: #6c757d;
-  color: white;
+  background: #f5f2ee;
+  color: #666;
+  border: 1px solid #e0dbd4;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 4px;
 }
 
 .cancel-entry-button:hover {
-  background-color: #5a6268;
+  background: #ede8e0;
 }
