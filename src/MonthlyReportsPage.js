@@ -3,7 +3,8 @@ import { AuthContext } from './AuthContext';
 import { ProjectContext } from './ProjectContext';
 import './MonthlyReportsPage.css';
 
-function MonthlyReportsPage({ uploadedFiles, handleFileUpload, handleFileDelete }) {
+function MonthlyReportsPage() {
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const { currentUser } = useContext(AuthContext);
   const { activeProject } = useContext(ProjectContext);
   const [regularDocuments, setRegularDocuments] = useState([]);
@@ -92,9 +93,11 @@ function MonthlyReportsPage({ uploadedFiles, handleFileUpload, handleFileDelete 
   const onFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      handleFileUpload(file);
+      setUploadedFiles(prev => [...prev, file]);
     }
   };
+
+  const handleFileDelete = (name) => setUploadedFiles(prev => prev.filter(f => f.name !== name));
 
   return (
     <div className="monthly-reports-page-container">

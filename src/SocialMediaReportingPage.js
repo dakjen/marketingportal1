@@ -3,15 +3,13 @@ import { AuthContext } from './AuthContext';
 import { ProjectContext } from './ProjectContext';
 import './SocialMediaReportingPage.css';
 
-function SocialMediaReportingPage({ uploads, handleUpload, handleDeleteUpload }) {
+function SocialMediaReportingPage() {
   const { currentUser } = useContext(AuthContext);
   const { activeProject } = useContext(ProjectContext);
+  const [uploads, setUploads] = useState([]);
   const [fileName, setFileName] = useState('');
   const [file, setFile] = useState(null);
-  const [type, setType] = useState(''); // New state for type
-
-  // The fetchUploads logic will now be managed by the parent component (ReportingPage)
-  // and passed down via the `uploads` prop.
+  const [type, setType] = useState('');
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -53,8 +51,7 @@ function SocialMediaReportingPage({ uploads, handleUpload, handleDeleteUpload })
       setFileName('');
       setFile(null);
       setType(''); // Clear type
-      // Call the prop function to update uploads in parent
-      handleUpload({ id: Date.now(), file_name: fileName, type: type, uploader_username: currentUser.username, upload_date: new Date().toISOString() });
+      setUploads(prev => [...prev, { id: Date.now(), file_name: fileName, type, uploader_username: currentUser.username, upload_date: new Date().toISOString() }]);
     } catch (error) {
       console.error('Error uploading file:', error);
       alert(error.message || 'Failed to upload file. Please try again.');
@@ -80,8 +77,7 @@ function SocialMediaReportingPage({ uploads, handleUpload, handleDeleteUpload })
       }
 
       alert('Upload deleted successfully!');
-      // Call the prop function to update uploads in parent
-      handleDeleteUpload(idToDelete);
+      setUploads(prev => prev.filter(u => u.id !== idToDelete));
     } catch (error) {
       console.error('Error deleting upload:', error);
       alert(error.message || 'Failed to delete upload. Please try again.');
