@@ -142,6 +142,23 @@ module.exports = (pool) => {
     }
   });
 
+  router.post('/forgot-password', async (req, res) => {
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ message: 'Username is required.' });
+    try {
+      const result = await pool.query('SELECT id FROM users WHERE username=$1', [username]);
+      if (result.rowCount === 0) return res.status(200).json({});
+      const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+      const tempPassword = Array.from({ length: 10 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      const hash = await bcrypt.hash(tempPassword, 10);
+      await pool.query('UPDATE users SET password_hash=$1 WHERE username=$2', [hash, username]);
+      res.status(200).json({ tempPassword });
+    } catch (error) {
+      console.error('Error resetting password:', error.stack);
+      res.status(500).json({ message: 'Error resetting password.' });
+    }
+  });
+
   router.delete('/users/:username', authorizeRole(['admin']), async (req, res) => {
     const { username } = req.params;
     try {
