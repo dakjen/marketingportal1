@@ -87,11 +87,8 @@ function ReportingPage() {
       setWordReports(data.reports);
     } catch (error) {
       console.error("Failed to fetch word reports:", error);
-      alert('Failed to load word reports. Please try again.');
     }
   }, [activeProject]);
-
-  console.log('wordReports state:', wordReports);
 
   // Fetch project spend data
   useEffect(() => {
@@ -103,56 +100,22 @@ function ReportingPage() {
         return;
       }
       try {
-            const responseProjectData = await fetch(`/api/project-data?project_name=${encodeURIComponent(activeProject.name)}`);
-            if (!responseProjectData.ok) {
-              const errorData = await responseProjectData.json();
-              console.error("Failed to fetch project spend data:", responseProjectData.status, errorData);
-              throw new Error(errorData.message || `HTTP error! status: ${responseProjectData.status}`);
-            }
-            const projectData = await responseProjectData.json();
-            console.log('fetchProjectSpend: projectData.spend:', projectData.spend);
-    
-            // Fetch social media entries
-            const responseSocialMediaEntries = await fetch(`/api/socialmediaentries?project_name=${encodeURIComponent(activeProject.name)}`);
-            if (!responseSocialMediaEntries.ok) {
-              const errorData = await responseSocialMediaEntries.json();
-              console.error("Failed to fetch social media entries data:", responseSocialMediaEntries.status, errorData);
-              throw new Error(errorData.message || `HTTP error! status: ${responseSocialMediaEntries.status}`);
-            }
-            const socialMediaEntriesData = await responseSocialMediaEntries.json();
-            console.log('fetchProjectSpend: socialMediaEntriesData.entries:', socialMediaEntriesData.entries);
-    
-            // Fetch physical marketing entries
-            const responsePhysicalMarketingEntries = await fetch(`/api/physicalmarketingentries?project_name=${encodeURIComponent(activeProject.name)}`);
-            if (!responsePhysicalMarketingEntries.ok) {
-              const errorData = await responsePhysicalMarketingEntries.json();
-              console.error("Failed to fetch physical marketing entries data:", responsePhysicalMarketingEntries.status, errorData);
-              throw new Error(errorData.message || `HTTP error! status: ${responsePhysicalMarketingEntries.status}`);
-            }
-            const physicalMarketingEntriesData = await responsePhysicalMarketingEntries.json();
-            console.log('fetchProjectSpend: physicalMarketingEntriesData.entries:', physicalMarketingEntriesData.entries);
-    
-        // Combine spend data from project-data
+        const [socialRes, physicalRes] = await Promise.all([
+          fetch(`/api/socialmediaentries?project_name=${encodeURIComponent(activeProject.name)}`),
+          fetch(`/api/physicalmarketingentries?project_name=${encodeURIComponent(activeProject.name)}`),
+        ]);
+        const [socialData, physicalData] = await Promise.all([socialRes.json(), physicalRes.json()]);
+
         const combinedSpendData = [
-          ...projectData.spend,
-        ];        console.log('fetchProjectSpend: combinedSpendData:', combinedSpendData);
+          ...(socialData.entries || []).map(e => ({ date: e.date, amount: parseFloat(e.cost) || 0, type: 'socialMedia' })),
+          ...(physicalData.entries || []).filter(e => !e.is_archived).map(e => ({ date: e.date, amount: parseFloat(e.cost) || 0, type: 'physicalMarketing' })),
+        ];
 
-        // Calculate total spend for the last 30 days
-        const totalGrandSpend = combinedSpendData.reduce((sum, item) => {
-          const amount = parseFloat(item.amount);
-          if (isNaN(amount)) {
-            console.warn('Non-numeric amount found:', item.amount, 'for item:', item);
-            return sum; // Skip non-numeric amounts
-          }
-          return sum + amount;
-        }, 0);
-        console.log('fetchProjectSpend: totalGrandSpend:', totalGrandSpend);
+        const totalGrandSpend = combinedSpendData.reduce((sum, item) => sum + item.amount, 0);
         setTotalMonthlySpend(totalGrandSpend);
-        setProjectSpendData(combinedSpendData); // Ensure projectSpendData is set
-
+        setProjectSpendData(combinedSpendData);
       } catch (error) {
         console.error("Error in fetchProjectSpend:", error);
-        alert(`Failed to load project spend data: ${error.message}. Please try again.`);
       }
     };
     fetchProjectSpend();

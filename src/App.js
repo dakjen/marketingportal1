@@ -147,7 +147,6 @@ function AppContent() {
             </ul>
             <div className="app-login-status-display"></div>
           </nav>
-          <hr />
         </>
       )}
       <div className="main-content">
