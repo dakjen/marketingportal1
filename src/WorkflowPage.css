@@ -450,6 +450,21 @@
 
 /* ─── Budget ─────────────────────────────────────────────────────────────── */
 
+.budget-phase-section {
+  margin-bottom: 28px;
+}
+
+.budget-phase-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #c07481;
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #f0c4cb;
+}
+
 .budget-type-badge {
   display: inline-block;
   padding: 2px 8px;

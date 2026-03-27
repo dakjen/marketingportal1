@@ -155,6 +155,21 @@ pool.connect((err, client, release) => {
     await pool.query(`ALTER TABLE social_media_entries ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT false`);
     await pool.query(`ALTER TABLE physical_marketing_entries ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT false`);
     await pool.query(`ALTER TABLE project_checklist_items ADD COLUMN IF NOT EXISTS assigned_to TEXT`);
+    // Migrate budget unique constraint to support separate Month 1 vs cadence rows per category
+    await pool.query(`
+      DO $$
+      BEGIN
+        IF EXISTS (
+          SELECT 1 FROM pg_constraint
+          WHERE conname = 'project_budgets_project_name_category_key'
+        ) THEN
+          ALTER TABLE project_budgets DROP CONSTRAINT project_budgets_project_name_category_key;
+          UPDATE project_budgets SET period = 'cadence' WHERE period = 'monthly';
+          ALTER TABLE project_budgets ADD CONSTRAINT project_budgets_project_name_category_period_key
+            UNIQUE (project_name, category, period);
+        END IF;
+      END $$;
+    `);
     console.log('Tables checked/created successfully.');
   } catch (err) {
     console.error('Error creating tables:', err.stack);

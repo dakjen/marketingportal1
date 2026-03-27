@@ -215,10 +215,10 @@ module.exports = (pool) => {
       const result = await pool.query(
         `INSERT INTO project_budgets(project_name, category, budget_type, amount, period)
          VALUES($1, $2, $3, $4, $5)
-         ON CONFLICT (project_name, category)
-         DO UPDATE SET amount=$4, period=$5, budget_type=$3
+         ON CONFLICT (project_name, category, period)
+         DO UPDATE SET amount=$4, budget_type=$3
          RETURNING *`,
-        [project_name, category, budget_type, amount, period || 'monthly']
+        [project_name, category, budget_type, amount, period || 'cadence']
       );
       res.status(200).json(result.rows[0]);
     } catch (error) {
