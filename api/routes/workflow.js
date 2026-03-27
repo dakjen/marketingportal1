@@ -146,6 +146,23 @@ module.exports = (pool) => {
     }
   });
 
+  router.delete('/workflow/checklist-category', authorizeRole(['admin']), async (req, res) => {
+    const { project_name, category } = req.query;
+    if (!project_name || !category) {
+      return res.status(400).json({ message: 'project_name and category are required.' });
+    }
+    try {
+      const result = await pool.query(
+        'DELETE FROM project_checklist_items WHERE project_name=$1 AND category=$2',
+        [project_name, category]
+      );
+      res.status(200).json({ deleted: result.rowCount });
+    } catch (error) {
+      console.error('Error deleting checklist category:', error.stack);
+      res.status(500).json({ message: 'Error deleting category', error: error.message });
+    }
+  });
+
   // ─── BUDGET VS. ACTUALS ───────────────────────────────────────────────────
 
   router.get('/workflow/budget', authorizeRole(['admin', 'internal']), async (req, res) => {

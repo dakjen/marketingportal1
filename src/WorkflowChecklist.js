@@ -106,6 +106,20 @@ function WorkflowChecklist({ projectName }) {
     }
   };
 
+  const handleDeleteCategory = async (category) => {
+    if (!window.confirm(`Remove all items in "${category}" for this project?`)) return;
+    try {
+      const response = await fetch(
+        `/api/workflow/checklist-category?project_name=${encodeURIComponent(projectName)}&category=${encodeURIComponent(category)}`,
+        { method: 'DELETE', headers: { 'X-User-Role': currentUser.role } }
+      );
+      if (!response.ok) throw new Error('Failed to delete category');
+      setItems(prev => prev.filter(i => i.category !== category));
+    } catch {
+      alert('Failed to delete category.');
+    }
+  };
+
   const handleDelete = async (itemId) => {
     if (!window.confirm('Remove this checklist item?')) return;
     try {
@@ -196,6 +210,15 @@ function WorkflowChecklist({ projectName }) {
             <div className="checklist-category-header">
               <h4>{category}</h4>
               <span className="category-count">{catChecked}/{categoryItems.length}</span>
+              {isAdmin && (
+                <button
+                  className="checklist-delete-category-btn"
+                  onClick={() => handleDeleteCategory(category)}
+                  title="Delete entire category"
+                >
+                  Delete Section
+                </button>
+              )}
             </div>
             <ul className="checklist-items">
               {categoryItems.map(item => (

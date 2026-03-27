@@ -326,6 +326,21 @@
   color: #94a3b8;
 }
 
+.checklist-delete-category-btn {
+  font-size: 0.72rem;
+  color: #b45563;
+  background: none;
+  border: 1px solid #f0c4cb;
+  border-radius: 99px;
+  padding: 2px 10px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.checklist-delete-category-btn:hover {
+  background: #fdf0f2;
+}
+
 .checklist-items {
   list-style: none;
   padding: 0;
