@@ -173,7 +173,7 @@ module.exports = (pool) => {
 
     try {
       const budgets = await pool.query(
-        'SELECT * FROM project_budgets WHERE project_name=$1 ORDER BY budget_type, category',
+        'SELECT * FROM project_budgets WHERE project_name=$1 ORDER BY CASE WHEN period=\'month1\' THEN 0 ELSE 1 END, amount DESC, budget_type, category',
         [project_name]
       );
 

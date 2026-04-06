@@ -154,8 +154,8 @@ function WorkflowBudget({ projectName }) {
   };
 
   const categoryOptions = newBudgetType === 'social' ? SOCIAL_PLATFORMS : PHYSICAL_TYPES;
-  const month1Rows = budgets.filter(b => b.period === 'month1');
-  const cadenceRows = budgets.filter(b => b.period === 'cadence' || b.period === 'monthly' || b.period === 'one-time');
+  const month1Rows = budgets.filter(b => b.period === 'month1').sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
+  const cadenceRows = budgets.filter(b => b.period === 'cadence' || b.period === 'monthly' || b.period === 'one-time').sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
 
   const budgetCategories = new Set(budgets.map(b => b.category));
   const unbudgetedCategories = Object.keys(actuals).filter(cat => !budgetCategories.has(cat));
